@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -16,12 +16,23 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     sourceSets {
-        
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.navigation)
+            implementation(sharedLibs.logcat)
+            implementation(sharedLibs.sugar)
+            implementation(sharedLibs.koin)
+            implementation(sharedLibs.bundles.jetpack)
+            implementation(libs.bundles.media3)
+            implementation(dependencies.create(libs.elevenlabs.get()).toString()) {
+                exclude(group = "org.apache.httpcomponents.core5")
+                exclude(group = "org.apache.httpcomponents.client5")
+                exclude(group = "com.fasterxml.jackson.core")
+                exclude(group = "org.slf4j")
+            }
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -30,6 +41,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.kotlinx.json)
         }
     }
 }
@@ -47,7 +59,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
     }
     packaging {
         resources {
@@ -56,7 +68,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {
@@ -68,6 +80,7 @@ android {
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+        implementation(platform(sharedLibs.koin.bom))
     }
 }
 

@@ -1,0 +1,10 @@
+# ktlint config
+[*.{kt,kts}]
+ktlint_function_naming_ignore_when_annotated_with=Composable
+ktlint_standard_final-newline=disabled
+# Can't detect factory function name correctly, so disable it for now.
+ktlint_standard_function-naming=disabled
+# 下面是一些不太符合个人习惯的
+
+# 强制换行，比如 Modifier 后面跟着很长的一串，那这个 Modifier 的位置，lint 必须另起一行
+ktlint_standard_multiline-expression-wrapping=disabled
