@@ -25,6 +25,12 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://jitpack.io")
+    }
+    versionCatalogs {
+        create("sharedLibs") {
+            from("io.github.foodiestudio:libs-versions:2023.08.01")
+        }
     }
 }
 
