@@ -1,5 +1,6 @@
 package com.github.kkoshin.muse.editor
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -37,13 +37,12 @@ data class EditorArgs(
  * 2. config silence duration
  * 3. request to export as mp3
  */
-@OptIn(ExperimentalSugarApi::class)
 @Composable
 fun EditorScreen(
     modifier: Modifier = Modifier,
     args: EditorArgs,
     viewModel: EditorViewModel = koinViewModel(),
-    onExport: () -> Unit,
+    onExport: (Uri) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
 
@@ -58,7 +57,7 @@ fun EditorScreen(
                     IconButton(
                         enabled = progress is ProgressStatus.Success,
                         onClick = {
-                            onExport()
+                            onExport((progress as ProgressStatus.Success).audio)
                         },
                     ) {
                         Icon(Icons.Filled.Done, contentDescription = null)
