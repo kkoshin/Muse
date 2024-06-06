@@ -26,6 +26,7 @@ kotlin {
             implementation(sharedLibs.sugar)
             implementation(sharedLibs.koin)
             implementation(sharedLibs.bundles.jetpack)
+            implementation(libs.documentfile)
             implementation(libs.bundles.media3)
             implementation(dependencies.create(libs.elevenlabs.get()).toString()) {
                 exclude(group = "org.apache.httpcomponents.core5")

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,7 +29,7 @@ object HomeArgs
 
 @Composable
 fun MainScreen() {
-    MaterialTheme {
+    MaterialTheme(colors = lightColors(primary = Color(0xFF5D9CED))) {
         val navController = rememberNavController()
         NavHost(
             modifier = Modifier.fillMaxSize(),
@@ -56,13 +58,13 @@ fun MainScreen() {
             }
 
             composable<EditorArgs> {
-                EditorScreen(args = it.toRoute()) {
-                    navController.navigate(ExportArgs)
+                EditorScreen(args = it.toRoute()) { uri ->
+                    navController.navigate(ExportArgs(uri.toString()))
                 }
             }
 
             composable<ExportArgs> {
-                ExportScreen()
+                ExportScreen(args = it.toRoute())
             }
         }
     }
