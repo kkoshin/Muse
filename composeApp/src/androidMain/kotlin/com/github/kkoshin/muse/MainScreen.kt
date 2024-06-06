@@ -1,4 +1,4 @@
-package com.github.kkoshin.speaker
+package com.github.kkoshin.muse
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.github.kkoshin.speaker.editor.EditorArgs
-import com.github.kkoshin.speaker.editor.EditorScreen
-import com.github.kkoshin.speaker.export.ExportArgs
-import com.github.kkoshin.speaker.export.ExportScreen
-import com.github.kkoshin.speaker.script.ScriptArgs
-import com.github.kkoshin.speaker.script.ScriptScreen
+import com.github.kkoshin.muse.editor.EditorArgs
+import com.github.kkoshin.muse.editor.EditorScreen
+import com.github.kkoshin.muse.export.ExportArgs
+import com.github.kkoshin.muse.export.ExportScreen
+import com.github.kkoshin.muse.script.ScriptArgs
+import com.github.kkoshin.muse.script.ScriptScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

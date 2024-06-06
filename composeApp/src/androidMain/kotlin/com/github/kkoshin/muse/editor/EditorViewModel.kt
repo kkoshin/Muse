@@ -1,9 +1,9 @@
-package com.github.kkoshin.speaker.editor
+package com.github.kkoshin.muse.editor
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.kkoshin.speaker.tts.TTSManager
+import com.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

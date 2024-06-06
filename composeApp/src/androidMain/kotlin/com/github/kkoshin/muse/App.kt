@@ -1,10 +1,10 @@
-package com.github.kkoshin.speaker
+package com.github.kkoshin.muse
 
 import android.app.Application
-import com.github.kkoshin.speaker.editor.EditorViewModel
-import com.github.kkoshin.speaker.tts.TTSManager
-import com.github.kkoshin.speaker.tts.TTSProvider
-import com.github.kkoshin.speaker.tts.vendor.ElevenLabTTSProvider
+import com.github.kkoshin.muse.editor.EditorViewModel
+import com.github.kkoshin.muse.tts.TTSManager
+import com.github.kkoshin.muse.tts.TTSProvider
+import com.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext

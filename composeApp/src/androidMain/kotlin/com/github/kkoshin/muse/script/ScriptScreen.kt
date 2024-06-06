@@ -1,4 +1,4 @@
-package com.github.kkoshin.speaker.script
+package com.github.kkoshin.muse.script
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

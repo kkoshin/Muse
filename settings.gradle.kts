@@ -1,4 +1,3 @@
-rootProject.name = "Speaker"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

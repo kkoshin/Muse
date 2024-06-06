@@ -1,7 +1,7 @@
-package com.github.kkoshin.speaker.tts.vendor
+package com.github.kkoshin.muse.tts.vendor
 
-import com.github.kkoshin.speaker.tts.TTSProvider
-import com.github.kkoshin.speaker.tts.TTSResult
+import com.github.kkoshin.muse.tts.TTSProvider
+import com.github.kkoshin.muse.tts.TTSResult
 
 class MockTTSProvider : TTSProvider {
     override suspend fun generate(text: String): Result<TTSResult> {
