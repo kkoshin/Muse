@@ -1,4 +1,4 @@
-package com.github.kkoshin.speaker.export
+package com.github.kkoshin.muse.export
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

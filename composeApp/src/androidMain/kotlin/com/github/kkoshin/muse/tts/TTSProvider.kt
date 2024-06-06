@@ -1,4 +1,4 @@
-package com.github.kkoshin.speaker.tts
+package com.github.kkoshin.muse.tts
 
 import java.io.InputStream
 

@@ -1,4 +1,4 @@
-package com.github.kkoshin.speaker
+package com.github.kkoshin.muse
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -1,8 +1,8 @@
-package com.github.kkoshin.speaker.tts.vendor
+package com.github.kkoshin.muse.tts.vendor
 
-import com.github.kkoshin.speaker.tts.SupportedAudioType
-import com.github.kkoshin.speaker.tts.TTSProvider
-import com.github.kkoshin.speaker.tts.TTSResult
+import com.github.kkoshin.muse.tts.SupportedAudioType
+import com.github.kkoshin.muse.tts.TTSProvider
+import com.github.kkoshin.muse.tts.TTSResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.andrewcpu.elevenlabs.ElevenLabs
