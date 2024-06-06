@@ -11,6 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
+import com.github.kkoshin.muse.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -45,7 +46,7 @@ class TTSManager(private val appContext: Context, private val provider: TTSProvi
                         appContext,
                         MediaStoreType.Audio,
                         "${text.lowercase()}${fileExtName}",
-                        "Music/voices",
+                        "Music/${appContext.getString(R.string.app_name)}",
                         enablePending = true,
                     ).let {
                         it.write {
