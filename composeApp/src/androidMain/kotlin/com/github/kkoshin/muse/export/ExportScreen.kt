@@ -66,8 +66,7 @@ fun ExportScreen(
     val audioExportPipeline =
         rememberAudioExportPipeline(
             context = context,
-//            input = args.audioUri.toUri(),
-            input = appFileHelper.requireFilesDir(false).resolve("decoded.wav").toUri(),
+            input = args.audioUri.toUri(),
         )
 
     var selectedMp3: Uri? by remember {
@@ -109,16 +108,10 @@ fun ExportScreen(
                     }) {
                         Text(text = "Decode Mp3 to WAV")
                     }
-                    AppendSilenceToWavButton()
                     ExportButton(modifier = Modifier, exportPipeline = audioExportPipeline)
                     ExportButton(modifier = Modifier, exportPipeline = videoExportPipeline)
                 }
             }
         },
     )
-}
-
-@Composable
-fun AppendSilenceToWavButton() {
-//    TODO("Not yet implemented")
 }

@@ -17,12 +17,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
-import okio.Path.Companion.toPath
 import okio.buffer
 import okio.sink
 import okio.use
 import org.koin.java.KoinJavaComponent.inject
 import java.io.IOException
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalSugarApi::class)
 class ExportViewModel : ViewModel() {
@@ -40,6 +41,8 @@ class ExportViewModel : ViewModel() {
                 decodeAudio(mp3Uri) { pcmData ->
                     sink.write(pcmData)
                 }
+                // 尾部添加3秒静音块，采样率等写死了
+                sink.write(getSilence(3.seconds))
             }
             FileSystem.SYSTEM.copy(pcm.toOkioPath(), wav.toOkioPath())
             WaveHeaderWriter(
@@ -51,6 +54,22 @@ class ExportViewModel : ViewModel() {
                 )
             ).writeHeader()
         }
+    }
+
+    private fun getSilence(duration: Duration): ByteArray {
+        val sampleRate = 44100
+
+        // Duration of silence in seconds
+        val silenceDurationInSeconds = duration.inWholeSeconds.toInt()
+
+        // Number of bytes per sample (16-bit PCM)
+        val bytesPerSample = 2
+
+        // Calculate the total number of bytes for the silence duration
+        val totalBytesForSilence = sampleRate * silenceDurationInSeconds * bytesPerSample
+
+        // Create a buffer filled with zeros (silence)
+        return ByteArray(totalBytesForSilence)
     }
 
     // mp3 -> pcm
