@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,16 +53,6 @@ fun EditorScreen(
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
                 title = { Text(text = "Editor") },
-                actions = {
-                    IconButton(
-                        enabled = progress is ProgressStatus.Success,
-                        onClick = {
-                            onExport((progress as ProgressStatus.Success).audio)
-                        },
-                    ) {
-                        Icon(Icons.Filled.Done, contentDescription = null)
-                    }
-                },
             )
         },
         content = { paddingValues ->
@@ -107,5 +97,13 @@ fun EditorScreen(
                     }
                 }
             }
-        })
+        },
+        floatingActionButton = {
+            if (progress is ProgressStatus.Success) {
+                FloatingActionButton(onClick = { onExport((progress as ProgressStatus.Success).audio) }) {
+                    Icon(Icons.Filled.ArrowForward, contentDescription = null)
+                }
+            }
+        },
+    )
 }
