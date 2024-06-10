@@ -59,6 +59,7 @@ class AudioExportPipeline(
                         outputSink.write(mp3Buf, 0, encodedLength)
                     }
                 }
+                outputSink.close()
                 _progress.value = 0
             }
         }.onFailure { e ->
