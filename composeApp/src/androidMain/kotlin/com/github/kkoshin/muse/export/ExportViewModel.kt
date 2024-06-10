@@ -22,15 +22,17 @@ import okio.sink
 import okio.use
 import org.koin.java.KoinJavaComponent.inject
 import java.io.IOException
+import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalSugarApi::class)
 class ExportViewModel : ViewModel() {
-
     private val appContext: Context by inject(Context::class.java)
 
     private val appFileHelper = AppFileHelper(appContext)
+
+    private val volumeBoost = 3f
 
     fun testDecodeMp3(mp3Uri: Uri) {
         val pcm = appFileHelper.requireFilesDir(false).resolve("decoded.pcm")
@@ -39,7 +41,7 @@ class ExportViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             sink.use {
                 decodeAudio(mp3Uri) { pcmData ->
-                    sink.write(pcmData)
+                    sink.write(boostVolume(pcmData, volumeBoost))
                 }
                 // 尾部添加3秒静音块，采样率等写死了
                 sink.write(getSilence(3.seconds))
@@ -50,11 +52,31 @@ class ExportViewModel : ViewModel() {
                 waveConfig = WaveConfig(
                     sampleRate = 44100,
                     channels = 1,
-                    compatMode = false
+                    compatMode = false,
                 )
             ).writeHeader()
         }
     }
+
+    fun boostVolume(byteArray: ByteArray, volumeBoost: Float): ByteArray {
+        val boostedByteArray = ByteArray(byteArray.size)
+        var temp: Int
+
+        // Assuming 16-bit PCM, we process 2 bytes at a time
+        for (i in byteArray.indices step 2) {
+            // Combine two bytes to form a short and apply the volume boost
+            temp =
+                (((byteArray[i].toInt() and 0xff) or (byteArray[i + 1].toInt() shl 8)) * volumeBoost).roundToInt()
+            // Clipping to ensure we don't exceed the 16-bit limit
+            temp = temp.coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+            // Split the short back into two bytes and store them
+            boostedByteArray[i] = (temp and 0xff).toByte()
+            boostedByteArray[i + 1] = (temp shr 8 and 0xff).toByte()
+        }
+
+        return boostedByteArray
+    }
+
 
     private fun getSilence(duration: Duration): ByteArray {
         val sampleRate = 44100
