@@ -2,41 +2,24 @@
 
 package com.github.kkoshin.muse.export
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
-import androidx.documentfile.provider.DocumentFile
-import com.github.foodiestudio.sugar.notification.toast
-import kotlinx.coroutines.launch
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.transformer.Effects
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -48,126 +31,52 @@ data class ExportArgs(
  * 1. show progress bar
  * 2. play the exported audio file
  */
+@OptIn(UnstableApi::class)
 @Composable
 fun ExportScreen(
     modifier: Modifier = Modifier,
     args: ExportArgs,
 ) {
     val context = LocalContext.current
-    val exportPipeline =
-        rememberExportPipeline(
+    val videoExportPipeline =
+        rememberVideoExportPipeline(
             context = context,
             input = args.audioUri.toUri(),
-            effects = emptyList()
+            effects = Effects(
+                listOf(),
+                listOf(),
+            ),
         )
-    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        ExportButton(modifier = Modifier, exportPipeline = exportPipeline)
-    }
-}
 
-@Composable
-private fun ExportButton(
-    modifier: Modifier,
-    exportPipeline: ExportPipeline,
-) {
-    val context = LocalContext.current
-    var targetDocument: DocumentFile? by remember {
-        mutableStateOf(null)
-    }
+    val audiExportPipeline =
+        rememberAudioExportPipeline(
+            context = context,
+            input = args.audioUri.toUri(),
+        )
 
-    val progress by exportPipeline.progress.collectAsState(0)
-
-    val transforming by remember {
-        derivedStateOf {
-            progress > 0
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            targetDocument?.delete()
-        }
-    }
-
-    val scope = rememberCoroutineScope()
-
-    fun doExport() {
-        scope.launch {
-            exportPipeline.start(targetDocument!!.uri)
-                .onFailure {
-                    it.printStackTrace()
-                    context.toast(it.message)
-                }
-                .onSuccess {
-                    targetDocument = null
-                    context.toast("Export Success.")
-                }
-        }
-    }
-
-    val createOutputFileLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("video/mp4")) {
-            it?.let { uri ->
-                targetDocument = DocumentFile.fromSingleUri(context, uri)
-                doExport()
-            }
-        }
-
-    if (transforming) {
-        LoadingDialog("$progress% processing", progress = progress / 100f) {
-            exportPipeline.cancel()
-        }
-    }
-
-    Button(
+    Scaffold(
         modifier = modifier,
-        onClick = {
-            if (targetDocument == null) {
-                createOutputFileLauncher.launch("output.mp4")
-            } else {
-                doExport()
+        contentWindowInsets = WindowInsets.safeContent,
+        topBar = {
+            TopAppBar(
+                windowInsets = WindowInsets.statusBars,
+                title = { Text(text = "Export") },
+            )
+        },
+        content = { paddingValues ->
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ExportButton(modifier = Modifier, exportPipeline = audiExportPipeline)
+                    ExportButton(modifier = Modifier, exportPipeline = videoExportPipeline)
+                }
             }
         },
-        shape = RoundedCornerShape(50),
-    ) {
-        Text("EXPORT")
-        Icon(Icons.Outlined.ArrowForward, "", Modifier.padding(start = 4.dp))
-    }
-}
-
-@Composable
-private fun LoadingDialog(
-    title: String?,
-    progress: Float,
-    onDismissRequest: () -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false,
-        ),
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(Color.DarkGray, shape = RoundedCornerShape(8.dp))
-                .padding(horizontal = 32.dp, vertical = if (title == null) 32.dp else 24.dp),
-        ) {
-            CircularProgressIndicator(
-                color = Color.Cyan,
-                strokeWidth = 2.dp,
-                progress = progress,
-            )
-            if (title != null) {
-                Text(
-                    text = title,
-                    maxLines = 1,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(top = 16.dp),
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-    }
+    )
 }

@@ -28,6 +28,9 @@ kotlin {
             implementation(sharedLibs.bundles.jetpack)
             implementation(libs.documentfile)
             implementation(libs.bundles.media3)
+            implementation(dependencies.create(libs.lame.get()).toString()) {
+                exclude(group = "com.android.support")
+            }
             implementation(dependencies.create(libs.elevenlabs.get()).toString()) {
                 exclude(group = "org.apache.httpcomponents.core5")
                 exclude(group = "org.apache.httpcomponents.client5")
@@ -68,7 +71,10 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
+        debug {
+            versionNameSuffix = ".alpha"
+        }
+        release {
             isMinifyEnabled = true
         }
     }
