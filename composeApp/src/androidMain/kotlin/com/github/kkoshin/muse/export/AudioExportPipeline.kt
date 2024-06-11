@@ -10,6 +10,7 @@ import com.github.kkoshin.muse.audio.Mp3Encoder
 import com.github.kkoshin.muse.audio.WavParser
 import com.github.kkoshin.muse.audio.WaveConfig
 import com.github.kkoshin.muse.audio.WaveHeaderWriter
+import com.naman14.androidlame.LameBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +19,7 @@ import okio.buffer
 import okio.sink
 import okio.source
 import okio.use
+import java.util.Calendar
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -26,11 +28,13 @@ import kotlin.time.Duration.Companion.seconds
 fun rememberAudioExportPipeline(
     context: Context,
     input: List<Uri>,
+    paddingSilence: Duration = 1.seconds,
 ): AudioExportPipeline =
     remember {
         AudioExportPipeline(
             context.applicationContext,
             input,
+            paddingSilence
         )
     }
 
@@ -38,6 +42,7 @@ fun rememberAudioExportPipeline(
 class AudioExportPipeline(
     private val appContext: Context,
     private val pcmInputs: List<Uri>,
+    var paddingSilence: Duration,
 ) : ExportPipeline<Unit> {
     private val _progress: MutableStateFlow<Int> = MutableStateFlow(-1)
     override val progress: StateFlow<Int> = _progress
@@ -53,7 +58,9 @@ class AudioExportPipeline(
                         _progress.value = (index / pcmInputs.size.toFloat() * 100).roundToInt()
                         sink.writeAll(appContext.contentResolver.openInputStream(uri)!!.source())
                         // 每个词之间加两秒间隔
-                        sink.write(getSilence(2.seconds))
+                        if (paddingSilence.inWholeSeconds > 0) {
+                            sink.write(getSilence(paddingSilence))
+                        }
                     }
                 }
                 // 写入 wav header
@@ -84,7 +91,16 @@ class AudioExportPipeline(
         val outputSink =
             appContext.contentResolver.openOutputStream(target)!!.sink().buffer()
         outputSink.use {
-            encoder.encode(wavParser, outputSink)
+            encoder.encode(
+                wavParser,
+                outputSink,
+                LameBuilder()
+                    .setId3tagArtist("μ's")
+                    .setId3tagYear(
+                        Calendar.getInstance().get(Calendar.YEAR).toString(),
+                    )
+                    .build(),
+            )
         }
     }
 }

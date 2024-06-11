@@ -13,9 +13,9 @@ class MockTTSProvider : TTSProvider {
     private val appContext: Context by inject(Context::class.java)
 
     override suspend fun generate(text: String): Result<TTSResult> {
-        delay(1000)
         return runCatching {
             withContext(Dispatchers.IO) {
+                delay(1000)
                 TTSResult(
                     content = appContext.assets.open("english.mp3"),
                     mimeType = SupportedAudioType.MP3,

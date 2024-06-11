@@ -29,7 +29,7 @@ class EditorViewModel(
     val progress: StateFlow<ProgressStatus> = _progress
 
     fun startTTS(phrases: List<String>) {
-        _progress.value = ProgressStatus.Processing(0, "TODO")
+        _progress.value = ProgressStatus.Processing(0, "${phrases.size} phrases")
         viewModelScope.launch {
             coroutineScope {
                 val result = phrases.map { phrase ->

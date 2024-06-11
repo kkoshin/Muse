@@ -55,17 +55,6 @@ fun ExportScreen(
             input = args.pcmUriList.map { it.toUri() },
         )
 
-//    var selectedMp3: Uri? by remember {
-//        mutableStateOf(null)
-//    }
-//    val mp3FilePicker =
-//        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
-//            if (it != null) {
-//                selectedMp3 = it
-//                viewModel.testDecodeMp3(selectedMp3!!)
-//            }
-//        }
-
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets.safeContent,
@@ -85,15 +74,6 @@ fun ExportScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-//                    Button(onClick = {
-//                        if (selectedMp3 != null) {
-//                            viewModel.testDecodeMp3(selectedMp3!!)
-//                        } else {
-//                            mp3FilePicker.launch(arrayOf("audio/*"))
-//                        }
-//                    }) {
-//                        Text(text = "Decode Mp3 to WAV")
-//                    }
                     ExportButton(modifier = Modifier, exportPipeline = audioExportPipeline)
                     ExportButton(modifier = Modifier, exportPipeline = videoExportPipeline)
                 }
