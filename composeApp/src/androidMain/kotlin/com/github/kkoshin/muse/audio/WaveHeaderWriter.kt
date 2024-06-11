@@ -1,4 +1,4 @@
-package com.github.kkoshin.muse.export.audio
+package com.github.kkoshin.muse.audio
 
 import okio.IOException
 import java.io.File

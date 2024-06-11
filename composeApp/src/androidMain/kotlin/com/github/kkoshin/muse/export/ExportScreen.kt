@@ -28,13 +28,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.transformer.Effects
-import com.github.foodiestudio.sugar.ExperimentalSugarApi
-import com.github.foodiestudio.sugar.storage.AppFileHelper
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExportArgs(
-    val audioUri: String,
+    val audioUriList: List<String>,
 )
 
 /**
@@ -42,7 +40,6 @@ data class ExportArgs(
  * 2. play the exported audio file
  */
 @OptIn(UnstableApi::class)
-@kotlin.OptIn(ExperimentalSugarApi::class)
 @Composable
 fun ExportScreen(
     modifier: Modifier = Modifier,
@@ -50,13 +47,10 @@ fun ExportScreen(
     viewModel: ExportViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val context = LocalContext.current
-    val appFileHelper = remember {
-        AppFileHelper(context.applicationContext)
-    }
     val videoExportPipeline =
         rememberVideoExportPipeline(
             context = context,
-            input = args.audioUri.toUri(),
+            input = args.audioUriList.map { it.toUri() },
             effects = Effects(
                 listOf(),
                 listOf(),
@@ -66,7 +60,7 @@ fun ExportScreen(
     val audioExportPipeline =
         rememberAudioExportPipeline(
             context = context,
-            input = args.audioUri.toUri(),
+            input = args.audioUriList.map { it.toUri() },
         )
 
     var selectedMp3: Uri? by remember {

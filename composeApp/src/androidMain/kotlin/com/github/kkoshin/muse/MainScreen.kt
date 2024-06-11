@@ -34,7 +34,7 @@ fun MainScreen() {
 
             composable<EditorArgs> {
                 EditorScreen(args = it.toRoute()) { uri ->
-                    navController.navigate(ExportArgs(uri.toString()))
+                    navController.navigate(ExportArgs(listOf(uri.toString())))
                 }
             }
 
