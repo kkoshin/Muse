@@ -21,10 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -38,7 +36,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun rememberVideoExportPipeline(
     context: Context,
-    input: Uri,
+    input: List<Uri>,
     effects: Effects,
 ): VideoExportPipeline =
     remember(effects) {
@@ -53,14 +51,20 @@ fun rememberVideoExportPipeline(
         val oneSilence =
             EditedMediaItem.Builder(MediaItem.fromUri("asset:///silence_mono_1s.wav"))
                 .build()
-        val audio = EditedMediaItem.Builder(MediaItem.fromUri(input))
-            .setEffects(Effects(effects.audioProcessors, emptyList()))
-            .build()
+
+        var bgm = mutableListOf<EditedMediaItem>()
+        input.forEach {
+            bgm.add(
+                EditedMediaItem.Builder(MediaItem.fromUri(it))
+                    .setEffects(Effects(effects.audioProcessors, emptyList()))
+                    .build()
+            )
+            bgm.add(oneSilence)
+        }
 
         val videoItem = EditedMediaItemSequence(mainTrack)
-        val bgm = EditedMediaItemSequence(listOf(oneSilence, audio))
 
-        val composition = Composition.Builder(videoItem, bgm).build()
+        val composition = Composition.Builder(videoItem, EditedMediaItemSequence(bgm)).build()
 
         VideoExportPipeline(context.applicationContext, composition)
     }

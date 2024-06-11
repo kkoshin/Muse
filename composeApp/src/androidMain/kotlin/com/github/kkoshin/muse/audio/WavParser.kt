@@ -1,4 +1,4 @@
-package com.github.kkoshin.muse.export
+package com.github.kkoshin.muse.audio
 
 import java.io.BufferedInputStream
 import java.io.FileNotFoundException
@@ -22,6 +22,10 @@ class WavParser(
     private var mFileSize = 0
     private var mDataSize = 0
 
+    init {
+        openWave()
+    }
+
     /**
      * Open WAV file for reading
      *
@@ -30,7 +34,7 @@ class WavParser(
      * @throws IOException if I/O error occurred during file read
      */
     @Throws(FileNotFoundException::class, IllegalStateException::class, IOException::class)
-    fun openWave() {
+    private fun openWave() {
         mInStream = BufferedInputStream(fileStream, STREAM_BUFFER_SIZE)
 
         val headerId = readUnsignedInt(mInStream!!) // should be "RIFF"
