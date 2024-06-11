@@ -4,7 +4,7 @@ import android.app.Application
 import com.github.kkoshin.muse.editor.EditorViewModel
 import com.github.kkoshin.muse.tts.TTSManager
 import com.github.kkoshin.muse.tts.TTSProvider
-import com.github.kkoshin.muse.tts.vendor.MockTTSProvider
+import com.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext
@@ -16,8 +16,8 @@ import org.koin.dsl.module
 class App : Application() {
     private val appModule = module {
         single<TTSProvider> {
-            MockTTSProvider()
-//            ElevenLabTTSProvider()
+//            MockTTSProvider()
+            ElevenLabTTSProvider()
         }
         singleOf(::MuseRepo)
         viewModel { EditorViewModel(get(), get()) }
