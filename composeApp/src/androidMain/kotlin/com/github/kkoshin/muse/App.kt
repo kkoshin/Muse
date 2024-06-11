@@ -17,6 +17,7 @@ class App : Application() {
     private val appModule = module {
         single<TTSProvider> {
             MockTTSProvider()
+//            ElevenLabTTSProvider()
         }
         singleOf(::MuseRepo)
         viewModel { EditorViewModel(get(), get()) }

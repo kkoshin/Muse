@@ -10,6 +10,7 @@ import com.github.kkoshin.muse.audio.Mp3Decoder
 import com.github.kkoshin.muse.debugLog
 import com.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +33,7 @@ class EditorViewModel(
         _progress.value = ProgressStatus.Processing(0, "${phrases.size} phrases")
         viewModelScope.launch {
             coroutineScope {
-                val result = phrases.map { phrase ->
+                val requests = phrases.map { phrase ->
                     async {
                         ttsManager.getOrGenerate(phrase).map {
                             // mp3 uri to pcm uri
@@ -42,8 +43,9 @@ class EditorViewModel(
                             _progress.value =
                                 ProgressStatus.Failed(errorMsg = it.message ?: "unknown error")
                         }
-                    }.await()
+                    }
                 }
+                val result = requests.awaitAll()
                 if (result.all { it.isSuccess }) {
                     _progress.value = ProgressStatus.Success(
                         pcm = result.map { it.getOrNull()!!.second },
@@ -69,7 +71,8 @@ class EditorViewModel(
         val output = target.sink().buffer()
         return runCatching {
             output.use {
-                mp3Decoder.decodeMp3ToPCM(appContext, output, mp3Uri)
+                // 11 labs 生成的音量偏小，这里需要增大音量
+                mp3Decoder.decodeMp3ToPCM(appContext, output, mp3Uri, volumeBoost = 3.0f)
             }
             target.toUri()
         }.onFailure {
