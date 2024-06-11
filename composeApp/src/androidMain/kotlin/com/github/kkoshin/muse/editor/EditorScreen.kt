@@ -42,7 +42,7 @@ fun EditorScreen(
     modifier: Modifier = Modifier,
     args: EditorArgs,
     viewModel: EditorViewModel = koinViewModel(),
-    onExport: (Uri) -> Unit,
+    onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
 
@@ -65,7 +65,7 @@ fun EditorScreen(
                 when (progress) {
                     is ProgressStatus.Idle -> {
                         Button(onClick = {
-                            viewModel.startTTS(args.phrases)
+                            viewModel.startTTS(args.phrases.map { it.lowercase() })
                         }) {
                             Text(text = "Start")
                         }
@@ -84,13 +84,15 @@ fun EditorScreen(
                     }
 
                     is ProgressStatus.Success -> {
-                        Text(text = "Completed: ${(progress as ProgressStatus.Success).audio}")
+                        Text(text = "Completed: ${(progress as ProgressStatus.Success).audios}")
                     }
 
                     is ProgressStatus.Failed -> {
                         Column {
                             Text(text = "Failed!: ${(progress as ProgressStatus.Failed).errorMsg}")
-                            Button(onClick = { /*TODO*/ }) {
+                            Button(onClick = {
+                                viewModel.startTTS(args.phrases.map { it.lowercase() })
+                            }) {
                                 Text(text = "Retry")
                             }
                         }
@@ -100,7 +102,12 @@ fun EditorScreen(
         },
         floatingActionButton = {
             if (progress is ProgressStatus.Success) {
-                FloatingActionButton(onClick = { onExport((progress as ProgressStatus.Success).audio) }) {
+                FloatingActionButton(onClick = {
+                    onExport(
+                        (progress as ProgressStatus.Success).pcm,
+                        (progress as ProgressStatus.Success).audios,
+                    )
+                }) {
                     Icon(Icons.Filled.ArrowForward, contentDescription = null)
                 }
             }

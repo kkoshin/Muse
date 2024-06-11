@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.BufferedSink
 import java.io.IOException
+import kotlin.math.roundToInt
 
 /**
  * 将 MP3 文件编码为 PCM
@@ -19,10 +20,34 @@ class Mp3Decoder {
         appContext: Context,
         pcmSink: BufferedSink,
         mp3Uri: Uri,
+        volumeBoost: Float = 1.0f,
     ) {
         decodeAudio(appContext, mp3Uri) { pcmData ->
-            pcmSink.write(pcmData)
+            if (volumeBoost == 1.0f) {
+                pcmSink.write(pcmData)
+            } else {
+                pcmSink.write(boostVolume(pcmData, volumeBoost))
+            }
         }
+    }
+
+    private fun boostVolume(byteArray: ByteArray, volumeBoost: Float): ByteArray {
+        val boostedByteArray = ByteArray(byteArray.size)
+        var temp: Int
+
+        // Assuming 16-bit PCM, we process 2 bytes at a time
+        for (i in byteArray.indices step 2) {
+            // Combine two bytes to form a short and apply the volume boost
+            temp =
+                (((byteArray[i].toInt() and 0xff) or (byteArray[i + 1].toInt() shl 8)) * volumeBoost).roundToInt()
+            // Clipping to ensure we don't exceed the 16-bit limit
+            temp = temp.coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+            // Split the short back into two bytes and store them
+            boostedByteArray[i] = (temp and 0xff).toByte()
+            boostedByteArray[i + 1] = (temp shr 8 and 0xff).toByte()
+        }
+
+        return boostedByteArray
     }
 
     suspend fun decodeAudio(
