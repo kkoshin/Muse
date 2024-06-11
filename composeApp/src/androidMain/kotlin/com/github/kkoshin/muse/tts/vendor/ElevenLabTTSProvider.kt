@@ -7,14 +7,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.andrewcpu.elevenlabs.ElevenLabs
 import net.andrewcpu.elevenlabs.builders.SpeechGenerationBuilder
+import net.andrewcpu.elevenlabs.enums.ElevenLabsVoiceModel
 import net.andrewcpu.elevenlabs.enums.GeneratedAudioOutputFormat
 
 class ElevenLabTTSProvider : TTSProvider {
-    private var preferredVoiceId = "7p1Ofvcwsv7UBPoFNcpI" // old man
+    // Old Male with British accent
+    private val presetBrian = "nPczCjzI2devNBz1zQrb"
+
+    private val preferredVoiceId = presetBrian
 
     init {
         // 备用：7904879831bf1d4fd56f4f6baee9167b
         ElevenLabs.setApiKey("d41ee34b857479772db5ce143549bcd9")
+//        GlobalScope.launch(Dispatchers.IO) {
+//            debugLog {
+//                val voices: List<Voice> = Voice.getVoices()
+//                voices.map { it.name to it.voiceId }.toString()
+//            }
+//        }
     }
 
     /**
@@ -46,6 +56,7 @@ class ElevenLabTTSProvider : TTSProvider {
                     .setText(text)
                     .setGeneratedAudioOutputFormat(GeneratedAudioOutputFormat.MP3_44100_128)
                     .setVoiceId(preferredVoiceId)
+                    .setModel(ElevenLabsVoiceModel.ELEVEN_TURBO_V2)
                     .build()
                 TTSResult(generation, SupportedAudioType.MP3)
             }
