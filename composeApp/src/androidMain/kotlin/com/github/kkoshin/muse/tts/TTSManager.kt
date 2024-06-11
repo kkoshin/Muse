@@ -19,8 +19,6 @@ import okio.source
 
 @OptIn(ExperimentalSugarApi::class)
 class TTSManager(private val appContext: Context, private val provider: TTSProvider) {
-//    private val appFileHelper = AppFileHelper(appContext)
-
     /**
      * 持久化 text:Uri
      */
@@ -38,7 +36,7 @@ class TTSManager(private val appContext: Context, private val provider: TTSProvi
                 val audio = provider.generate(text).getOrThrow()
                 val fileExtName = when (audio.mimeType) {
                     SupportedAudioType.MP3 -> ".mp3"
-                    SupportedAudioType.FCM -> ".fcm"
+                    SupportedAudioType.PCM -> ".pcm"
                     SupportedAudioType.WAV -> ".wav"
                 }
                 withContext(Dispatchers.IO) {

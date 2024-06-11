@@ -17,8 +17,8 @@ class MockTTSProvider : TTSProvider {
         return runCatching {
             withContext(Dispatchers.IO) {
                 TTSResult(
-                    content = appContext.assets.open("sample.wav"),
-                    mimeType = SupportedAudioType.WAV,
+                    content = appContext.assets.open("english.mp3"),
+                    mimeType = SupportedAudioType.MP3,
                 )
             }
         }

@@ -32,9 +32,14 @@ fun MainScreen() {
                 }
             }
 
-            composable<EditorArgs> {
-                EditorScreen(args = it.toRoute()) { uri ->
-                    navController.navigate(ExportArgs(listOf(uri.toString())))
+            composable<EditorArgs> { entry ->
+                EditorScreen(args = entry.toRoute()) { pcm, audio ->
+                    navController.navigate(
+                        ExportArgs(
+                            pcmUriList = pcm.map { it.toString() },
+                            audioUriList = audio.map { it.toString() },
+                        )
+                    )
                 }
             }
 

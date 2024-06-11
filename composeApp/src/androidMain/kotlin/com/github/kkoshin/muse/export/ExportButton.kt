@@ -46,11 +46,11 @@ internal fun ExportButton(
         mutableStateOf(null)
     }
 
-    val progress by exportPipeline.progress.collectAsState(0)
+    val progress by exportPipeline.progress.collectAsState(-1)
 
     val transforming by remember {
         derivedStateOf {
-            progress > 0
+            progress in 0..99
         }
     }
 

@@ -57,7 +57,7 @@ fun rememberVideoExportPipeline(
             bgm.add(
                 EditedMediaItem.Builder(MediaItem.fromUri(it))
                     .setEffects(Effects(effects.audioProcessors, emptyList()))
-                    .build()
+                    .build(),
             )
             bgm.add(oneSilence)
         }
@@ -74,7 +74,7 @@ class VideoExportPipeline(
     applicationContext: Context,
     private val input: Composition,
 ) : ExportPipeline<ExportResult> {
-    private val _progress: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _progress: MutableStateFlow<Int> = MutableStateFlow(-1)
     override val progress: StateFlow<Int> = _progress
 
     private val builder = Transformer.Builder(applicationContext)
@@ -97,7 +97,7 @@ class VideoExportPipeline(
             _progress.value = if (transformState != Transformer.PROGRESS_STATE_NOT_STARTED) {
                 progressHolder.progress
             } else {
-                0
+                -1
             }
             delay(500)
         } while (transformState != Transformer.PROGRESS_STATE_NOT_STARTED)
@@ -141,7 +141,7 @@ class VideoExportPipeline(
 
     override fun cancel() {
         transformer.cancel()
-        _progress.value = 0
+        _progress.value = -1
     }
 }
 

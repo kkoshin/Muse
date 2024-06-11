@@ -10,7 +10,7 @@ interface TTSProvider {
 }
 
 enum class SupportedAudioType {
-    MP3, FCM, WAV
+    MP3, PCM, WAV
 }
 
 data class TTSResult(
