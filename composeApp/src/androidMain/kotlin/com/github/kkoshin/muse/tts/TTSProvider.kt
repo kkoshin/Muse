@@ -1,5 +1,6 @@
 package com.github.kkoshin.muse.tts
 
+import com.github.kkoshin.muse.audio.AudioSampleMetadata
 import java.io.InputStream
 
 interface TTSProvider {
@@ -16,4 +17,5 @@ enum class SupportedAudioType {
 data class TTSResult(
     val content: InputStream,
     val mimeType: SupportedAudioType,
+    val audioSampleMetadata: AudioSampleMetadata,
 )

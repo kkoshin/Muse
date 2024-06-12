@@ -1,5 +1,6 @@
 package com.github.kkoshin.muse.tts.vendor
 
+import com.github.kkoshin.muse.audio.MonoAudioSampleMetadata
 import com.github.kkoshin.muse.tts.SupportedAudioType
 import com.github.kkoshin.muse.tts.TTSProvider
 import com.github.kkoshin.muse.tts.TTSResult
@@ -58,7 +59,8 @@ class ElevenLabTTSProvider : TTSProvider {
                     .setVoiceId(preferredVoiceId)
                     .setModel(ElevenLabsVoiceModel.ELEVEN_TURBO_V2)
                     .build()
-                TTSResult(generation, SupportedAudioType.MP3)
+                // 目前免费账号，所支持的音频格式是单通道的16bit的44.1khz
+                TTSResult(generation, SupportedAudioType.MP3, MonoAudioSampleMetadata())
             }
         }
     }

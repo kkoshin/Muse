@@ -1,6 +1,7 @@
 package com.github.kkoshin.muse.tts.vendor
 
 import android.content.Context
+import com.github.kkoshin.muse.audio.MonoAudioSampleMetadata
 import com.github.kkoshin.muse.tts.SupportedAudioType
 import com.github.kkoshin.muse.tts.TTSProvider
 import com.github.kkoshin.muse.tts.TTSResult
@@ -19,6 +20,7 @@ class MockTTSProvider : TTSProvider {
                 TTSResult(
                     content = appContext.assets.open("english.mp3"),
                     mimeType = SupportedAudioType.MP3,
+                    audioSampleMetadata = MonoAudioSampleMetadata(),
                 )
             }
         }
