@@ -6,9 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.AppFileHelper
+import com.github.kkoshin.muse.audio.AudioSampleMetadata
+import com.github.kkoshin.muse.audio.MonoAudioSampleMetadata
 import com.github.kkoshin.muse.audio.Mp3Encoder
 import com.github.kkoshin.muse.audio.WavParser
-import com.github.kkoshin.muse.audio.WaveConfig
 import com.github.kkoshin.muse.audio.WaveHeaderWriter
 import com.naman14.androidlame.LameBuilder
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ fun rememberAudioExportPipeline(
         AudioExportPipeline(
             context.applicationContext,
             input,
-            paddingSilence
+            paddingSilence,
         )
     }
 
@@ -43,6 +44,7 @@ class AudioExportPipeline(
     private val appContext: Context,
     private val pcmInputs: List<Uri>,
     var paddingSilence: Duration,
+    private val audioMetadata: AudioSampleMetadata = MonoAudioSampleMetadata(),
 ) : ExportPipeline<Unit> {
     private val _progress: MutableStateFlow<Int> = MutableStateFlow(-1)
     override val progress: StateFlow<Int> = _progress
@@ -59,18 +61,14 @@ class AudioExportPipeline(
                         sink.writeAll(appContext.contentResolver.openInputStream(uri)!!.source())
                         // 每个词之间加两秒间隔
                         if (paddingSilence.inWholeSeconds > 0) {
-                            sink.write(getSilence(paddingSilence))
+                            sink.write(getSilence(paddingSilence, audioMetadata))
                         }
                     }
                 }
                 // 写入 wav header
                 WaveHeaderWriter(
                     filePath = wav.absolutePath,
-                    waveConfig = WaveConfig(
-                        sampleRate = 44100,
-                        channels = 1,
-                        compatMode = false,
-                    ),
+                    audioMetadata = audioMetadata,
                 ).writeHeader()
                 // 准备好一个 wav 格式的文件，然后再转码为 mp3
                 val wavParser = WavParser(wav.inputStream())
@@ -107,15 +105,14 @@ class AudioExportPipeline(
 
 internal fun getSilence(
     duration: Duration,
-    sampleRate: Int = 44100,
-    // Number of bytes per sample (16-bit PCM)
-    bytesPerSample: Int = 2,
+    sampleMetadata: AudioSampleMetadata,
 ): ByteArray {
     // Duration of silence in seconds
     val silenceDurationInSeconds = duration.inWholeSeconds.toInt()
 
     // Calculate the total number of bytes for the silence duration
-    val totalBytesForSilence = sampleRate * silenceDurationInSeconds * bytesPerSample
+    val totalBytesForSilence =
+        sampleMetadata.sampleRateInHz * silenceDurationInSeconds * sampleMetadata.bytesPerSample
 
     // Create a buffer filled with zeros (silence)
     return ByteArray(totalBytesForSilence)

@@ -26,12 +26,15 @@ class Mp3Decoder {
             if (volumeBoost == 1.0f) {
                 pcmSink.write(pcmData)
             } else {
-                pcmSink.write(boostVolume(pcmData, volumeBoost))
+                pcmSink.write(boostVolumeFor16BitAudio(pcmData, volumeBoost))
             }
         }
     }
 
-    private fun boostVolume(byteArray: ByteArray, volumeBoost: Float): ByteArray {
+    /**
+     * 仅考虑 16bit PCM
+     */
+    private fun boostVolumeFor16BitAudio(byteArray: ByteArray, volumeBoost: Float): ByteArray {
         val boostedByteArray = ByteArray(byteArray.size)
         var temp: Int
 

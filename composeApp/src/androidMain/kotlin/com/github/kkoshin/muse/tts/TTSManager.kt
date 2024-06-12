@@ -26,6 +26,7 @@ class TTSManager(private val appContext: Context, private val provider: TTSProvi
 
     /**
      * 如果已经生成过了，本地有音频文件就直接返回
+     * TODO 目前的音频格式是固定为 [MonoAudioSampleMetadata]
      * @return 本地文件的 URI
      */
     suspend fun getOrGenerate(text: String): Result<Uri> {

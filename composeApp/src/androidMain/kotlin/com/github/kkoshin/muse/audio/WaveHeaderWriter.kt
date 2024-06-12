@@ -4,25 +4,27 @@ import okio.IOException
 import java.io.File
 import java.io.RandomAccessFile
 
-internal class WaveHeaderWriter(private val filePath: String, private val waveConfig: WaveConfig) {
-
+internal class WaveHeaderWriter(
+    private val filePath: String,
+    private val audioMetadata: AudioSampleMetadata,
+) {
     @Throws(IOException::class)
     fun writeHeader() {
         val inputStream = File(filePath).inputStream()
         val totalAudioLen = inputStream.channel.size() - 44
         val totalDataLen = totalAudioLen + 36
-        val channels = waveConfig.channels
+        val channels = audioMetadata.channelCount
 
-        val sampleRate = waveConfig.sampleRate.toLong()
+        val sampleRate = audioMetadata.sampleRateInHz.toLong()
         val byteRate =
-            (waveConfig.bitPerSample * waveConfig.sampleRate * channels / 8).toLong()
+            (audioMetadata.bytesPerSample * audioMetadata.sampleRateInHz * channels).toLong()
         val header = getWavFileHeaderByteArray(
             totalAudioLen,
             totalDataLen,
             sampleRate,
             channels,
             byteRate,
-            waveConfig.bitPerSample
+            audioMetadata.bitPerSample,
         )
         RandomAccessFile(File(filePath), "rw").use {
             it.seek(0)
@@ -31,8 +33,12 @@ internal class WaveHeaderWriter(private val filePath: String, private val waveCo
     }
 
     private fun getWavFileHeaderByteArray(
-        totalAudioLen: Long, totalDataLen: Long, longSampleRate: Long,
-        channels: Int, byteRate: Long, bitsPerSample: Int
+        totalAudioLen: Long,
+        totalDataLen: Long,
+        longSampleRate: Long,
+        channels: Int,
+        byteRate: Long,
+        bitsPerSample: Int,
     ): ByteArray {
         val header = ByteArray(44)
         header[0] = 'R'.code.toByte()
