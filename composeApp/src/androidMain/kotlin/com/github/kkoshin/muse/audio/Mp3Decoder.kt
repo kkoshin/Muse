@@ -5,9 +5,9 @@ import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.net.Uri
-import com.github.kkoshin.muse.debugLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import logcat.logcat
 import okio.BufferedSink
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -16,6 +16,8 @@ import kotlin.math.roundToInt
  * 将 MP3 文件编码为 PCM
  */
 class Mp3Decoder {
+    private val tag = this.javaClass.simpleName
+
     suspend fun decodeMp3ToPCM(
         appContext: Context,
         pcmSink: BufferedSink,
@@ -53,13 +55,13 @@ class Mp3Decoder {
         return boostedByteArray
     }
 
-    suspend fun decodeAudio(
+    private suspend fun decodeAudio(
         appContext: Context,
         mp3Uri: Uri,
         onDecode: (ByteArray) -> Unit,
     ) = withContext(Dispatchers.Default) {
-        debugLog {
-            "start decodeAudio"
+        logcat(tag) {
+            "start decodeAudio: $mp3Uri"
         }
         val extractor = MediaExtractor()
         val audioTrackIndex = initMediaExtractor(appContext, extractor, mp3Uri)
@@ -119,8 +121,8 @@ class Mp3Decoder {
                 outputBufferIndex = codec.dequeueOutputBuffer(bufferInfo, timeoutUs)
             }
         }
-        debugLog {
-            "finish decodeAudio"
+        logcat(tag) {
+            "finish decodeAudio: $mp3Uri"
         }
         codec.stop()
         codec.release()
