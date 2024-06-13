@@ -1,5 +1,9 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -50,6 +54,8 @@ kotlin {
     }
 }
 
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+
 android {
     namespace = "com.github.kkoshin.muse"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -64,7 +70,33 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "0.1.0"
+        ndk {
+            abiFilters.clear()
+            //noinspection ChromeOsAbiSupport
+            abiFilters += "arm64-v8a"
+        }
     }
+
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"].toString()
+                keyPassword = keystoreProperties["keyPassword"].toString()
+                storeFile = file(keystoreProperties["storeFile"]!!)
+                storePassword = keystoreProperties["storePassword"].toString()
+            }
+        }
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "Muse-${defaultConfig.versionName}-${SimpleDateFormat("yyyy-MM-dd").format(Date())}.apk"
+        }
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -72,10 +104,21 @@ android {
     }
     buildTypes {
         debug {
-            versionNameSuffix = ".alpha"
+            versionNameSuffix = ".debug"
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            if (keystorePropertiesFile.exists()) {
+                signingConfigs["release"]?.let {
+                    signingConfig = it
+                }
+            }
         }
     }
     compileOptions {
