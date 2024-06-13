@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.kkoshin.muse.MuseRepo
 import com.github.kkoshin.muse.audio.Mp3Decoder
-import com.github.kkoshin.muse.debugLog
 import com.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import logcat.asLog
+import logcat.logcat
 import okio.buffer
 import okio.sink
 import org.koin.java.KoinJavaComponent.inject
@@ -25,6 +25,7 @@ class EditorViewModel(
     private val repo: MuseRepo,
 ) : ViewModel() {
     private val appContext: Context by inject(Context::class.java)
+    private val tag = this.javaClass.simpleName
 
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
     val progress: StateFlow<ProgressStatus> = _progress
@@ -63,7 +64,7 @@ class EditorViewModel(
         val mp3Decoder = Mp3Decoder()
         val target = repo.getVoiceFolder().resolve("${text}.pcm")
         if (target.exists() && target.length() > 0) {
-            debugLog {
+            logcat(tag) {
                 "${text}.pcm already exists."
             }
             return target.toUri()
@@ -76,7 +77,7 @@ class EditorViewModel(
             }
             target.toUri()
         }.onFailure {
-            debugLog {
+            logcat(tag) {
                 it.asLog()
             }
             target.delete()
