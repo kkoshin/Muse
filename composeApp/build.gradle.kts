@@ -23,7 +23,6 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.navigation)
             implementation(sharedLibs.logcat)
@@ -31,7 +30,6 @@ kotlin {
             implementation(sharedLibs.koin)
             implementation(sharedLibs.bundles.jetpack)
             implementation(libs.documentfile)
-            implementation(libs.bundles.media3)
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
@@ -130,7 +128,10 @@ android {
         compose = true
     }
     dependencies {
+        debugImplementation(compose.preview)
         debugImplementation(compose.uiTooling)
+        // video export 仅作为 debug 功能
+        debugImplementation(libs.bundles.media3)
         implementation(platform(sharedLibs.koin.bom))
     }
 }

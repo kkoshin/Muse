@@ -42,7 +42,7 @@ fun rememberVideoExportPipeline(
     remember(effects) {
         val mainTrack =
             // TODO(Jiangc): replace cover
-            EditedMediaItem.Builder(MediaItem.fromUri("asset:///ic_logo.png"))
+            EditedMediaItem.Builder(MediaItem.fromUri("asset:///video_cover_placeholder.png"))
                 .setDurationUs(5.seconds.inWholeMicroseconds)
                 .setFrameRate(24)
                 .setEffects(Effects(emptyList(), effects.videoEffects))

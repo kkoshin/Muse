@@ -12,8 +12,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
-import io.github.kkoshin.muse.export.ExportArgs
-import io.github.kkoshin.muse.export.ExportScreen
 import io.github.kkoshin.muse.script.ScriptArgs
 import io.github.kkoshin.muse.script.ScriptScreen
 
@@ -34,17 +32,8 @@ fun MainScreen() {
 
             composable<EditorArgs> { entry ->
                 EditorScreen(args = entry.toRoute()) { pcm, audio ->
-                    navController.navigate(
-                        ExportArgs(
-                            pcmUriList = pcm.map { it.toString() },
-                            audioUriList = audio.map { it.toString() },
-                        )
-                    )
+                    // do nothing.
                 }
-            }
-
-            composable<ExportArgs> {
-                ExportScreen(args = it.toRoute())
             }
         }
     }
