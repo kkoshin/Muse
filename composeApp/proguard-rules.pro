@@ -1,5 +1,7 @@
 -keep class com.naman14.androidlame.AndroidLame.** { *; }
 
+-keep class net.andrewcpu.elevenlabs.model.** { *; }
+
 # This is generated automatically by the Android Gradle plugin.
 -dontwarn org.brotli.dec.BrotliInputStream
 -dontwarn org.ietf.jgss.GSSContext
