@@ -25,7 +25,7 @@ jobs:
 
       - run: gradle assembleRelease
 
-      - uses: r0adkll/sign-android-release@v1
+      - uses: Tlaster/android-sign@v1
         name: Sign app APK
         # ID used to access action output
         id: sign_app
