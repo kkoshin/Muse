@@ -19,6 +19,7 @@ import logcat.logcat
 import okio.buffer
 import okio.sink
 import org.koin.java.KoinJavaComponent.inject
+import java.io.File
 
 class EditorViewModel(
     private val ttsManager: TTSManager,
@@ -30,27 +31,39 @@ class EditorViewModel(
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
     val progress: StateFlow<ProgressStatus> = _progress
 
+    /**
+     * 相同的 phrase 仅需要生成一次，最终返回的时候要按照
+     */
     fun startTTS(phrases: List<String>) {
         _progress.value = ProgressStatus.Processing(0, "${phrases.size} phrases")
         viewModelScope.launch {
             coroutineScope {
-                val requests = phrases.map { phrase ->
+                val requests = phrases.toSet().map { phrase ->
                     async {
-                        ttsManager.getOrGenerate(phrase).map {
-                            // mp3 uri to pcm uri
-                            it to saveAsPcm(phrase, it)
-                        }.onFailure {
-                            it.printStackTrace()
-                            _progress.value =
-                                ProgressStatus.Failed(errorMsg = it.message ?: "unknown error")
-                        }
+                        // mp3 原始文件暂时没有记录
+                        ttsManager.getOrGenerate(phrase)
+                            .mapCatching {
+                                saveAsPcm(
+                                    phrase,
+                                    it,
+                                    repo.getPcmCache(phrase),
+                                )
+                            }.onFailure {
+                                logcat(tag) {
+                                    it.asLog()
+                                }
+                                _progress.value =
+                                    ProgressStatus.Failed(errorMsg = it.message ?: "unknown error")
+                            }
                     }
                 }
                 val result = requests.awaitAll()
                 if (result.all { it.isSuccess }) {
                     _progress.value = ProgressStatus.Success(
-                        pcm = result.map { it.getOrNull()!!.second },
-                        audios = result.map { it.getOrNull()!!.first },
+                        // 按照 phrases 的顺序返回，前面 tts 这一步是会去重的
+                        pcmList = phrases.map {
+                            repo.getPcmCache(it).toUri()
+                        },
                     )
                 }
             }
@@ -60,26 +73,21 @@ class EditorViewModel(
     private suspend fun saveAsPcm(
         text: String,
         mp3Uri: Uri,
-    ): Uri {
+        target: File,
+    ) {
         val mp3Decoder = Mp3Decoder()
-        val target = repo.getVoiceFolder().resolve("${text}.pcm")
         if (target.exists() && target.length() > 0) {
             logcat(tag) {
                 "${text}.pcm already exists."
             }
-            return target.toUri()
         }
         val output = target.sink().buffer()
-        return runCatching {
+        runCatching {
             output.use {
                 // 11 labs 生成的音量偏小，这里需要增大音量
                 mp3Decoder.decodeMp3ToPCM(appContext, output, mp3Uri, volumeBoost = 3.0f)
             }
-            target.toUri()
         }.onFailure {
-            logcat(tag) {
-                it.asLog()
-            }
             target.delete()
         }.getOrThrow()
     }
@@ -89,5 +97,5 @@ sealed interface ProgressStatus {
     object Idle : ProgressStatus
     class Failed(val errorMsg: String) : ProgressStatus
     class Processing(val value: Int, val phrase: String) : ProgressStatus
-    class Success(val audios: List<Uri>, val pcm: List<Uri>) : ProgressStatus
+    class Success(val pcmList: List<Uri>) : ProgressStatus
 }
