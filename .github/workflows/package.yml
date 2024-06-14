@@ -43,6 +43,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: signed-apks
-          path: composeApp/build/outputs/apk/release/*.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
           if-no-files-found: error
           retention-days: 20
