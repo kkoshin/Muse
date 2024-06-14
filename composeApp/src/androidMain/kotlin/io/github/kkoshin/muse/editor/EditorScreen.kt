@@ -98,7 +98,7 @@ fun EditorScreen(
                         val audioExportPipeline =
                             rememberAudioExportPipeline(
                                 context = context,
-                                input = (progress as ProgressStatus.Success).pcm,
+                                input = (progress as ProgressStatus.Success).pcmList,
                                 paddingSilence = silence.toInt().seconds,
                             )
 

@@ -10,10 +10,10 @@ class MuseRepo(context: Context) {
     private val appFileHelper = AppFileHelper(context)
 
     private val voicesDir: File by lazy {
-        appFileHelper.requireFilesDir(false).resolve("voices").also {
+        appFileHelper.requireCacheDir(false).resolve("voices").also {
             it.mkdirs()
         }
     }
 
-    fun getVoiceFolder(): File = voicesDir
+    fun getPcmCache(phrase: String): File = voicesDir.resolve("$phrase.pcm")
 }
