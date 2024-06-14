@@ -25,20 +25,24 @@ jobs:
 
       - run: gradle assembleRelease
 
-      - name: Sign app APK
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        # ID used to access action output
         id: sign_app
-        uses: ilharp/sign-android-release@nightly
         with:
-          releaseDir: app/build/outputs/apk/release
-          signingKey: ${{ secrets.KEY_STORE_FILE }}
+          releaseDirectory: composeApp/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEY_STORE_BASE64 }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyAlias: ${{ secrets.ALIAS }}
+          alias: ${{ secrets.ALIAS }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          # override default build-tools version (33.0.0) -- optional
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: signed-apks
-          path: app/build/outputs/apk/release/*.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
           if-no-files-found: error
           retention-days: 20

@@ -1,9 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -52,8 +50,6 @@ kotlin {
     }
 }
 
-val keystorePropertiesFile: File = rootProject.file("keystore.properties")
-
 android {
     namespace = "io.github.kkoshin.muse"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -67,24 +63,11 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.1.0-alpha1"
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
             abiFilters += "arm64-v8a"
-        }
-    }
-
-    signingConfigs {
-        if (keystorePropertiesFile.exists()) {
-            val keystoreProperties = Properties()
-            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-            create("release") {
-                keyAlias = keystoreProperties["keyAlias"].toString()
-                keyPassword = keystoreProperties["keyPassword"].toString()
-                storeFile = file(keystoreProperties["storeFile"]!!)
-                storePassword = keystoreProperties["storePassword"].toString()
-            }
         }
     }
 
@@ -106,6 +89,7 @@ android {
             applicationIdSuffix = ".debug"
         }
         release {
+            // 这里不配置签名，对应操作在外部进行
             isMinifyEnabled = true
             isShrinkResources = true
 
@@ -113,11 +97,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            if (keystorePropertiesFile.exists()) {
-                signingConfigs["release"]?.let {
-                    signingConfig = it
-                }
-            }
         }
     }
     compileOptions {
