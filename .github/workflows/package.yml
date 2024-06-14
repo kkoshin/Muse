@@ -30,7 +30,7 @@ jobs:
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: composeApp/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.KEY_STORE_BASE64 }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -43,6 +43,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: signed-apks
-          path: app/build/outputs/apk/release/*.apk
+          path: composeApp/build/outputs/apk/release/*.apk
           if-no-files-found: error
           retention-days: 20
