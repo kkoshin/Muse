@@ -73,6 +73,7 @@ class AudioExportPipeline(
                 // 准备好一个 wav 格式的文件，然后再转码为 mp3
                 val wavParser = WavParser(wav.inputStream())
                 encodeWavAsMp3(target, wavParser)
+                wav.delete()
                 _progress.value = 100
             }
         }.onFailure { e ->
