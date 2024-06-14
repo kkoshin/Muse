@@ -25,15 +25,19 @@ jobs:
 
       - run: gradle assembleRelease
 
-      - name: Sign app APK
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        # ID used to access action output
         id: sign_app
-        uses: ilharp/sign-android-release@nightly
         with:
-          releaseDir: app/build/outputs/apk/release
-          signingKey: ${{ secrets.KEY_STORE_FILE }}
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEY_STORE_BASE64 }}
+          alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyAlias: ${{ secrets.ALIAS }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          # override default build-tools version (33.0.0) -- optional
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
