@@ -103,6 +103,9 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            ndk {
+                abiFilters += "x86_64"
+            }
         }
         release {
             // 这里不配置签名，对应操作在外部进行
