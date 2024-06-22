@@ -14,6 +14,8 @@ kotlinx-serialization = "2.0.0-RC3"
 kotlinx-json = "1.7.0-RC"
 ktor = "2.3.11"
 media3 = "1.3.1"
+gms = "4.4.2"
+firebase-bom = "33.1.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -33,6 +35,9 @@ media3-effect = { module = "androidx.media3:media3-effect", version.ref = "media
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 documentfile = "androidx.documentfile:documentfile:1.0.1"
 lame = "com.github.naman14:TAndroidLame:1.1"
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -41,6 +46,11 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization" }
+gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 
 [bundles]
 media3 = ["media3-transformer", "media3-effect", "media3-exoplayer"]
+firebase = [
+    "firebase-analytics",
+    "firebase-messaging"
+]

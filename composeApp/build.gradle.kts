@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.gms)
 }
 
 kotlin {
@@ -37,6 +38,7 @@ kotlin {
                 exclude(group = "com.fasterxml.jackson.core")
                 exclude(group = "org.slf4j")
             }
+            implementation(libs.bundles.firebase)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -112,6 +114,6 @@ android {
         // video export 仅作为 debug 功能
         debugImplementation(libs.bundles.media3)
         implementation(platform(sharedLibs.koin.bom))
+        implementation(platform(libs.firebase.bom))
     }
 }
-
