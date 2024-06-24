@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -21,6 +22,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -47,6 +49,7 @@ object ScriptArgs
 fun ScriptScreen(
     modifier: Modifier = Modifier,
     onRequest: (phrases: List<String>) -> Unit,
+    onLaunchSettingsPage: () -> Unit,
 ) {
     var script: String by rememberSaveable { mutableStateOf("") }
 
@@ -63,6 +66,11 @@ fun ScriptScreen(
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
                 title = { Text(text = stringResource(id = R.string.app_name)) },
+                actions = {
+                    IconButton(onClick = { onLaunchSettingsPage() }) {
+                        Icon(Icons.Default.Settings, "settings")
+                    }
+                },
             )
         },
         content = {
