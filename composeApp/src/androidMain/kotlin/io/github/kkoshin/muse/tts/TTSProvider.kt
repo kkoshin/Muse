@@ -8,6 +8,11 @@ interface TTSProvider {
      * 生成对应的音频文件流，
      */
     suspend fun generate(text: String): Result<TTSResult>
+
+    /**
+     * 剩余的 quota, 单位: Character
+     */
+    suspend fun queryQuota(): CharacterQuota
 }
 
 enum class SupportedAudioType {
@@ -19,3 +24,16 @@ data class TTSResult(
     val mimeType: SupportedAudioType,
     val audioSampleMetadata: AudioSampleMetadata,
 )
+
+data class CharacterQuota(
+    val consumed: Int,
+    val total: Int,
+) {
+
+    val remaining: Int
+        get() = total - consumed
+
+    companion object {
+        val unknown = CharacterQuota(-1, -1)
+    }
+}

@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.kkoshin.muse.MuseRepo
 import io.github.kkoshin.muse.audio.Mp3Decoder
+import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import logcat.asLog
 import logcat.logcat
@@ -29,7 +32,18 @@ class EditorViewModel(
     private val tag = this.javaClass.simpleName
 
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
-    val progress: StateFlow<ProgressStatus> = _progress
+    val progress: StateFlow<ProgressStatus> = _progress.asStateFlow()
+
+    private val _quota: MutableStateFlow<CharacterQuota> = MutableStateFlow(CharacterQuota.unknown)
+    val quota: StateFlow<CharacterQuota> = _quota.asStateFlow()
+
+    fun refreshQuota() {
+        viewModelScope.launch {
+            _quota.update {
+                ttsManager.queryQuota()
+            }
+        }
+    }
 
     /**
      * 相同的 phrase 仅需要生成一次，最终返回的时候要按照

@@ -3,6 +3,7 @@ package io.github.kkoshin.muse.editor
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
@@ -27,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.kkoshin.muse.export.ExportButton
 import io.github.kkoshin.muse.export.rememberAudioExportPipeline
+import io.github.kkoshin.muse.tts.CharacterQuota
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.seconds
@@ -51,6 +56,11 @@ fun EditorScreen(
     onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
+    val quota by viewModel.quota.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshQuota()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -70,10 +80,25 @@ fun EditorScreen(
             ) {
                 when (progress) {
                     is ProgressStatus.Idle -> {
-                        Button(onClick = {
-                            viewModel.startTTS(args.phrases.map { it.lowercase() })
-                        }) {
-                            Text(text = "Start to TTS")
+                        if (quota == CharacterQuota.unknown) {
+                            CircularProgressIndicator()
+                        } else {
+                            Column(Modifier.width(IntrinsicSize.Max)) {
+                                Text(
+                                    text = "Character Quota",
+                                    style = MaterialTheme.typography.h5,
+                                )
+                                Text(text = "Remaining: ${quota.remaining}/${quota.total}")
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    enabled = quota.remaining > 0,
+                                    onClick = {
+                                        viewModel.startTTS(args.phrases.map { it.lowercase() })
+                                    },
+                                ) {
+                                    Text(text = "Start to TTS")
+                                }
+                            }
                         }
                     }
 
