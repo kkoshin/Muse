@@ -22,7 +22,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -59,12 +58,6 @@ fun EditorScreen(
     val progress by viewModel.progress.collectAsState()
     val quota by viewModel.quota.collectAsStateWithLifecycle()
 
-    val canStt by remember {
-        derivedStateOf {
-            quota.remaining != 0
-        }
-    }
-
     LaunchedEffect(Unit) {
         viewModel.refreshQuota()
     }
@@ -98,7 +91,7 @@ fun EditorScreen(
                                 Text(text = "Remaining: ${quota.remaining}/${quota.total}")
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
-                                    enabled = canStt,
+                                    enabled = quota.remaining > 0,
                                     onClick = {
                                         viewModel.startTTS(args.phrases.map { it.lowercase() })
                                     },
