@@ -14,6 +14,8 @@ import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
 import io.github.kkoshin.muse.script.ScriptArgs
 import io.github.kkoshin.muse.script.ScriptScreen
+import io.github.kkoshin.muse.setting.SettingArgs
+import io.github.kkoshin.muse.setting.SettingScreen
 import io.github.kkoshin.muse.tts.voice.VoicePicker
 import io.github.kkoshin.muse.tts.voice.VoicePickerArgs
 
@@ -27,9 +29,17 @@ fun MainScreen() {
             startDestination = ScriptArgs,
         ) {
             composable<ScriptArgs> {
-                ScriptScreen { phrases ->
+                ScriptScreen(onRequest = { phrases ->
                     navController.navigate(EditorArgs(phrases))
-                }
+                }, onLaunchSettingsPage = {
+                    navController.navigate(SettingArgs) {
+                        launchSingleTop = true
+                    }
+                })
+            }
+
+            composable<SettingArgs> {
+                SettingScreen()
             }
 
             composable<EditorArgs> { entry ->

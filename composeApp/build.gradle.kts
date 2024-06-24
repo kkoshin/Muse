@@ -34,6 +34,8 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
+            implementation(libs.preference.ui)
+            implementation(libs.browser)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -83,7 +85,6 @@ android {
             code = 1,
         )
         versionNameSuffix = "-alpha2"
-
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
@@ -131,6 +132,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     dependencies {
         debugImplementation(compose.preview)
