@@ -1,6 +1,7 @@
 package io.github.kkoshin.muse.tts.vendor
 
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.TTSResult
@@ -26,6 +27,15 @@ class ElevenLabTTSProvider : TTSProvider {
 //                voices.map { it.name to it.voiceId }.toString()
 //            }
 //        }
+    }
+
+    override suspend fun queryQuota(): CharacterQuota = withContext(Dispatchers.IO) {
+        ElevenLabs.getUserAPI().subscription.let {
+            CharacterQuota(
+                consumed = it.characterCount,
+                total = it.characterLimit,
+            )
+        }
     }
 
     /**
