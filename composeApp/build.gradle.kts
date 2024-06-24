@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationBaseFlavor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.text.SimpleDateFormat
@@ -50,6 +51,16 @@ kotlin {
     }
 }
 
+private fun ApplicationBaseFlavor.setUpStableVersion(
+    major: Int = 0,
+    minor: Int = 1,
+    patch: Int = 0,
+    code: Int,
+) {
+    versionName = "$major.$minor.$patch"
+    versionCode = code
+}
+
 android {
     namespace = "io.github.kkoshin.muse"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -62,8 +73,14 @@ android {
         applicationId = "io.github.kkoshin.muse"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "0.1.0-alpha2"
+        setUpStableVersion(
+            major = 0, // breaking change
+            minor = 1, // feature
+            patch = 0, // bugfix
+            code = 1,
+        )
+        versionNameSuffix = "-alpha2"
+
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
@@ -85,7 +102,6 @@ android {
     }
     buildTypes {
         debug {
-            versionNameSuffix = ".debug"
             applicationIdSuffix = ".debug"
         }
         release {
