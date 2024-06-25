@@ -13,7 +13,7 @@ navigation = "2.8.0-beta03"
 kotlinx-serialization = "2.0.0"
 # compatible with Kotlin 2.0.
 kotlinx-json = "1.7.0"
-ktor = "2.3.11"
+ktor = "2.3.12"
 media3 = "1.3.1"
 
 [libraries]
@@ -26,7 +26,13 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 kotlinx-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-json" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+# android/JVM
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+# ios
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 elevenlabs = "net.andrewcpu:elevenlabs-api:2.7.8"
 media3-transformer = { module = "androidx.media3:media3-transformer", version.ref = "media3" }
@@ -45,3 +51,10 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 
 [bundles]
 media3 = ["media3-transformer", "media3-effect", "media3-exoplayer"]
+ktor-common = [
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-client-content-negotiation",
+    "ktor-serialization-kotlinx-json",
+    "ktor-client-resources"
+]

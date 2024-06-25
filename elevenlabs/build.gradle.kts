@@ -17,15 +17,16 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
-            implementation(libs.kotlinx.json)
+            implementation(libs.bundles.ktor.common)
         }
     }
 }
 
 android {
-    namespace = "io.github.kkoshin.muse.elevenlabs"
+    namespace = "io.github.kkoshin.elevenlabs"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -40,18 +41,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        release {
-            // 这里不配置签名，对应操作在外部进行
-            isMinifyEnabled = true
-            isShrinkResources = true
-
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
         }
     }
     compileOptions {
