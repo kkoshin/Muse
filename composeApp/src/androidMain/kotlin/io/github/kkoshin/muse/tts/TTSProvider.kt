@@ -12,11 +12,13 @@ interface TTSProvider {
     /**
      * 剩余的 quota, 单位: Character
      */
-    suspend fun queryQuota(): CharacterQuota
+    suspend fun queryQuota(): Result<CharacterQuota>
 }
 
 enum class SupportedAudioType {
-    MP3, PCM, WAV
+    MP3,
+    PCM,
+    WAV,
 }
 
 data class TTSResult(
@@ -29,7 +31,6 @@ data class CharacterQuota(
     val consumed: Int,
     val total: Int,
 ) {
-
     val remaining: Int
         get() = total - consumed
 

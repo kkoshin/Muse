@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.kkoshin.muse.export.ExportButton
 import io.github.kkoshin.muse.export.rememberAudioExportPipeline
 import io.github.kkoshin.muse.tts.CharacterQuota
@@ -56,7 +55,6 @@ fun EditorScreen(
     onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
-    val quota by viewModel.quota.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.refreshQuota()
@@ -80,6 +78,7 @@ fun EditorScreen(
             ) {
                 when (progress) {
                     is ProgressStatus.Idle -> {
+                        val quota = (progress as ProgressStatus.Idle).characterQuota
                         if (quota == CharacterQuota.unknown) {
                             CircularProgressIndicator()
                         } else {

@@ -32,12 +32,6 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
-            implementation(dependencies.create(libs.elevenlabs.get()).toString()) {
-                exclude(group = "org.apache.httpcomponents.core5")
-                exclude(group = "org.apache.httpcomponents.client5")
-                exclude(group = "com.fasterxml.jackson.core")
-                exclude(group = "org.slf4j")
-            }
         }
         commonMain.dependencies {
             implementation(compose.runtime)

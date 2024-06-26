@@ -24,7 +24,7 @@ class TTSManager(private val appContext: Context, private val provider: TTSProvi
      */
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "voices")
 
-    suspend fun queryQuota(): CharacterQuota = provider.queryQuota()
+    suspend fun queryQuota(): Result<CharacterQuota> = provider.queryQuota()
 
     /**
      * 如果已经生成过了，本地有音频文件就直接返回
