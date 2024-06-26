@@ -90,7 +90,7 @@ private fun VoiceItem(
     val selected = selectedVoiceId == voice.voiceId
     ListItem(
         text = { Text(text = voice.name) },
-        secondaryText = { Text(text = voice.description ?: "") },
+        secondaryText = { Text(text = voice.accent ?: "") },
         icon = {
             IconButton(enabled = !selected, onClick = {
                 onSelected(voice)
