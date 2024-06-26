@@ -14,7 +14,8 @@ import org.koin.java.KoinJavaComponent.inject
 class MockTTSProvider : TTSProvider {
     private val appContext: Context by inject(Context::class.java)
 
-    override suspend fun queryQuota(): CharacterQuota = CharacterQuota(0, 1000)
+    override suspend fun queryQuota(): Result<CharacterQuota> =
+        Result.success(CharacterQuota(100, 100))
 
     override suspend fun generate(text: String): Result<TTSResult> {
         return runCatching {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.kkoshin.muse.MuseRepo
 import io.github.kkoshin.muse.audio.Mp3Decoder
+import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
@@ -15,7 +16,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import logcat.asLog
 import logcat.logcat
@@ -31,17 +31,22 @@ class EditorViewModel(
     private val appContext: Context by inject(Context::class.java)
     private val tag = this.javaClass.simpleName
 
-    private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
+    private val _progress: MutableStateFlow<ProgressStatus> =
+        MutableStateFlow(ProgressStatus.Idle(CharacterQuota.unknown))
     val progress: StateFlow<ProgressStatus> = _progress.asStateFlow()
-
-    private val _quota: MutableStateFlow<CharacterQuota> = MutableStateFlow(CharacterQuota.unknown)
-    val quota: StateFlow<CharacterQuota> = _quota.asStateFlow()
 
     fun refreshQuota() {
         viewModelScope.launch {
-            _quota.update {
-                ttsManager.queryQuota()
-            }
+            ttsManager
+                .queryQuota()
+                .onSuccess {
+                    debugLog { it.toString() }
+                    _progress.value = ProgressStatus.Idle(it)
+                }.onFailure {
+                    logcat(tag) {
+                        it.asLog()
+                    }
+                }
         }
     }
 
@@ -55,7 +60,8 @@ class EditorViewModel(
                 val requests = phrases.toSet().map { phrase ->
                     async {
                         // mp3 原始文件暂时没有记录
-                        ttsManager.getOrGenerate(phrase)
+                        ttsManager
+                            .getOrGenerate(phrase)
                             .mapCatching {
                                 saveAsPcm(
                                     phrase,
@@ -92,7 +98,7 @@ class EditorViewModel(
         val mp3Decoder = Mp3Decoder()
         if (target.exists() && target.length() > 0) {
             logcat(tag) {
-                "${text}.pcm already exists."
+                "$text.pcm already exists."
             }
         }
         val output = target.sink().buffer()
@@ -108,8 +114,20 @@ class EditorViewModel(
 }
 
 sealed interface ProgressStatus {
-    object Idle : ProgressStatus
-    class Failed(val errorMsg: String) : ProgressStatus
-    class Processing(val value: Int, val phrase: String) : ProgressStatus
-    class Success(val pcmList: List<Uri>) : ProgressStatus
+    class Idle(
+        val characterQuota: CharacterQuota,
+    ) : ProgressStatus
+
+    class Failed(
+        val errorMsg: String,
+    ) : ProgressStatus
+
+    class Processing(
+        val value: Int,
+        val phrase: String,
+    ) : ProgressStatus
+
+    class Success(
+        val pcmList: List<Uri>,
+    ) : ProgressStatus
 }
