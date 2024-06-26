@@ -5,6 +5,7 @@ import io.github.kkoshin.muse.editor.EditorViewModel
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
+import io.github.kkoshin.muse.tts.vendor.GroupedTTSProvider
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext
@@ -17,7 +18,13 @@ class App : Application() {
     private val appModule = module {
         single<TTSProvider> {
 //            MockTTSProvider()
-            ElevenLabTTSProvider()
+            GroupedTTSProvider(
+                listOf(
+                    ElevenLabTTSProvider("d41ee34b857479772db5ce143549bcd9"),
+                    // 备用
+                    ElevenLabTTSProvider("7904879831bf1d4fd56f4f6baee9167b"),
+                ),
+            )
         }
         singleOf(::MuseRepo)
         viewModel { EditorViewModel(get(), get()) }
