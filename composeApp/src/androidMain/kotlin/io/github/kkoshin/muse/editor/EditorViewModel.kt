@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.kkoshin.muse.MuseRepo
 import io.github.kkoshin.muse.audio.Mp3Decoder
-import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
@@ -40,7 +39,6 @@ class EditorViewModel(
             ttsManager
                 .queryQuota()
                 .onSuccess {
-                    debugLog { it.toString() }
                     _progress.value = ProgressStatus.Idle(it)
                 }.onFailure {
                     logcat(tag) {

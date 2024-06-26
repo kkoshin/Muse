@@ -30,6 +30,7 @@ actual val ktorClient = HttpClient(OkHttp) {
     install(ContentNegotiation) {
         json(
             Json {
+                ignoreUnknownKeys = true
                 @OptIn(ExperimentalSerializationApi::class)
                 explicitNulls = false
             },

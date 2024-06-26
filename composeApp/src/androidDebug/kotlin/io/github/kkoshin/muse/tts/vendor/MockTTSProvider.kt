@@ -14,11 +14,12 @@ import org.koin.java.KoinJavaComponent.inject
 class MockTTSProvider : TTSProvider {
     private val appContext: Context by inject(Context::class.java)
 
-    override suspend fun queryQuota(): Result<CharacterQuota> =
-        Result.success(CharacterQuota(100, 100))
+    override suspend fun queryQuota(): Result<CharacterQuota> = Result.success(CharacterQuota(100, 100))
 
-    override suspend fun generate(text: String): Result<TTSResult> {
-        return runCatching {
+    override suspend fun queryVoices(): Result<List<io.github.kkoshin.muse.tts.Voice>> = Result.success(emptyList())
+
+    override suspend fun generate(text: String): Result<TTSResult> =
+        runCatching {
             withContext(Dispatchers.IO) {
                 delay(1000)
                 TTSResult(
@@ -28,5 +29,4 @@ class MockTTSProvider : TTSProvider {
                 )
             }
         }
-    }
 }

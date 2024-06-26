@@ -1,6 +1,7 @@
 package io.github.kkoshin.muse.tts
 
 import io.github.kkoshin.muse.audio.AudioSampleMetadata
+import kotlinx.serialization.Serializable
 import java.io.InputStream
 
 interface TTSProvider {
@@ -13,6 +14,8 @@ interface TTSProvider {
      * 剩余的 quota, 单位: Character
      */
     suspend fun queryQuota(): Result<CharacterQuota>
+
+    suspend fun queryVoices(): Result<List<Voice>>
 }
 
 enum class SupportedAudioType {
@@ -38,3 +41,11 @@ data class CharacterQuota(
         val unknown = CharacterQuota(-1, -1)
     }
 }
+
+@Serializable
+data class Voice(
+    val voiceId: String,
+    val name: String,
+    val description: String?,
+    val previewUrl: String,
+)

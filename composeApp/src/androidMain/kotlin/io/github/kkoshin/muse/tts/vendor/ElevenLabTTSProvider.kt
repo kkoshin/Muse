@@ -2,6 +2,7 @@ package io.github.kkoshin.muse.tts.vendor
 
 import io.github.kkoshin.elevenlabs.ElevenLabsClient
 import io.github.kkoshin.elevenlabs.api.getSubscription
+import io.github.kkoshin.elevenlabs.api.getVoices
 import io.github.kkoshin.elevenlabs.api.textToSpeech
 import io.github.kkoshin.elevenlabs.model.FreeTierOutputFormat
 import io.github.kkoshin.elevenlabs.model.ModelId
@@ -11,6 +12,7 @@ import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.TTSResult
+import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,6 +32,20 @@ class ElevenLabTTSProvider : TTSProvider {
                     consumed = it.characterCount,
                     total = it.characterLimit,
                 )
+            }
+        }
+
+    override suspend fun queryVoices(): Result<List<Voice>> =
+        withContext(Dispatchers.IO) {
+            client.getVoices().map { voices ->
+                voices.map {
+                    Voice(
+                        voiceId = it.voiceId,
+                        name = it.name,
+                        description = it.description,
+                        previewUrl = it.previewUrl,
+                    )
+                }
             }
         }
 
