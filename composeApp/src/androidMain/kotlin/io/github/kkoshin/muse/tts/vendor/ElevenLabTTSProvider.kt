@@ -45,6 +45,7 @@ class ElevenLabTTSProvider(
                         name = it.name,
                         description = it.description,
                         previewUrl = it.previewUrl,
+                        accent = it.labels?.get("accent")
                     )
                 }
             }

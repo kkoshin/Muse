@@ -54,4 +54,5 @@ data class Voice(
     val name: String,
     val description: String?,
     val previewUrl: String,
+    val accent: String?
 )
