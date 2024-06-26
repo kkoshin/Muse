@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.export.ExportButton
 import io.github.kkoshin.muse.export.rememberAudioExportPipeline
 import io.github.kkoshin.muse.tts.CharacterQuota
+import io.github.kkoshin.muse.tts.Voice
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.seconds
@@ -52,9 +54,14 @@ fun EditorScreen(
     modifier: Modifier = Modifier,
     args: EditorArgs,
     viewModel: EditorViewModel = koinViewModel(),
+    onLaunchVoicePicker: (voiceId: String?) -> Unit,
     onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
+
+    var selectedVoice: Voice? by remember {
+        mutableStateOf(null)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.refreshQuota()
@@ -88,6 +95,11 @@ fun EditorScreen(
                                     style = MaterialTheme.typography.h5,
                                 )
                                 Text(text = "Remaining: ${quota.remaining}/${quota.total}")
+                                Button(onClick = {
+                                    onLaunchVoicePicker(selectedVoice?.voiceId)
+                                }) {
+                                    Text(text = selectedVoice?.name ?: "pick a voice")
+                                }
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
                                     enabled = quota.remaining > 0,

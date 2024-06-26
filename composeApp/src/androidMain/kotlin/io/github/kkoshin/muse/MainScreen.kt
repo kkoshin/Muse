@@ -14,6 +14,8 @@ import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
 import io.github.kkoshin.muse.script.ScriptArgs
 import io.github.kkoshin.muse.script.ScriptScreen
+import io.github.kkoshin.muse.tts.voice.VoicePicker
+import io.github.kkoshin.muse.tts.voice.VoicePickerArgs
 
 @Composable
 fun MainScreen() {
@@ -31,8 +33,19 @@ fun MainScreen() {
             }
 
             composable<EditorArgs> { entry ->
-                EditorScreen(args = entry.toRoute()) { pcm, audio ->
+                EditorScreen(args = entry.toRoute(), onLaunchVoicePicker = {
+                    navController.navigate(VoicePickerArgs(selectedVoiceId = it))
+                }) { pcm, audio ->
                     // do nothing.
+                }
+            }
+
+            composable<VoicePickerArgs> { entry ->
+                val args = entry.toRoute<VoicePickerArgs>()
+                VoicePicker(
+                    selectedVoiceId = args.selectedVoiceId,
+                ) {
+                    navController.popBackStack()
                 }
             }
         }
