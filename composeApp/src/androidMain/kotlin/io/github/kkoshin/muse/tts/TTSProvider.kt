@@ -37,8 +37,14 @@ data class CharacterQuota(
     val remaining: Int
         get() = total - consumed
 
+    infix operator fun plus(other: CharacterQuota): CharacterQuota {
+        require(consumed >= 0 && total >= 0)
+        return CharacterQuota(consumed + other.consumed, total + other.total)
+    }
+
     companion object {
         val unknown = CharacterQuota(-1, -1)
+        val empty = CharacterQuota(0, 0)
     }
 }
 

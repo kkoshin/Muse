@@ -1,0 +1,44 @@
+package io.github.kkoshin.muse.tts.vendor
+
+import io.github.kkoshin.muse.tts.CharacterQuota
+import io.github.kkoshin.muse.tts.TTSProvider
+import io.github.kkoshin.muse.tts.TTSResult
+import io.github.kkoshin.muse.tts.Voice
+
+class GroupedTTSProvider(
+    private val providers: List<TTSProvider>,
+) : TTSProvider {
+    override suspend fun generate(text: String): Result<TTSResult> {
+        providers.forEachIndexed { index, ttsProvider ->
+            if (index == providers.lastIndex) {
+                return ttsProvider.generate(text)
+            }
+            val result = ttsProvider.generate(text)
+            if (result.isSuccess) {
+                return result
+            }
+        }
+        return Result.failure(IllegalStateException("All providers failed."))
+    }
+
+    override suspend fun queryQuota(): Result<CharacterQuota> {
+        var result = CharacterQuota.empty
+        providers.forEach {
+            result += it.queryQuota().getOrDefault(CharacterQuota.empty)
+        }
+        return Result.success(result)
+    }
+
+    override suspend fun queryVoices(): Result<List<Voice>> {
+        providers.forEachIndexed { index, ttsProvider ->
+            if (index == providers.lastIndex) {
+                return ttsProvider.queryVoices()
+            }
+            val result = ttsProvider.queryVoices()
+            if (result.isSuccess) {
+                return result
+            }
+        }
+        return Result.failure(IllegalStateException("All providers failed."))
+    }
+}
