@@ -35,9 +35,9 @@ import me.zhanghai.compose.preference.preferenceCategory
 import me.zhanghai.compose.preference.switchPreference
 import me.zhanghai.compose.preference.textFieldPreference
 import me.zhanghai.compose.preference.twoTargetIconButtonPreference
+import muse.composeapp.generated.resources.Res
+import muse.composeapp.generated.resources.setting
 import org.jetbrains.compose.resources.stringResource
-import speaker.composeapp.generated.resources.Res
-import speaker.composeapp.generated.resources.setting
 
 @Serializable
 object SettingArgs
