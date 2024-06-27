@@ -26,7 +26,9 @@ kotlin {
             implementation(libs.navigation)
             implementation(sharedLibs.logcat)
             implementation(sharedLibs.sugar)
-            implementation(sharedLibs.koin)
+            implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
+                exclude(group = "androidx.appcompat")
+            }
             implementation(sharedLibs.bundles.jetpack)
             implementation(libs.documentfile)
             implementation(dependencies.create(libs.lame.get()).toString()) {
@@ -39,7 +41,7 @@ kotlin {
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+//            implementation(compose.components.uiToolingPreview)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
         }
@@ -58,7 +60,9 @@ private fun ApplicationBaseFlavor.setUpStableVersion(
 
 android {
     namespace = "io.github.kkoshin.muse"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = libs.versions.android.compileSdk
+        .get()
+        .toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -66,8 +70,12 @@ android {
 
     defaultConfig {
         applicationId = "io.github.kkoshin.muse"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk
+            .get()
+            .toInt()
+        targetSdk = libs.versions.android.targetSdk
+            .get()
+            .toInt()
         setUpStableVersion(
             major = 0, // breaking change
             minor = 1, // feature
@@ -86,7 +94,11 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "Muse-${defaultConfig.versionName}-${SimpleDateFormat("yyyy-MM-dd").format(Date())}.apk"
+                "Muse-${defaultConfig.versionName + (defaultConfig.versionNameSuffix ?: "")}-${
+                    SimpleDateFormat(
+                        "yyyy-MM-dd",
+                    ).format(Date())
+                }.apk"
         }
     }
 
@@ -128,4 +140,3 @@ android {
         implementation(platform(sharedLibs.koin.bom))
     }
 }
-
