@@ -15,14 +15,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
+import io.github.kkoshin.muse.dashboard.DashboardArgs
+import io.github.kkoshin.muse.dashboard.DashboardScreen
+import io.github.kkoshin.muse.dashboard.ScriptCreatorArgs
+import io.github.kkoshin.muse.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
-import io.github.kkoshin.muse.script.ScriptArgs
-import io.github.kkoshin.muse.script.ScriptScreen
 import io.github.kkoshin.muse.setting.SettingArgs
 import io.github.kkoshin.muse.setting.SettingScreen
 import io.github.kkoshin.muse.tts.voice.VoicePicker
 import io.github.kkoshin.muse.tts.voice.VoicePickerArgs
+import java.util.UUID
 
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {
@@ -30,9 +33,9 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
-            startDestination = ScriptArgs,
+            startDestination = DashboardArgs,
         ) {
-            composable<ScriptArgs>(
+            composable<DashboardArgs>(
                 deepLinks = listOf(
                     navDeepLink {
                         mimeType = "text/plain"
@@ -42,10 +45,12 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             ) { entry ->
                 val deepLinkContentUri: Uri? =
                     (entry.arguments?.get(NavController.KEY_DEEP_LINK_INTENT) as? Intent)?.data
-                ScriptScreen(
+                val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
+                DashboardScreen(
                     contentUri = deepLinkContentUri?.toString(),
-                    onRequest = { phrases ->
-                        navController.navigate(EditorArgs(phrases))
+                    initScriptId = initScriptId,
+                    onCreateScriptRequest = {
+                        navController.navigate(ScriptCreatorArgs)
                     },
                     onLaunchSettingsPage = {
                         navController.navigate(SettingArgs) {
@@ -53,6 +58,15 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         }
                     },
                 )
+            }
+
+            composable<ScriptCreatorArgs> { entry ->
+                ScriptCreatorScreen(onResult = {
+                    navController.popBackStack()
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ScriptCreatorArgs.RESULT_KEY, it?.id)
+                })
             }
 
             composable<SettingArgs> {

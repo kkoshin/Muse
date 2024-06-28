@@ -42,6 +42,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
 //            implementation(compose.components.uiToolingPreview)
             implementation(libs.kotlinx.json)
