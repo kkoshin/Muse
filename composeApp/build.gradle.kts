@@ -47,6 +47,7 @@ kotlin {
 //            implementation(compose.components.uiToolingPreview)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
+            implementation(libs.accompanist.navigation.material)
         }
     }
 }

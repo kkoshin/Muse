@@ -129,20 +129,4 @@ fun ScriptCreatorScreen(
             )
         },
     )
-
-//    Text(text = "Phrases:", Modifier.padding(horizontal = 16.dp))
-//    FlowRow(
-//        Modifier
-//            .fillMaxSize()
-//            .padding(horizontal = 16.dp)
-//            .verticalScroll(rememberScrollState()),
-//        horizontalArrangement = Arrangement.spacedBy(8.dp),
-//        verticalArrangement = Arrangement.spacedBy(2.dp),
-//    ) {
-//        phrases.forEach {
-//            OutlinedButton(onClick = { /*TODO*/ }) {
-//                Text(text = it)
-//            }
-//        }
-//    }
 }
