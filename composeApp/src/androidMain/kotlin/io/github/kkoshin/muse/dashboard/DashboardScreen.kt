@@ -75,6 +75,7 @@ fun DashboardScreen(
     contentUri: String?,
     initScriptId: UUID?,
     viewModel: DashboardViewModel = koinViewModel(),
+    onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
 ) {
@@ -145,7 +146,7 @@ fun DashboardScreen(
                         items(scripts) { script ->
                             ScriptItem(
                                 modifier = Modifier.clickable {
-                                    // TODO
+                                    onLaunchEditor(script)
                                 },
                                 script = script,
                             )
