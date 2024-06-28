@@ -2,13 +2,19 @@ package io.github.kkoshin.muse.dashboard
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -17,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 
@@ -43,6 +51,8 @@ fun ScriptCreatorScreen(
         mutableStateOf(script?.text ?: "")
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
+    val clipboardManager = LocalClipboardManager.current
 
     BackHandler {
         onResult(null)
@@ -82,7 +92,7 @@ fun ScriptCreatorScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(32.dp),
+                    .padding(horizontal = 16.dp, vertical = 32.dp),
                 value = content,
                 textStyle = MaterialTheme.typography.h5,
                 onValueChange = {
@@ -92,11 +102,27 @@ fun ScriptCreatorScreen(
                     Box {
                         field()
                         if (content.isEmpty()) {
-                            Text(
-                                "Enter text",
-                                style = MaterialTheme.typography.h5,
-                                color = Color.LightGray,
-                            )
+                            Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                                Text(
+                                    "Enter text",
+                                    style = MaterialTheme.typography.h5,
+                                    color = Color.DarkGray,
+                                )
+                                Button(
+                                    shape = RoundedCornerShape(50),
+                                    onClick = {
+                                        content = clipboardManager.getText().toString()
+                                    },
+                                ) {
+                                    Icon(
+                                        Icons.Default.ContentPaste,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                    Spacer(Modifier.size(8.dp))
+                                    Text("Paste")
+                                }
+                            }
                         }
                     }
                 },
