@@ -42,6 +42,7 @@ import kotlin.time.Duration.Companion.seconds
 @Serializable
 data class EditorArgs(
     val phrases: List<String>,
+    val documentUri: String? = null,
 )
 
 /**
