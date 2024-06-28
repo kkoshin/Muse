@@ -6,7 +6,9 @@ import com.github.foodiestudio.sugar.storage.AppFileHelper
 import java.io.File
 
 @OptIn(ExperimentalSugarApi::class)
-class MuseRepo(context: Context) {
+class MuseRepo(
+    context: Context,
+) {
     private val appFileHelper = AppFileHelper(context)
 
     private val voicesDir: File by lazy {

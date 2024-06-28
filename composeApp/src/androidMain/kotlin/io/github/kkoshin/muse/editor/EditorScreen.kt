@@ -22,10 +22,12 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +61,14 @@ fun EditorScreen(
     onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
 ) {
     val progress by viewModel.progress.collectAsState()
+
+    var script: String by rememberSaveable { mutableStateOf("") }
+
+    val phrases: List<String> by remember {
+        derivedStateOf {
+            script.split(" ", "\n").filterNot { it.isBlank() }
+        }
+    }
 
     var selectedVoice: Voice? by remember {
         mutableStateOf(null)
