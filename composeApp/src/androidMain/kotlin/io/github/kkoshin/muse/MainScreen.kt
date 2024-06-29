@@ -23,6 +23,10 @@ import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
 import io.github.kkoshin.muse.editor.ExportConfigSheet
 import io.github.kkoshin.muse.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.export.ExportArgs
+import io.github.kkoshin.muse.export.ExportScreen
+import io.github.kkoshin.muse.export.HistoryArgs
+import io.github.kkoshin.muse.export.HistoryScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
 import io.github.kkoshin.muse.setting.SettingArgs
 import io.github.kkoshin.muse.setting.SettingScreen
@@ -66,6 +70,9 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         launchSingleTop = true
                     }
                 },
+                onLaunchHistory = {
+                    navController.navigate(HistoryArgs)
+                },
             )
         }
 
@@ -106,7 +113,19 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         bottomSheet<ExportConfigSheetArgs> {
-            ExportConfigSheet(Modifier.fillMaxHeight())
+            ExportConfigSheet(Modifier.fillMaxHeight(), onExport = {
+                navController.navigate(ExportArgs(it))
+            })
+        }
+
+        composable<ExportArgs> { entry ->
+            ExportScreen(args = entry.toRoute(), onExit = {
+                navController.popBackStack()
+            })
+        }
+
+        composable<HistoryArgs> {
+            HistoryScreen()
         }
     }
 }

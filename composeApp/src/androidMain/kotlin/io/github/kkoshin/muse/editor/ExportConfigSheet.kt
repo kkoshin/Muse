@@ -2,6 +2,7 @@ package io.github.kkoshin.muse.editor
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -31,7 +32,10 @@ object ExportConfigSheetArgs
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ExportConfigSheet(modifier: Modifier = Modifier) {
+fun ExportConfigSheet(
+    modifier: Modifier = Modifier,
+    onExport: (voiceId: String) -> Unit,
+) {
     var silence by remember {
         mutableFloatStateOf(1.0f)
     }
@@ -45,6 +49,7 @@ fun ExportConfigSheet(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .navigationBarsPadding()
             .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(bottom = 56.dp),
     ) {
         item {
             DragHandle()
@@ -96,6 +101,7 @@ fun ExportConfigSheet(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
                     // TODO
+                    onExport("TODO")
                 },
             ) {
                 Text("Continue export")

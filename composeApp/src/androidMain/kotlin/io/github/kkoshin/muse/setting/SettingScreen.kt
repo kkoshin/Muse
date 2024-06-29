@@ -1,6 +1,7 @@
 package io.github.kkoshin.muse.setting
 
 import android.net.Uri
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +14,13 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
@@ -48,12 +51,21 @@ object SettingArgs
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets.safeContent,
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
+                backgroundColor = MaterialTheme.colors.surface,
+                navigationIcon = {
+                    IconButton(onClick = {
+                        backPressedDispatcher?.onBackPressed()
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+                },
                 title = {
                     Text(text = stringResource(Res.string.setting))
                 },
