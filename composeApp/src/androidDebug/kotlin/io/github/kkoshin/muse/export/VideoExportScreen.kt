@@ -23,7 +23,7 @@ import androidx.media3.transformer.Effects
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ExportArgs(
+data class VideoExportArgs(
     val pcmUriList: List<String>,
     val audioUriList: List<String>,
 )
@@ -34,9 +34,9 @@ data class ExportArgs(
  */
 @OptIn(UnstableApi::class)
 @Composable
-fun ExportScreen(
+fun VideoExportScreen(
     modifier: Modifier = Modifier,
-    args: ExportArgs,
+    args: VideoExportArgs,
 ) {
     val context = LocalContext.current
     val videoExportPipeline =

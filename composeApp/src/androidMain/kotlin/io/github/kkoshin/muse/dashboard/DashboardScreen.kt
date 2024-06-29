@@ -78,6 +78,7 @@ fun DashboardScreen(
     onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
+    onLaunchHistory: () -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -123,7 +124,7 @@ fun DashboardScreen(
                 backgroundColor = MaterialTheme.colors.surface,
                 actions = {
                     IconButton(onClick = {
-                        // TODO:
+                        onLaunchHistory()
                     }) {
                         Icon(Icons.Default.History, "history")
                     }
