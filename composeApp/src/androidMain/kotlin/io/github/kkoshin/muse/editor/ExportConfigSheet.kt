@@ -8,14 +8,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -28,12 +33,21 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 
 @Serializable
-object ExportConfigSheetArgs
+class ExportConfigSheetArgs(
+    val voiceIds: List<String>,
+    val voiceNames: List<String>,
+) {
+    init {
+        check(voiceNames.size == voiceIds.size)
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExportConfigSheet(
     modifier: Modifier = Modifier,
+    voiceIds: List<String>,
+    voiceNames: List<String>,
     onExport: (voiceId: String) -> Unit,
 ) {
     var silence by remember {
@@ -42,6 +56,10 @@ fun ExportConfigSheet(
 
     var fixedDurationEnabled by remember {
         mutableStateOf(true)
+    }
+
+    var selectedVoiceId: String? by remember {
+        mutableStateOf(null)
     }
 
     LazyColumn(
@@ -69,10 +87,20 @@ fun ExportConfigSheet(
         item {
             Column {
                 Text("Voice")
-                Row {
-                    Chip(onClick = {
-                    }) {
-                        Text("Anna")
+                LazyRow {
+                    items(voiceIds.size) {
+                        Chip(
+                            onClick = {
+                                selectedVoiceId = voiceIds[it]
+                            },
+                            leadingIcon = {
+                                if (selectedVoiceId == voiceIds[it]) {
+                                    Icon(Icons.Default.Check, null)
+                                }
+                            },
+                        ) {
+                            Text(voiceNames[it])
+                        }
                     }
                 }
             }
@@ -99,9 +127,9 @@ fun ExportConfigSheet(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
+                enabled = selectedVoiceId != null,
                 onClick = {
-                    // TODO
-                    onExport("TODO")
+                    onExport(selectedVoiceId!!)
                 },
             ) {
                 Text("Continue export")

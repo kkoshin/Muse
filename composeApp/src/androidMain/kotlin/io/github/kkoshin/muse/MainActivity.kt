@@ -5,8 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.Color
@@ -29,7 +31,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberNavController(bottomSheetNavigator)
-            MaterialTheme(colors = lightColors(primary = Color(0xFF5D9CED))) {
+            MaterialTheme(
+                colors = if (isSystemInDarkTheme()) {
+                    darkColors()
+                } else {
+                    lightColors(
+                        primary = Color(
+                            0xFF5D9CED,
+                        ),
+                    )
+                },
+            ) {
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
                     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

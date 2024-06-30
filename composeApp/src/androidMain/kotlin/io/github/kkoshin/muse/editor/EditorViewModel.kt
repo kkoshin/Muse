@@ -9,6 +9,7 @@ import io.github.kkoshin.muse.MuseRepo
 import io.github.kkoshin.muse.audio.Mp3Decoder
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
+import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -33,6 +34,16 @@ class EditorViewModel(
     private val _progress: MutableStateFlow<ProgressStatus> =
         MutableStateFlow(ProgressStatus.Idle(CharacterQuota.unknown))
     val progress: StateFlow<ProgressStatus> = _progress.asStateFlow()
+
+    suspend fun fetchAvailableVoices(): Result<List<Voice>> {
+        val availableVoiceIds =
+            ttsManager.queryAvailableVoiceIds() ?: return Result.success(emptyList())
+        return ttsManager
+            .queryVoiceList()
+            .map { list ->
+                list.filter { it.voiceId in availableVoiceIds }
+            }
+    }
 
     fun refreshQuota() {
         viewModelScope.launch {

@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.editor
 
-import android.net.Uri
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -9,11 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -28,10 +28,19 @@ import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.github.foodiestudio.sugar.notification.toast
+import io.github.kkoshin.muse.tts.Voice
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,9 +60,8 @@ fun EditorScreen(
     modifier: Modifier = Modifier,
     args: EditorArgs,
     viewModel: EditorViewModel = koinViewModel(),
-    onExportRequest: () -> Unit,
-    onLaunchVoicePicker: (voiceId: String?) -> Unit,
-    onExport: (pcm: List<Uri>, audio: List<Uri>) -> Unit,
+    onExportRequest: (List<Voice>) -> Unit,
+    onPickVoice: () -> Unit,
 ) {
 //    LaunchedEffect(Unit) {
 //        viewModel.refreshQuota()
@@ -61,9 +69,25 @@ fun EditorScreen(
 
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
+    var loadingVisible by remember {
+        mutableStateOf(false)
+    }
+
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    if (loadingVisible) {
+        Dialog(
+            onDismissRequest = {},
+            DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.safeContent,
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
@@ -107,7 +131,21 @@ fun EditorScreen(
                 backgroundColor = MaterialTheme.colors.primary,
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
-                    onExportRequest()
+                    scope.launch {
+                        loadingVisible = true
+                        viewModel
+                            .fetchAvailableVoices()
+                            .onSuccess {
+                                if (it.isEmpty()) {
+                                    onPickVoice()
+                                } else {
+                                    onExportRequest(it)
+                                }
+                            }.onFailure { e ->
+                                context.toast(e.message)
+                            }
+                        loadingVisible = false
+                    }
                 },
             ) {
                 Row(

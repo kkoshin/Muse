@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
@@ -18,7 +19,7 @@ import kotlinx.coroutines.withContext
 import okio.source
 
 @OptIn(ExperimentalSugarApi::class)
-    class TTSManager(
+class TTSManager(
     private val appContext: Context,
     private val provider: TTSProvider,
 ) {
@@ -27,9 +28,22 @@ import okio.source
      */
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "voices")
 
+    /**
+     * 存储当前可用的 voice
+     */
+    private val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
+
     suspend fun queryQuota(): Result<CharacterQuota> = provider.queryQuota()
 
     suspend fun queryVoiceList(): Result<List<Voice>> = provider.queryVoices()
+
+    suspend fun queryAvailableVoiceIds(): Set<String>? = appContext.dataStore.data.first()[availableVoiceIdsKey]
+
+    suspend fun updateAvailableVoice(voiceIds: Set<String>) {
+        appContext.dataStore.edit {
+            it[availableVoiceIdsKey] = voiceIds
+        }
+    }
 
     /**
      * 如果已经生成过了，本地有音频文件就直接返回

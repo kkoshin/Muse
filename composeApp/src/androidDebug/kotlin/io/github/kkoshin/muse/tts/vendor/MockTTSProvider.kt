@@ -6,6 +6,7 @@ import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.TTSResult
+import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -16,7 +17,44 @@ class MockTTSProvider : TTSProvider {
 
     override suspend fun queryQuota(): Result<CharacterQuota> = Result.success(CharacterQuota(100, 100))
 
-    override suspend fun queryVoices(): Result<List<io.github.kkoshin.muse.tts.Voice>> = Result.success(emptyList())
+    override suspend fun queryVoices(): Result<List<Voice>> =
+        Result.success(
+            listOf(
+                Voice(
+                    voiceId = "ThT5KcBeYPX3keUQqHPh1",
+                    name = "Dorothy1",
+                    description = "pleasant",
+                    useCase = "children's stories",
+                    accent = Voice.Accent.American,
+                    age = Voice.Age.Young,
+                    gender = Voice.Gender.Female,
+                    previewUrl =
+                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                ),
+                Voice(
+                    voiceId = "ThT5KcBeYPX3keUQqHPh2",
+                    name = "Dorothy2",
+                    description = "pleasant",
+                    useCase = "children's stories",
+                    accent = Voice.Accent.British,
+                    age = Voice.Age.Young,
+                    gender = Voice.Gender.Female,
+                    previewUrl =
+                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                ),
+                Voice(
+                    voiceId = "ThT5KcBeYPX3keUQqHPh3",
+                    name = "Dorothy3",
+                    description = "pleasant",
+                    useCase = "children's stories",
+                    accent = Voice.Accent.British,
+                    age = Voice.Age.Young,
+                    gender = Voice.Gender.Female,
+                    previewUrl =
+                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                ),
+            ),
+        )
 
     override suspend fun generate(text: String): Result<TTSResult> =
         runCatching {
