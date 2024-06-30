@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -57,7 +58,7 @@ fun VideoExportScreen(
 
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.safeContent,
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,

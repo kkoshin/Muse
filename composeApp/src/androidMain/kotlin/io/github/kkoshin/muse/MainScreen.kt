@@ -11,10 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.get
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.google.accompanist.navigation.material.bottomSheet
 import io.github.kkoshin.muse.dashboard.DashboardArgs
 import io.github.kkoshin.muse.dashboard.DashboardScreen
 import io.github.kkoshin.muse.dashboard.ScriptCreatorArgs
@@ -30,8 +28,8 @@ import io.github.kkoshin.muse.export.HistoryScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
 import io.github.kkoshin.muse.setting.SettingArgs
 import io.github.kkoshin.muse.setting.SettingScreen
-import io.github.kkoshin.muse.tts.voice.VoicePicker
-import io.github.kkoshin.muse.tts.voice.VoicePickerArgs
+import io.github.kkoshin.muse.setting.voice.VoicePicker
+import io.github.kkoshin.muse.setting.voice.VoicePickerArgs
 import java.util.UUID
 
 @Composable
@@ -79,15 +77,20 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         composable<EditorArgs> { entry ->
             EditorScreen(
                 args = entry.toRoute(),
-                onExportRequest = {
-                    navController.navigate(ExportConfigSheetArgs)
+                onExportRequest = { voices ->
+                    navController.navigate(
+                        voices.associate { it.voiceId to it.name }.let {
+                            ExportConfigSheetArgs(
+                                voiceIds = it.keys.toList(),
+                                voiceNames = it.values.toList(),
+                            )
+                        },
+                    )
                 },
-                onLaunchVoicePicker = {
-                    navController.navigate(VoicePickerArgs(selectedVoiceId = it))
+                onPickVoice = {
+                    navController.navigate(VoicePickerArgs(emptyList()))
                 },
-            ) { pcm, audio ->
-                // do nothing.
-            }
+            )
         }
 
         composable<ScriptCreatorArgs> { entry ->
@@ -100,22 +103,28 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<SettingArgs> {
-            SettingScreen()
+            SettingScreen(onLaunchVoiceScreen = {
+                navController.navigate(VoicePickerArgs(it.toList()))
+            })
         }
 
         composable<VoicePickerArgs> { entry ->
             val args = entry.toRoute<VoicePickerArgs>()
-            VoicePicker(
-                selectedVoiceId = args.selectedVoiceId,
-            ) {
+            VoicePicker(selectedVoiceIds = args.selectedVoiceIds.toSet()) {
                 navController.popBackStack()
             }
         }
 
-        bottomSheet<ExportConfigSheetArgs> {
-            ExportConfigSheet(Modifier.fillMaxHeight(), onExport = {
-                navController.navigate(ExportArgs(it))
-            })
+        bottomSheet<ExportConfigSheetArgs> { entry ->
+            val args: ExportConfigSheetArgs = entry.toRoute()
+            ExportConfigSheet(
+                Modifier.fillMaxHeight(),
+                voiceIds = args.voiceIds,
+                voiceNames = args.voiceNames,
+                onExport = {
+                    navController.navigate(ExportArgs(it))
+                },
+            )
         }
 
         composable<ExportArgs> { entry ->

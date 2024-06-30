@@ -1,6 +1,7 @@
 package io.github.kkoshin.muse.tts
 
 import io.github.kkoshin.muse.audio.AudioSampleMetadata
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.InputStream
 
@@ -54,5 +55,59 @@ data class Voice(
     val name: String,
     val description: String?,
     val previewUrl: String,
-    val accent: String?
-)
+    val accent: Accent,
+    val useCase: String?,
+    val gender: Gender?,
+    val age: Age?,
+) {
+    @Serializable
+    enum class Accent(
+        val raw: String,
+    ) {
+        @SerialName("american")
+        American("american"),
+
+        @SerialName("british")
+        British("british"),
+
+        @SerialName("british-swedish")
+        BritishSwedish("british-swedish"),
+
+        @SerialName("australian")
+        Australian("australian"),
+
+        @SerialName("irish")
+        Irish("irish"),
+
+        @SerialName("other")
+        Other("other"),
+    }
+
+    @Serializable
+    enum class Gender(
+        val raw: String,
+    ) {
+        @SerialName("male")
+        Male("male"),
+
+        @SerialName("female")
+        Female("female"),
+    }
+
+    @Serializable
+    enum class Age(
+        val raw: String,
+    ) {
+        @SerialName("young")
+        Young("young"),
+
+        @SerialName("middle-aged")
+        MiddleAged("middle-aged"),
+
+        @SerialName("old")
+        Old("old"),
+
+        @SerialName("other")
+        Other("other"),
+    }
+}

@@ -39,13 +39,20 @@ class ElevenLabTTSProvider(
     override suspend fun queryVoices(): Result<List<Voice>> =
         withContext(Dispatchers.IO) {
             client.getVoices().map { voices ->
-                voices.map {
+                voices.map { item ->
                     Voice(
-                        voiceId = it.voiceId,
-                        name = it.name,
-                        description = it.description,
-                        previewUrl = it.previewUrl,
-                        accent = it.labels?.get("accent")
+                        voiceId = item.voiceId,
+                        name = item.name,
+                        description = item.description,
+                        previewUrl = item.previewUrl,
+                        accent = Voice.Accent.entries.find { it.raw == item.labels?.get("accent") }
+                            ?: Voice.Accent.Other,
+                        age = Voice.Age.entries.find { it.raw == item.labels?.get("age") }
+                            ?: Voice.Age.Other,
+                        useCase = item.labels?.get("use case"),
+                        gender = Voice.Gender.entries.find {
+                            it.raw == item.labels?.get("gender")
+                        },
                     )
                 }
             }

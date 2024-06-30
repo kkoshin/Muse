@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -22,13 +22,21 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.outlined.Audiotrack
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.BuildConfig
+import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.serialization.Serializable
 import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
@@ -41,6 +49,7 @@ import me.zhanghai.compose.preference.twoTargetIconButtonPreference
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.setting
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.rememberKoinInject
 
 @Serializable
 object SettingArgs
@@ -49,12 +58,25 @@ object SettingArgs
  * - free quota
  */
 @Composable
-fun SettingScreen(modifier: Modifier = Modifier) {
+fun SettingScreen(
+    modifier: Modifier = Modifier,
+    onLaunchVoiceScreen: (Set<String>) -> Unit,
+) {
     val context = LocalContext.current
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val ttsManager = rememberKoinInject<TTSManager>()
+
+    var availableVoiceIds: Set<String>? by remember {
+        mutableStateOf(null)
+    }
+
+    LaunchedEffect(Unit) {
+        availableVoiceIds = ttsManager.queryAvailableVoiceIds() ?: emptySet()
+    }
+
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.safeContent,
+        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
@@ -134,7 +156,7 @@ fun SettingScreen(modifier: Modifier = Modifier) {
                     preferenceCategory(
                         key = "elevenlabs",
                         title = {
-                            Text("Elevenlabs", color = MaterialTheme.colors.primary)
+                            Text("ElevenLabs", color = MaterialTheme.colors.primary)
                         },
                     )
                     switchPreference(
@@ -162,7 +184,23 @@ fun SettingScreen(modifier: Modifier = Modifier) {
                         },
                     )
                     preference(
+                        key = "voice_setting",
+                        enabled = availableVoiceIds != null,
+                        icon = {
+                            Icon(Icons.Outlined.Audiotrack, "voice")
+                        },
+                        title = {
+                            Text("Voices setting")
+                        },
+                        onClick = {
+                            onLaunchVoiceScreen(availableVoiceIds!!)
+                        },
+                    )
+                    preference(
                         key = "export_folder",
+                        icon = {
+                            Icon(Icons.Outlined.Folder, "export folder")
+                        },
                         title = {
                             Text("Export folder")
                         },
