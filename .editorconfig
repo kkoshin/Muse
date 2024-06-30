@@ -8,3 +8,5 @@ ktlint_standard_function-naming=disabled
 
 # 强制换行，比如 Modifier 后面跟着很长的一串，那这个 Modifier 的位置，lint 必须另起一行
 ktlint_standard_multiline-expression-wrapping=disabled
+
+ktlint_standard_no-wildcard-imports=disabled
