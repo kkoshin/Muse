@@ -56,7 +56,10 @@ class MockTTSProvider : TTSProvider {
             ),
         )
 
-    override suspend fun generate(text: String): Result<TTSResult> =
+    override suspend fun generate(
+        voiceId: String,
+        text: String,
+    ): Result<TTSResult> =
         runCatching {
             withContext(Dispatchers.IO) {
                 delay(1000)

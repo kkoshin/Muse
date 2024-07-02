@@ -59,7 +59,6 @@ class AudioExportPipeline(
                     pcmInputs.forEachIndexed { index, uri ->
                         _progress.value = (index / pcmInputs.size.toFloat() * 100).roundToInt()
                         sink.writeAll(appContext.contentResolver.openInputStream(uri)!!.source())
-                        // 每个词之间加两秒间隔
                         if (paddingSilence.inWholeSeconds > 0) {
                             sink.write(getSilence(paddingSilence, audioMetadata))
                         }
@@ -85,10 +84,16 @@ class AudioExportPipeline(
         _progress.value = -1
     }
 
-    private suspend fun encodeWavAsMp3(target: Uri, wavParser: WavParser) {
+    private suspend fun encodeWavAsMp3(
+        target: Uri,
+        wavParser: WavParser,
+    ) {
         val encoder = Mp3Encoder()
         val outputSink =
-            appContext.contentResolver.openOutputStream(target)!!.sink().buffer()
+            appContext.contentResolver
+                .openOutputStream(target)!!
+                .sink()
+                .buffer()
         outputSink.use {
             encoder.encode(
                 wavParser,
@@ -97,8 +102,7 @@ class AudioExportPipeline(
                     .setId3tagArtist("μ's")
                     .setId3tagYear(
                         Calendar.getInstance().get(Calendar.YEAR).toString(),
-                    )
-                    .build(),
+                    ).build(),
             )
         }
     }

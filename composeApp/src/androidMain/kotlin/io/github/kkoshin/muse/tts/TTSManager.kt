@@ -50,14 +50,17 @@ class TTSManager(
      * TODO 目前的音频格式是固定为 [MonoAudioSampleMetadata]
      * @return 本地文件的 URI，目前仅为 MP3 文件
      */
-    suspend fun getOrGenerate(text: String): Result<Uri> {
-        val key = stringPreferencesKey(text.lowercase())
+    suspend fun getOrGenerate(
+        voiceId: String,
+        text: String,
+    ): Result<Uri> {
+        val key = stringPreferencesKey("${voiceId}_${text.lowercase()}")
         return runCatching {
             check(text.isNotBlank())
             appContext.dataStore.data
                 .first()[key]
                 ?.toUri() ?: run {
-                val audio = provider.generate(text).getOrThrow()
+                val audio = provider.generate(voiceId, text).getOrThrow()
                 val fileExtName = when (audio.mimeType) {
                     SupportedAudioType.MP3 -> ".mp3"
                     SupportedAudioType.PCM -> ".pcm"
@@ -69,7 +72,7 @@ class TTSManager(
                             appContext,
                             MediaStoreType.Audio,
                             "${text.lowercase()}$fileExtName",
-                            "Music/${appContext.getString(R.string.app_name)}",
+                            "Music/${appContext.getString(R.string.app_name)}/$voiceId",
                             enablePending = true,
                         ).let {
                             it.write {

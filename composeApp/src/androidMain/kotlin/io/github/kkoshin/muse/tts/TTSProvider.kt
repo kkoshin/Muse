@@ -9,7 +9,7 @@ interface TTSProvider {
     /**
      * 生成对应的音频文件流，
      */
-    suspend fun generate(text: String): Result<TTSResult>
+    suspend fun generate(voiceId: String, text: String): Result<TTSResult>
 
     /**
      * 剩余的 quota, 单位: Character

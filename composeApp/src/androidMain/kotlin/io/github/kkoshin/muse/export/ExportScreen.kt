@@ -1,63 +1,69 @@
 package io.github.kkoshin.muse.export
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.github.kkoshin.muse.editor.EditorViewModel
-import io.github.kkoshin.muse.editor.ProgressStatus
-import io.github.kkoshin.muse.tts.CharacterQuota
-import io.github.kkoshin.muse.tts.Voice
+import com.github.foodiestudio.sugar.notification.toast
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 class ExportArgs(
     val voiceId: String,
+    val phrases: List<String>,
 )
 
 @Composable
 fun ExportScreen(
     modifier: Modifier = Modifier,
     args: ExportArgs,
-    onExit: () -> Unit,
+    viewModel: ExportViewModel = koinViewModel(),
+    onExit: (isSuccess: Boolean) -> Unit,
 ) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val progress by viewModel.progress.collectAsState()
 
     BackHandler {
-        onExit()
+        onExit(progress is ProgressStatus.Success)
     }
 
     Scaffold(
@@ -80,7 +86,14 @@ fun ExportScreen(
         },
         content = { contentPadding ->
             Box(Modifier.padding(contentPadding)) {
-                Text("TODO")
+                Content(
+                    modifier = Modifier.fillMaxSize(),
+                    phrases = args.phrases,
+                    voiceId = args.voiceId,
+                    silence = 1.seconds, // TODO: use imported value
+                    progress,
+                    viewModel = viewModel,
+                )
             }
         },
     )
@@ -89,101 +102,159 @@ fun ExportScreen(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    viewModel: EditorViewModel,
+    phrases: List<String>,
+    voiceId: String,
+    silence: Duration,
+    progress: ProgressStatus,
+    viewModel: ExportViewModel,
 ) {
-    val progress by viewModel.progress.collectAsState()
+    val context = LocalContext.current
 
-    var selectedVoice: Voice? by remember {
-        mutableStateOf(null)
+    LaunchedEffect(voiceId, phrases) {
+        viewModel.startTTS(voiceId, phrases) {
+            viewModel.mixAudioAsMp3(silence, it)
+        }
     }
 
     Box(
         modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.TopCenter,
     ) {
         when (progress) {
             is ProgressStatus.Idle -> {
-                val quota = (progress as ProgressStatus.Idle).characterQuota
-                if (quota == CharacterQuota.unknown) {
-                    CircularProgressIndicator()
-                } else {
-                    Column(Modifier.width(IntrinsicSize.Max)) {
-                        Text(
-                            text = "Character Quota",
-                            style = MaterialTheme.typography.h5,
-                        )
-                        Text(text = "Remaining: ${quota.remaining}/${quota.total}")
-                        Button(onClick = {
-                            // TODO:
-//                            onLaunchVoicePicker(selectedVoice?.voiceId)
-                        }) {
-                            Text(text = selectedVoice?.name ?: "pick a voice")
-                        }
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = quota.remaining > 0,
-                            onClick = {
-//                                viewModel.startTTS(args.phrases.map { it.lowercase() })
-                            },
-                        ) {
-                            Text(text = "Start to TTS")
-                        }
-                    }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(top = 64.dp),
+                    verticalArrangement = Arrangement.spacedBy(64.dp),
+                ) {
+                    CircularProgressIndicator(
+                        Modifier.size(112.dp),
+                        strokeWidth = 6.dp,
+                        strokeCap = StrokeCap.Round,
+                    )
                 }
             }
 
             is ProgressStatus.Processing -> {
-                with((progress as ProgressStatus.Processing)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CircularProgressIndicator(Modifier.padding(end = 12.dp))
-                        Column {
-                            // TODO(Jiangc): 展示具体的进度
-                            Text(text = "Processing...")
-//                                    Text(text = "Processing phrase: $phrase")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(top = 64.dp),
+                    verticalArrangement = Arrangement.spacedBy(64.dp),
+                ) {
+                    CircularProgressIndicator(
+                        Modifier.size(112.dp),
+                        strokeWidth = 6.dp,
+                        strokeCap = StrokeCap.Round,
+                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        AnimatedContent(
+                            targetState = progress.description,
+                            transitionSpec = {
+                                fadeIn()
+                                    .togetherWith(fadeOut())
+                                    .using(
+                                        SizeTransform(clip = false),
+                                    )
+                            },
+                            label = "",
+                        ) {
+                            Text(text = it, style = MaterialTheme.typography.h6)
+                        }
+                        if (phrases.size > 10) {
+                            Text("It may take some time.")
                         }
                     }
                 }
             }
 
             is ProgressStatus.Success -> {
-                var silence by remember {
-                    mutableFloatStateOf(1.0f)
-                }
-                val context = LocalContext.current
-                val audioExportPipeline =
-                    rememberAudioExportPipeline(
-                        context = context,
-                        input = (progress as ProgressStatus.Success).pcmList,
-                        paddingSilence = silence.toInt().seconds,
-                    )
-
-                LaunchedEffect(silence) {
-                    audioExportPipeline.paddingSilence = silence.toInt().seconds
-                }
-
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(top = 64.dp),
+                    verticalArrangement = Arrangement.spacedBy(64.dp),
                 ) {
-                    Text(
-                        text = "Silence: ${silence.toInt()} second(s)",
-                        modifier = Modifier.fillMaxWidth(),
+                    Icon(
+                        Icons.Default.AudioFile,
+                        null,
+                        modifier = Modifier.size(112.dp),
+                        tint = MaterialTheme.colors.onBackground.copy(alpha = 0.5f),
                     )
-                    Slider(value = silence, valueRange = 0f..5.0f, onValueChange = {
-                        silence = it
-                    })
-                    ExportButton(modifier = Modifier, exportPipeline = audioExportPipeline)
+                    Text("Export done!", style = MaterialTheme.typography.h6)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                    ) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                Intent(Intent.ACTION_VIEW).let {
+                                    it.data = progress.uri
+                                    context.startActivity(it)
+                                }
+                            },
+                        ) {
+                            Text(text = "Open with other app")
+                        }
+
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                runCatching {
+                                    Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        type = "audio/mpeg"
+                                        putExtra(Intent.EXTRA_STREAM, progress.uri)
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        context.startActivity(this)
+                                    }
+                                }.onFailure { err ->
+                                    context.toast(err.message)
+                                    err.printStackTrace()
+                                }
+                            },
+                        ) {
+                            Text(text = "Share to other app")
+                        }
+                    }
                 }
             }
 
             is ProgressStatus.Failed -> {
-                Column {
-                    Text(text = "Failed!: ${(progress as ProgressStatus.Failed).errorMsg}")
-                    Button(onClick = {
-//                        viewModel.startTTS(args.phrases.map { it.lowercase() })
-                    }) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(top = 64.dp),
+                    verticalArrangement = Arrangement.spacedBy(64.dp),
+                ) {
+                    Text("_(:з」∠)_", style = MaterialTheme.typography.h4)
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(text = progress.errorMsg, style = MaterialTheme.typography.h6)
+                        Text(text = progress.throwable?.message ?: "", maxLines = 4, overflow = TextOverflow.Ellipsis)
+                    }
+                    Button(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                        onClick = {
+                            when (progress) {
+                                is TTSFailed -> viewModel.startTTS(voiceId, phrases) {
+                                    viewModel.mixAudioAsMp3(silence, it)
+                                }
+
+                                is MixFailed -> viewModel.mixAudioAsMp3(
+                                    silence,
+                                    progress.pcmList,
+                                )
+
+                                else -> {}
+                            }
+                        },
+                    ) {
                         Text(text = "Retry")
                     }
                 }
