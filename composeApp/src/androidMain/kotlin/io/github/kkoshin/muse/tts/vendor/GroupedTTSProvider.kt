@@ -8,12 +8,15 @@ import io.github.kkoshin.muse.tts.Voice
 class GroupedTTSProvider(
     private val providers: List<TTSProvider>,
 ) : TTSProvider {
-    override suspend fun generate(text: String): Result<TTSResult> {
+    override suspend fun generate(
+        voiceId: String,
+        text: String,
+    ): Result<TTSResult> {
         providers.forEachIndexed { index, ttsProvider ->
             if (index == providers.lastIndex) {
-                return ttsProvider.generate(text)
+                return ttsProvider.generate(voiceId, text)
             }
-            val result = ttsProvider.generate(text)
+            val result = ttsProvider.generate(voiceId, text)
             if (result.isSuccess) {
                 return result
             }

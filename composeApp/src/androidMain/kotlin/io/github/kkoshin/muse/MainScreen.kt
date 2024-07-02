@@ -75,14 +75,16 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<EditorArgs> { entry ->
+            val args = entry.toRoute<EditorArgs>()
             EditorScreen(
-                args = entry.toRoute(),
+                args = args,
                 onExportRequest = { voices ->
                     navController.navigate(
                         voices.associate { it.voiceId to it.name }.let {
                             ExportConfigSheetArgs(
                                 voiceIds = it.keys.toList(),
                                 voiceNames = it.values.toList(),
+                                phrases = args.phrases,
                             )
                         },
                     )
@@ -121,15 +123,19 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 Modifier.fillMaxHeight(),
                 voiceIds = args.voiceIds,
                 voiceNames = args.voiceNames,
-                onExport = {
-                    navController.navigate(ExportArgs(it))
+                onExport = { voiceId ->
+                    navController.navigate(ExportArgs(voiceId, args.phrases))
                 },
             )
         }
 
         composable<ExportArgs> { entry ->
-            ExportScreen(args = entry.toRoute(), onExit = {
-                navController.popBackStack()
+            ExportScreen(args = entry.toRoute(), onExit = { isSuccess ->
+                if (isSuccess) {
+                    navController.popBackStack(DashboardArgs, false)
+                } else {
+                    navController.popBackStack()
+                }
             })
         }
 

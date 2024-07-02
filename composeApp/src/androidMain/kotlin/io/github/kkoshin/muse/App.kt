@@ -3,6 +3,7 @@ package io.github.kkoshin.muse
 import android.app.Application
 import io.github.kkoshin.muse.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.editor.EditorViewModel
+import io.github.kkoshin.muse.export.ExportViewModel
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
@@ -28,7 +29,8 @@ class App : Application() {
             )
         }
         singleOf(::MuseRepo)
-        viewModel { EditorViewModel(get(), get()) }
+        viewModel { EditorViewModel(get()) }
+        viewModel { ExportViewModel(get(), get()) }
         viewModel { DashboardViewModel(get()) }
         singleOf(::TTSManager)
     }

@@ -19,11 +19,6 @@ import kotlinx.coroutines.withContext
 class ElevenLabTTSProvider(
     apiKey: String,
 ) : TTSProvider {
-    // Old Male with British accent
-    private val presetBrian = "nPczCjzI2devNBz1zQrb"
-
-    private val preferredVoiceId = presetBrian
-
     private val client = ElevenLabsClient(apiKey)
 
     override suspend fun queryQuota(): Result<CharacterQuota> =
@@ -58,7 +53,10 @@ class ElevenLabTTSProvider(
             }
         }
 
-    override suspend fun generate(text: String): Result<TTSResult> {
+    override suspend fun generate(
+        voiceId: String,
+        text: String,
+    ): Result<TTSResult> {
         check(text.isNotBlank()) {
             "text must not be blank."
         }
@@ -69,7 +67,7 @@ class ElevenLabTTSProvider(
             )
             client
                 .textToSpeech(
-                    voiceId = preferredVoiceId,
+                    voiceId = voiceId,
                     textToSpeechRequest = request,
                     outputFormat = FreeTierOutputFormat.Mp3_44100_128,
                     optimizeStreamingLatency = null,

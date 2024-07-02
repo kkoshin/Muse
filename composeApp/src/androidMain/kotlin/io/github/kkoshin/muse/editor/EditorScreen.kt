@@ -25,7 +25,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,10 +62,6 @@ fun EditorScreen(
     onExportRequest: (List<Voice>) -> Unit,
     onPickVoice: () -> Unit,
 ) {
-//    LaunchedEffect(Unit) {
-//        viewModel.refreshQuota()
-//    }
-
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     var loadingVisible by remember {
@@ -100,13 +95,6 @@ fun EditorScreen(
                 },
                 backgroundColor = MaterialTheme.colors.surface,
                 title = { Text(text = "Editor") },
-                actions = {
-                    IconButton(onClick = {
-                        // TODO: edit phrases
-                    }) {
-                        Icon(Icons.Default.EditNote, null)
-                    }
-                },
             )
         },
         content = { paddingValues ->

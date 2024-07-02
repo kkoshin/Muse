@@ -34,6 +34,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ExportConfigSheetArgs(
+    val phrases: List<String>,
     val voiceIds: List<String>,
     val voiceNames: List<String>,
 ) {
