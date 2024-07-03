@@ -1,18 +1,15 @@
 package io.github.kkoshin.muse.setting
 
 import android.net.Uri
+import android.os.Environment
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,6 +23,7 @@ import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,20 +32,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.BuildConfig
+import io.github.kkoshin.muse.MuseRepo
+import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.serialization.Serializable
-import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
-import me.zhanghai.compose.preference.listPreference
 import me.zhanghai.compose.preference.preference
 import me.zhanghai.compose.preference.preferenceCategory
-import me.zhanghai.compose.preference.switchPreference
 import me.zhanghai.compose.preference.textFieldPreference
-import me.zhanghai.compose.preference.twoTargetIconButtonPreference
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.setting
+import okio.Path.Companion.toOkioPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.rememberKoinInject
 
@@ -55,7 +52,9 @@ import org.koin.compose.rememberKoinInject
 object SettingArgs
 
 /**
- * - free quota
+ * 1. 显示 quota
+ * 2. 修改 API Key
+ * 3. 支持夜间模式
  */
 @Composable
 fun SettingScreen(
@@ -70,8 +69,16 @@ fun SettingScreen(
         mutableStateOf(null)
     }
 
+    var quota: CharacterQuota? by remember {
+        mutableStateOf(null)
+    }
+
     LaunchedEffect(Unit) {
         availableVoiceIds = ttsManager.queryAvailableVoiceIds() ?: emptySet()
+    }
+
+    LaunchedEffect(Unit) {
+        quota = ttsManager.queryQuota().getOrNull()
     }
 
     Scaffold(
@@ -112,45 +119,10 @@ fun SettingScreen(
                             Text("Language")
                         },
                         summary = {
-                            Text("System default")
+                            Text("English")
                         },
                         onClick = {
-                            // TODO
-                        },
-                    )
-                    twoTargetIconButtonPreference(
-                        key = "theme",
-                        title = {
-                            Text("Theme color")
-                        },
-                        iconButtonIcon = {
-                            Spacer(
-                                Modifier
-                                    .size(36.dp)
-                                    .background(MaterialTheme.colors.primary, shape = CircleShape),
-                            )
-                        },
-                        summary = {
-                            Text("Color that appears most frequently in the app")
-                        },
-                        onIconButtonClick = {
-                            // TODO:
-                        },
-                    )
-                    listPreference(
-                        key = "night_mode",
-                        defaultValue = "Follow system",
-                        values = listOf(
-                            "Follow system",
-                            "Off",
-                            "On",
-                        ),
-                        type = ListPreferenceType.DROPDOWN_MENU,
-                        title = {
-                            Text("Night mode")
-                        },
-                        summary = {
-                            Text(it)
+                            context.toast("TODO")
                         },
                     )
                     preferenceCategory(
@@ -158,11 +130,6 @@ fun SettingScreen(
                         title = {
                             Text("ElevenLabs", color = MaterialTheme.colors.primary)
                         },
-                    )
-                    switchPreference(
-                        key = "multiple_key_mode",
-                        defaultValue = false,
-                        title = { Text(text = "Multiple Key Mode") },
                     )
                     textFieldPreference(
                         key = "api_key",
@@ -180,6 +147,21 @@ fun SettingScreen(
                                 Text(text = "Not set")
                             } else {
                                 Text(text = it)
+                            }
+                        },
+                    )
+                    preference(
+                        key = "quota",
+                        enabled = availableVoiceIds != null,
+                        icon = {
+                            Icon(Icons.Outlined.Numbers, "voice")
+                        },
+                        title = {
+                            Text("Character quota")
+                        },
+                        summary = {
+                            quota?.let {
+                                Text("${it.remaining}/${it.total}")
                             }
                         },
                     )
@@ -205,10 +187,14 @@ fun SettingScreen(
                             Text("Export folder")
                         },
                         summary = {
-                            Text("Ask every time")
-                        },
-                        onClick = {
-                            // TODO
+                            Text(
+                                Environment
+                                    .getExternalStoragePublicDirectory(
+                                        Environment.DIRECTORY_DOWNLOADS,
+                                    ).toOkioPath()
+                                    .resolve("../${MuseRepo.getExportRelativePath(context)}", true)
+                                    .toString(),
+                            )
                         },
                     )
 
@@ -224,7 +210,7 @@ fun SettingScreen(
                             Text("Open source license")
                         },
                         onClick = {
-                            // TODO
+                            context.toast("TODO")
                         },
                     )
                     preference(
@@ -259,6 +245,13 @@ fun SettingScreen(
                         },
                         summary = {
                             Text(text = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
+                        },
+                        onClick = {
+                            val url = "https://github.com/kkoshin/Muse/releases"
+                            val intent = CustomTabsIntent
+                                .Builder()
+                                .build()
+                            intent.launchUrl(context, Uri.parse(url))
                         },
                     )
                 }

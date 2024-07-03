@@ -9,7 +9,6 @@ import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
 import io.github.kkoshin.muse.MuseRepo
-import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.audio.Mp3Decoder
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
@@ -116,7 +115,7 @@ class ExportViewModel(
                 appContext,
                 MediaStoreType.Downloads,
                 "Audio_${Instant.now().epochSecond}.mp3",
-                "Download/${appContext.getString(R.string.app_name)}",
+                MuseRepo.getExportRelativePath(appContext),
                 enablePending = false,
             ).mediaUri
 
