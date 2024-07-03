@@ -144,7 +144,7 @@ fun VoicePicker(
                                     style = MaterialTheme.typography.subtitle1,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(Color(0xFFEDEDED))
+                                        .background(if (MaterialTheme.colors.isLight) Color(0xFFEDEDED) else Color.DarkGray)
                                         .padding(horizontal = 16.dp, vertical = 12.dp),
                                 )
                             }
