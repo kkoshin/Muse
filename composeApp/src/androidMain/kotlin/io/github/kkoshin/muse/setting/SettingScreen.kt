@@ -1,5 +1,6 @@
 package io.github.kkoshin.muse.setting
 
+import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.BuildConfig
@@ -38,10 +39,6 @@ import io.github.kkoshin.muse.MuseRepo
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.serialization.Serializable
-import me.zhanghai.compose.preference.ProvidePreferenceLocals
-import me.zhanghai.compose.preference.preference
-import me.zhanghai.compose.preference.preferenceCategory
-import me.zhanghai.compose.preference.textFieldPreference
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.setting
 import okio.Path.Companion.toOkioPath
@@ -51,11 +48,6 @@ import org.koin.compose.rememberKoinInject
 @Serializable
 object SettingArgs
 
-/**
- * 1. 显示 quota
- * 2. 修改 API Key
- * 3. 支持夜间模式
- */
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
@@ -101,161 +93,168 @@ fun SettingScreen(
             )
         },
         content = { paddingValues ->
-            ProvidePreferenceLocals {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                ) {
-                    preferenceCategory(
-                        key = "interface",
-                        title = {
-                            Text("Interface", color = MaterialTheme.colors.primary)
-                        },
-                    )
-                    preference(
-                        key = "language",
-                        title = {
-                            Text("Language")
-                        },
-                        summary = {
-                            Text("English")
-                        },
-                        onClick = {
-                            context.toast("TODO")
-                        },
-                    )
-                    preferenceCategory(
-                        key = "elevenlabs",
-                        title = {
-                            Text("ElevenLabs", color = MaterialTheme.colors.primary)
-                        },
-                    )
-                    textFieldPreference(
-                        key = "api_key",
-                        defaultValue = "",
-                        title = { Text(text = "API key") },
-                        textToValue = { it },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Lock,
-                                contentDescription = null,
-                            )
-                        },
-                        summary = {
-                            if (it.isEmpty()) {
-                                Text(text = "Not set")
-                            } else {
-                                Text(text = it)
-                            }
-                        },
-                    )
-                    preference(
-                        key = "quota",
-                        enabled = availableVoiceIds != null,
-                        icon = {
-                            Icon(Icons.Outlined.Numbers, "voice")
-                        },
-                        title = {
-                            Text("Character quota")
-                        },
-                        summary = {
-                            quota?.let {
-                                Text("${it.remaining}/${it.total}")
-                            }
-                        },
-                    )
-                    preference(
-                        key = "voice_setting",
-                        enabled = availableVoiceIds != null,
-                        icon = {
-                            Icon(Icons.Outlined.Audiotrack, "voice")
-                        },
-                        title = {
-                            Text("Voices setting")
-                        },
-                        onClick = {
-                            onLaunchVoiceScreen(availableVoiceIds!!)
-                        },
-                    )
-                    preference(
-                        key = "export_folder",
-                        icon = {
-                            Icon(Icons.Outlined.Folder, "export folder")
-                        },
-                        title = {
-                            Text("Export folder")
-                        },
-                        summary = {
-                            Text(
-                                Environment
-                                    .getExternalStoragePublicDirectory(
-                                        Environment.DIRECTORY_DOWNLOADS,
-                                    ).toOkioPath()
-                                    .resolve("../${MuseRepo.getExportRelativePath(context)}", true)
-                                    .toString(),
-                            )
-                        },
-                    )
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            ) {
+                preferenceCategory(
+                    key = "interface",
+                    title = {
+                        Text("Interface", color = MaterialTheme.colors.primary)
+                    },
+                )
+                preference(
+                    key = "language",
+                    title = {
+                        Text("Language")
+                    },
+                    summary = {
+                        SummaryText("English")
+                    },
+                    onClick = {
+                        context.toast("TODO")
+                    },
+                )
+                preferenceCategory(
+                    key = "elevenlabs",
+                    title = {
+                        Text("ElevenLabs", color = MaterialTheme.colors.primary)
+                    },
+                )
+                // TODO: config key
+//                    textFieldPreference(
+//                        key = "api_key",
+//                        defaultValue = "",
+//                        title = { Text(text = "API key") },
+//                        textToValue = { it },
+//                        icon = {
+//                            Icon(
+//                                imageVector = Icons.Outlined.Lock,
+//                                contentDescription = null,
+//                            )
+//                        },
+//                        summary = {
+//                            if (it.isEmpty()) {
+//                                SummaryText(text = "Not set")
+//                            } else {
+//                                SummaryText(text = it)
+//                            }
+//                        },
+//                    )
+                preference(
+                    key = "quota",
+                    enabled = availableVoiceIds != null,
+                    icon = {
+                        Icon(Icons.Outlined.Numbers, "voice")
+                    },
+                    title = {
+                        Text("Character quota")
+                    },
+                    summary = {
+                        quota?.let {
+                            SummaryText("${it.remaining}/${it.total}")
+                        }
+                    },
+                )
+                preference(
+                    key = "voice_setting",
+                    enabled = availableVoiceIds != null,
+                    icon = {
+                        Icon(Icons.Outlined.Audiotrack, "voice")
+                    },
+                    title = {
+                        Text("Voices setting")
+                    },
+                    onClick = {
+                        onLaunchVoiceScreen(availableVoiceIds!!)
+                    },
+                )
+                preference(
+                    key = "export_folder",
+                    icon = {
+                        Icon(Icons.Outlined.Folder, "export folder")
+                    },
+                    title = {
+                        Text("Export folder")
+                    },
+                    summary = {
+                        SummaryText(
+                            Environment
+                                .getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_DOWNLOADS,
+                                ).toOkioPath()
+                                .resolve("../${MuseRepo.getExportRelativePath(context)}", true)
+                                .toString(),
+                        )
+                    },
+                )
 
-                    preferenceCategory(
-                        key = "about",
-                        title = {
-                            Text("About", color = MaterialTheme.colors.primary)
-                        },
-                    )
-                    preference(
-                        key = "license",
-                        title = {
-                            Text("Open source license")
-                        },
-                        onClick = {
-                            context.toast("TODO")
-                        },
-                    )
-                    preference(
-                        key = "feedback",
-                        title = {
-                            Text("Send feedback")
-                        },
-                        icon = {
-                            Icon(Icons.Default.MailOutline, contentDescription = null)
-                        },
-                        summary = {
-                            Text("bug report, feature request, etc.")
-                        },
-                        onClick = {
-                            val url = "https://github.com/kkoshin/Muse/issues"
-                            val intent = CustomTabsIntent
-                                .Builder()
-                                .build()
-                            intent.launchUrl(context, Uri.parse(url))
-                        },
-                    )
-                    preference(
-                        key = "version",
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = null,
-                            )
-                        },
-                        title = {
-                            Text("Version")
-                        },
-                        summary = {
-                            Text(text = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
-                        },
-                        onClick = {
-                            val url = "https://github.com/kkoshin/Muse/releases"
-                            val intent = CustomTabsIntent
-                                .Builder()
-                                .build()
-                            intent.launchUrl(context, Uri.parse(url))
-                        },
-                    )
-                }
+                preferenceCategory(
+                    key = "about",
+                    title = {
+                        Text("About", color = MaterialTheme.colors.primary)
+                    },
+                )
+                preference(
+                    key = "license",
+                    title = {
+                        Text("Open source license")
+                    },
+                    onClick = {
+                        context.toast("TODO")
+                    },
+                )
+                preference(
+                    key = "feedback",
+                    title = {
+                        Text("Send feedback")
+                    },
+                    icon = {
+                        Icon(Icons.Default.MailOutline, contentDescription = null)
+                    },
+                    summary = {
+                        SummaryText("bug report, feature request, etc.")
+                    },
+                    onClick = {
+                        context.openURL("https://github.com/kkoshin/Muse/issues")
+                    },
+                )
+                preference(
+                    key = "version",
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text("Version")
+                    },
+                    summary = {
+                        SummaryText(text = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})")
+                    },
+                    onClick = {
+                        context.openURL("https://github.com/kkoshin/Muse/releases")
+                    },
+                )
             }
         },
     )
+}
+
+@Composable
+private fun SummaryText(text: String) {
+    Text(
+        text,
+        color = if (MaterialTheme.colors.isLight) Color.DarkGray.copy(0.7f) else Color.LightGray.copy(alpha = 0.7f),
+        style = MaterialTheme.typography.body2,
+    )
+}
+
+private fun Context.openURL(url: String) {
+    val intent = CustomTabsIntent
+        .Builder()
+        .build()
+    intent.launchUrl(this, Uri.parse(url))
 }

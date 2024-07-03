@@ -34,7 +34,6 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
-            implementation(libs.preference.ui)
             implementation(libs.browser)
         }
         commonMain.dependencies {
@@ -44,7 +43,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
-//            implementation(compose.components.uiToolingPreview)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
             implementation(libs.accompanist.navigation.material)
