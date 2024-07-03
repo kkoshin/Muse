@@ -21,7 +21,7 @@ class DashboardViewModel(
                 listOf(
                     Script(
                         title = "Script 06-27",
-                        text = "A B C",
+                        text = "Water AB C",
                     ),
                 )
             }

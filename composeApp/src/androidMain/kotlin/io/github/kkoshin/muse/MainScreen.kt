@@ -2,7 +2,6 @@ package io.github.kkoshin.muse
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -120,11 +119,26 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         bottomSheet<ExportConfigSheetArgs> { entry ->
             val args: ExportConfigSheetArgs = entry.toRoute()
             ExportConfigSheet(
-                Modifier.fillMaxHeight(),
+                Modifier,
                 voiceIds = args.voiceIds,
                 voiceNames = args.voiceNames,
-                onExport = { voiceId ->
-                    navController.navigate(ExportArgs(voiceId, args.phrases))
+                onExport = {
+                        voiceId,
+                        fixedDurationEnabled,
+                        fixedSilence,
+                        silencePerChar,
+                        minDynamicDuration,
+                    ->
+                    navController.navigate(
+                        ExportArgs(
+                            voiceId,
+                            args.phrases,
+                            fixedDurationEnabled,
+                            fixedSilence,
+                            silencePerChar,
+                            minDynamicDuration,
+                        ),
+                    )
                 },
             )
         }

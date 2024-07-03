@@ -24,7 +24,6 @@ import okio.sink
 import org.koin.java.KoinJavaComponent.inject
 import java.io.File
 import java.time.Instant
-import kotlin.time.Duration
 
 class ExportViewModel(
     private val ttsManager: TTSManager,
@@ -102,12 +101,14 @@ class ExportViewModel(
 
     @OptIn(ExperimentalSugarApi::class)
     fun mixAudioAsMp3(
-        silence: Duration,
+        silence: SilenceDuration,
+        phrases: List<String>,
         pcmList: List<Uri>,
     ) {
         val exportPipeline = AudioExportPipeline(
             appContext,
             pcmList,
+            phrases,
             silence,
         )
         val targetUri = MediaFile

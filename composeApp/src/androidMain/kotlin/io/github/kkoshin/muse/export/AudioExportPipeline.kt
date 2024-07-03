@@ -24,6 +24,7 @@ import java.util.Calendar
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.times
 
 @Composable
 fun rememberAudioExportPipeline(
@@ -35,19 +36,30 @@ fun rememberAudioExportPipeline(
         AudioExportPipeline(
             context.applicationContext,
             input,
-            paddingSilence,
+            emptyList(),
+            SilenceDuration.Fixed(paddingSilence),
         )
     }
 
+/**
+ * FIXME 静音块精度目前只能支持到秒
+ */
 @OptIn(ExperimentalSugarApi::class)
 class AudioExportPipeline(
     private val appContext: Context,
     private val pcmInputs: List<Uri>,
-    var paddingSilence: Duration,
+    private val phrases: List<String>,
+    private val paddingSilence: SilenceDuration,
     private val audioMetadata: AudioSampleMetadata = MonoAudioSampleMetadata(),
 ) : ExportPipeline<Unit> {
     private val _progress: MutableStateFlow<Int> = MutableStateFlow(-1)
     override val progress: StateFlow<Int> = _progress
+
+    init {
+        if (paddingSilence is SilenceDuration.Dynamic) {
+            check(pcmInputs.size == phrases.size)
+        }
+    }
 
     override suspend fun start(target: Uri): Result<Unit> =
         runCatching {
@@ -59,8 +71,18 @@ class AudioExportPipeline(
                     pcmInputs.forEachIndexed { index, uri ->
                         _progress.value = (index / pcmInputs.size.toFloat() * 100).roundToInt()
                         sink.writeAll(appContext.contentResolver.openInputStream(uri)!!.source())
-                        if (paddingSilence.inWholeSeconds > 0) {
-                            sink.write(getSilence(paddingSilence, audioMetadata))
+                        when (paddingSilence) {
+                            is SilenceDuration.Dynamic -> {
+                                val duration = phrases[index].length * paddingSilence.durationPerChar
+                                if (duration.inWholeSeconds > 0) {
+                                    sink.write(getSilence(maxOf(paddingSilence.min, duration), audioMetadata))
+                                }
+                            }
+                            is SilenceDuration.Fixed -> {
+                                if (paddingSilence.duration.inWholeSeconds > 0) {
+                                    sink.write(getSilence(paddingSilence.duration, audioMetadata))
+                                }
+                            }
                         }
                     }
                 }

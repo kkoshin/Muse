@@ -40,16 +40,20 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import com.github.foodiestudio.sugar.notification.toast
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 class ExportArgs(
     val voiceId: String,
     val phrases: List<String>,
+    val fixedDurationEnabled: Boolean,
+    val fixedSilenceSeconds: Float,
+    val silencePerCharSeconds: Float,
+    val minDynamicDurationSeconds: Float,
 )
 
 @Composable
@@ -61,6 +65,14 @@ fun ExportScreen(
 ) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val progress by viewModel.progress.collectAsState()
+    val silenceDuration: SilenceDuration = if (args.fixedDurationEnabled) {
+        SilenceDuration.Fixed(args.fixedSilenceSeconds.toDouble().seconds)
+    } else {
+        SilenceDuration.Dynamic(
+            min = args.minDynamicDurationSeconds.toDouble().seconds,
+            durationPerChar = args.silencePerCharSeconds.toDouble().seconds,
+        )
+    }
 
     BackHandler {
         onExit(progress is ProgressStatus.Success)
@@ -90,7 +102,7 @@ fun ExportScreen(
                     modifier = Modifier.fillMaxSize(),
                     phrases = args.phrases,
                     voiceId = args.voiceId,
-                    silence = 1.seconds, // TODO: use imported value
+                    silence = silenceDuration,
                     progress,
                     viewModel = viewModel,
                 )
@@ -104,7 +116,7 @@ private fun Content(
     modifier: Modifier = Modifier,
     phrases: List<String>,
     voiceId: String,
-    silence: Duration,
+    silence: SilenceDuration,
     progress: ProgressStatus,
     viewModel: ExportViewModel,
 ) {
@@ -112,7 +124,7 @@ private fun Content(
 
     LaunchedEffect(voiceId, phrases) {
         viewModel.startTTS(voiceId, phrases) {
-            viewModel.mixAudioAsMp3(silence, it)
+            viewModel.mixAudioAsMp3(silence, phrases, it)
         }
     }
 
@@ -243,11 +255,12 @@ private fun Content(
                         onClick = {
                             when (progress) {
                                 is TTSFailed -> viewModel.startTTS(voiceId, phrases) {
-                                    viewModel.mixAudioAsMp3(silence, it)
+                                    viewModel.mixAudioAsMp3(silence, phrases, it)
                                 }
 
                                 is MixFailed -> viewModel.mixAudioAsMp3(
                                     silence,
+                                    phrases,
                                     progress.pcmList,
                                 )
 
