@@ -26,4 +26,8 @@ class MuseRepo(
         voiceId: String,
         phrase: String,
     ): File = getVoiceDir(voiceId).resolve("$phrase.pcm")
+
+    companion object {
+        fun getExportRelativePath(appContext: Context): String = "Download/${appContext.getString(R.string.app_name)}"
+    }
 }
