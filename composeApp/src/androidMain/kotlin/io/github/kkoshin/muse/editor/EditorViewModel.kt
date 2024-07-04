@@ -1,7 +1,6 @@
 package io.github.kkoshin.muse.editor
 
 import androidx.lifecycle.ViewModel
-import io.github.kkoshin.muse.dashboard.Script
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
 import io.github.kkoshin.muse.tts.TTSManager
@@ -16,7 +15,7 @@ class EditorViewModel(
         val availableVoiceIds =
             ttsManager.queryAvailableVoiceIds() ?: return Result.success(emptyList())
         return ttsManager
-            .queryVoiceList()
+            .queryVoiceList(false)
             .map { list ->
                 list.filter { it.voiceId in availableVoiceIds }
             }

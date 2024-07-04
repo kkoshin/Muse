@@ -2,6 +2,7 @@ package io.github.kkoshin.muse.tts.vendor
 
 import android.content.Context
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -17,8 +18,12 @@ class MockTTSProvider : TTSProvider {
 
     override suspend fun queryQuota(): Result<CharacterQuota> = Result.success(CharacterQuota(100, 100))
 
-    override suspend fun queryVoices(): Result<List<Voice>> =
-        Result.success(
+    override suspend fun queryVoices(): Result<List<Voice>> {
+        delay(1000)
+        debugLog {
+            "queryVoices from mock"
+        }
+        return Result.success(
             listOf(
                 Voice(
                     voiceId = "ThT5KcBeYPX3keUQqHPh1",
@@ -29,7 +34,7 @@ class MockTTSProvider : TTSProvider {
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
                     previewUrl =
-                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                    "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),
                 Voice(
                     voiceId = "ThT5KcBeYPX3keUQqHPh2",
@@ -40,7 +45,7 @@ class MockTTSProvider : TTSProvider {
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
                     previewUrl =
-                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                    "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),
                 Voice(
                     voiceId = "ThT5KcBeYPX3keUQqHPh3",
@@ -51,10 +56,11 @@ class MockTTSProvider : TTSProvider {
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
                     previewUrl =
-                        "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
+                    "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),
             ),
         )
+    }
 
     override suspend fun generate(
         voiceId: String,

@@ -94,7 +94,6 @@ import androidx.compose.ui.res.stringResource as strResource
 @Serializable
 object DashboardArgs
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
