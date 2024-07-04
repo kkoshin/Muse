@@ -39,13 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.github.foodiestudio.sugar.notification.toast
-import io.github.kkoshin.muse.repo.UUIDSerializer
 import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-import java.util.UUID
 
 @Serializable
 data class EditorArgs(

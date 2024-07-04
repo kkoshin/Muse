@@ -2,14 +2,12 @@ package io.github.kkoshin.muse.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.util.UUID
 
 class DashboardViewModel(
@@ -43,12 +41,6 @@ class DashboardViewModel(
     }
 
     fun deleteScript(scriptId: UUID) {
-        debugLog {
-            """
-                scriptId: $scriptId
-                list: ${_scripts.value.map { it.id }}
-            """.trimIndent()
-        }
         val newList = _scripts.value.toMutableList().apply {
             removeIf { it.id == scriptId }
         }
