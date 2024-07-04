@@ -34,7 +34,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FileOpen
@@ -52,9 +51,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.R
+import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import muse.composeapp.generated.resources.*
 import muse.composeapp.generated.resources.Res
@@ -92,7 +94,14 @@ fun DashboardScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
-                    viewModel.importScript(readTextContent(context, uri, false))
+                    val content = readTextContent(context, uri, false)
+                    if (content.length > MAX_TEXT_LENGTH) {
+                        withContext(Dispatchers.Main) {
+                            context.toast("Text is too long, import failed.")
+                        }
+                    } else {
+                        viewModel.importScript(content)
+                    }
                 }
             }
         }
@@ -102,7 +111,14 @@ fun DashboardScreen(
 
         ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
             scope.launch(Dispatchers.IO) {
-                viewModel.importScript(readTextContent(context, contentUri.toUri(), formatEnabled))
+                val content = readTextContent(context, contentUri.toUri(), formatEnabled)
+                if (content.length > MAX_TEXT_LENGTH) {
+                    withContext(Dispatchers.Main) {
+                        context.toast("Text is too long, import failed.")
+                    }
+                } else {
+                    viewModel.importScript(content)
+                }
             }
             importConfirmDialogVisible = false
         }, onCancel = {
@@ -123,11 +139,11 @@ fun DashboardScreen(
                 title = { Text(text = strResource(id = R.string.app_name)) },
                 backgroundColor = MaterialTheme.colors.surface,
                 actions = {
-                    IconButton(onClick = {
-                        onLaunchHistory()
-                    }) {
-                        Icon(Icons.Default.History, "history")
-                    }
+//                    IconButton(onClick = {
+//                        onLaunchHistory()
+//                    }) {
+//                        Icon(Icons.Default.History, "history")
+//                    }
                     IconButton(onClick = { onLaunchSettingsPage() }) {
                         Icon(Icons.Default.Settings, "settings")
                     }

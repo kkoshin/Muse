@@ -8,8 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
-import io.github.kkoshin.muse.MuseRepo
+import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.audio.Mp3Decoder
+import io.github.kkoshin.muse.repo.queryPhrases
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,6 +25,7 @@ import okio.sink
 import org.koin.java.KoinJavaComponent.inject
 import java.io.File
 import java.time.Instant
+import java.util.UUID
 
 class ExportViewModel(
     private val ttsManager: TTSManager,
@@ -34,6 +36,8 @@ class ExportViewModel(
 
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
     val progress: StateFlow<ProgressStatus> = _progress.asStateFlow()
+
+    suspend fun queryPhrases(scriptId: String): List<String>? = repo.queryPhrases(UUID.fromString(scriptId))
 
     /**
      * 相同的 phrase 仅需要生成一次，最终返回的时候要按照

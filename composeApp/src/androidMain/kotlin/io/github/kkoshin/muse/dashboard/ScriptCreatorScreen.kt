@@ -29,12 +29,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.github.foodiestudio.sugar.notification.toast
+import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
+import io.github.kkoshin.muse.repo.MuseRepo
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
+import org.koin.compose.rememberKoinInject
+import java.util.UUID
 
 @Serializable
 object ScriptCreatorArgs {
@@ -45,7 +54,7 @@ object ScriptCreatorArgs {
 fun ScriptCreatorScreen(
     modifier: Modifier = Modifier,
     script: Script? = null,
-    onResult: (Script?) -> Unit,
+    onResult: (scriptId: UUID?) -> Unit,
 ) {
     var content by remember {
         mutableStateOf(script?.text ?: "")
@@ -53,6 +62,9 @@ fun ScriptCreatorScreen(
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     val clipboardManager = LocalClipboardManager.current
+    val repo = rememberKoinInject<MuseRepo>()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     BackHandler {
         onResult(null)
@@ -78,8 +90,12 @@ fun ScriptCreatorScreen(
                     IconButton(
                         enabled = content.isNotEmpty(),
                         onClick = {
-                            // TODO: 持久化刚创建的这个内容
-                            onResult(Script(text = content))
+                            scope.launch {
+                                Script(text = content).let {
+                                    repo.insertScript(it)
+                                    onResult(it.id)
+                                }
+                            }
                         },
                     ) {
                         Icon(Icons.Default.Save, contentDescription = null)
@@ -96,7 +112,11 @@ fun ScriptCreatorScreen(
                 value = content,
                 textStyle = MaterialTheme.typography.h5,
                 onValueChange = {
-                    content = it
+                    if (it.length <= MAX_TEXT_LENGTH) {
+                        content = it
+                    } else {
+                        context.toast("Text too long, limit $MAX_TEXT_LENGTH length")
+                    }
                 },
                 decorationBox = { field ->
                     Box {
@@ -111,7 +131,7 @@ fun ScriptCreatorScreen(
                                 Button(
                                     shape = RoundedCornerShape(50),
                                     onClick = {
-                                        content = clipboardManager.getText().toString()
+                                        content = clipboardManager.getText().toString().take(MAX_TEXT_LENGTH)
                                     },
                                 ) {
                                     Icon(

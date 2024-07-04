@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.BuildConfig
-import io.github.kkoshin.muse.MuseRepo
+import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.serialization.Serializable
