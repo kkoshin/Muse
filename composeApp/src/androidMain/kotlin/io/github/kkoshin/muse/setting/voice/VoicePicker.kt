@@ -44,8 +44,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import muse.composeapp.generated.resources.*
 import muse.composeapp.generated.resources.Res
+import muse.composeapp.generated.resources.voices
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.rememberKoinInject
 
@@ -84,7 +84,7 @@ fun VoicePicker(
 
     LaunchedEffect(Unit) {
         ttsManager
-            .queryVoiceList()
+            .queryVoiceList(true)
             .onSuccess {
                 voices = it
             }.onFailure {

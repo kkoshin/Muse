@@ -33,11 +33,26 @@ class TTSManager(
      */
     private val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
 
+    /**
+     * 内存中缓存
+     */
+    private var voicesCache: List<Voice>? = null
+
     suspend fun queryQuota(): Result<CharacterQuota> = provider.queryQuota()
 
-    suspend fun queryVoiceList(): Result<List<Voice>> = provider.queryVoices()
+    suspend fun queryVoiceList(skipCache: Boolean): Result<List<Voice>> {
+        if (!skipCache) {
+            voicesCache?.let {
+                return Result.success(it)
+            }
+        }
+        return provider.queryVoices().onSuccess {
+            voicesCache = it
+        }
+    }
 
-    suspend fun queryAvailableVoiceIds(): Set<String>? = appContext.dataStore.data.first()[availableVoiceIdsKey]
+    suspend fun queryAvailableVoiceIds(): Set<String>? =
+        appContext.dataStore.data.first()[availableVoiceIdsKey]
 
     suspend fun updateAvailableVoice(voiceIds: Set<String>) {
         appContext.dataStore.edit {
