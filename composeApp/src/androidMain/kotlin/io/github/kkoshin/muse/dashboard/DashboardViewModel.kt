@@ -2,12 +2,14 @@ package io.github.kkoshin.muse.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.kkoshin.muse.MuseRepo
+import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.util.UUID
 
 class DashboardViewModel(
     private val repo: MuseRepo,
@@ -18,12 +20,7 @@ class DashboardViewModel(
     fun loadScripts() {
         viewModelScope.launch {
             _scripts.update {
-                listOf(
-                    Script(
-                        title = "Script 06-27",
-                        text = "Water AB C",
-                    ),
-                )
+                repo.queryAllScripts()
             }
         }
     }
@@ -35,9 +32,18 @@ class DashboardViewModel(
         _scripts.update {
             newList
         }
+        viewModelScope.launch {
+            repo.insertScript(script)
+        }
     }
 
     fun importScript(content: String) {
         addScript(Script(text = content))
+    }
+
+    fun deleteScript(scriptId: UUID) {
+        viewModelScope.launch {
+            repo.deleteScript(scriptId)
+        }
     }
 }

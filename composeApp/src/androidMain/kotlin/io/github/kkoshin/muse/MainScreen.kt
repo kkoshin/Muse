@@ -58,7 +58,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onLaunchEditor = { script ->
                     navController.navigate(
                         EditorArgs(
-                            script.text.split(" ", "\n").filterNot { it.isBlank() },
+                            scriptId = script.id.toString(),
                         ),
                     )
                 },
@@ -83,7 +83,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                             ExportConfigSheetArgs(
                                 voiceIds = it.keys.toList(),
                                 voiceNames = it.values.toList(),
-                                phrases = args.phrases,
+                                scriptId = args.scriptId,
                             )
                         },
                     )
@@ -95,11 +95,11 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<ScriptCreatorArgs> { entry ->
-            ScriptCreatorScreen(onResult = {
+            ScriptCreatorScreen(onResult = { scriptId ->
                 navController.popBackStack()
                 navController.currentBackStackEntry
                     ?.savedStateHandle
-                    ?.set(ScriptCreatorArgs.RESULT_KEY, it?.id)
+                    ?.set(ScriptCreatorArgs.RESULT_KEY, scriptId)
             })
         }
 
@@ -132,7 +132,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     navController.navigate(
                         ExportArgs(
                             voiceId,
-                            args.phrases,
+                            args.scriptId,
                             fixedDurationEnabled,
                             fixedSilence,
                             silencePerChar,

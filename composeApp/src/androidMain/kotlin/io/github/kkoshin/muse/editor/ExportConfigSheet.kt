@@ -40,7 +40,8 @@ import java.util.Locale
 
 @Serializable
 class ExportConfigSheetArgs(
-    val phrases: List<String>,
+    val scriptId: String,
+//    val phrases: List<String>,
     val voiceIds: List<String>,
     val voiceNames: List<String>,
 ) {

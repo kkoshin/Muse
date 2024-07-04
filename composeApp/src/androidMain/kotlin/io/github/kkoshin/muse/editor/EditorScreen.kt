@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,14 +39,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.github.foodiestudio.sugar.notification.toast
+import io.github.kkoshin.muse.repo.UUIDSerializer
 import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
+import java.util.UUID
 
 @Serializable
 data class EditorArgs(
-    val phrases: List<String>,
+    val scriptId: String,
 )
 
 /**
@@ -70,6 +74,16 @@ fun EditorScreen(
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    var phrases: List<String> by remember {
+        mutableStateOf(emptyList())
+    }
+
+    LaunchedEffect(key1 = args) {
+        viewModel.queryPhrases(args.scriptId)?.let {
+            phrases = it
+        } ?: context.toast("Failed loading phrases")
+    }
 
     if (loadingVisible) {
         Dialog(
@@ -107,7 +121,7 @@ fun EditorScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                args.phrases.forEach {
+                phrases.forEach {
                     OutlinedButton(onClick = { /*TODO*/ }) {
                         Text(text = it)
                     }
@@ -115,34 +129,36 @@ fun EditorScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                backgroundColor = MaterialTheme.colors.primary,
-                shape = RoundedCornerShape(16.dp),
-                onClick = {
-                    scope.launch {
-                        loadingVisible = true
-                        viewModel
-                            .fetchAvailableVoices()
-                            .onSuccess {
-                                if (it.isEmpty()) {
-                                    onPickVoice()
-                                } else {
-                                    onExportRequest(it)
+            if (phrases.isNotEmpty()) {
+                FloatingActionButton(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    shape = RoundedCornerShape(16.dp),
+                    onClick = {
+                        scope.launch {
+                            loadingVisible = true
+                            viewModel
+                                .fetchAvailableVoices()
+                                .onSuccess {
+                                    if (it.isEmpty()) {
+                                        onPickVoice()
+                                    } else {
+                                        onExportRequest(it)
+                                    }
+                                }.onFailure { e ->
+                                    context.toast(e.message)
                                 }
-                            }.onFailure { e ->
-                                context.toast(e.message)
-                            }
-                        loadingVisible = false
-                    }
-                },
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                            loadingVisible = false
+                        }
+                    },
                 ) {
-                    Icon(Icons.Filled.AudioFile, contentDescription = null)
-                    Text("Export")
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    ) {
+                        Icon(Icons.Filled.AudioFile, contentDescription = null)
+                        Text("Export")
+                    }
                 }
             }
         },

@@ -1,0 +1,20 @@
+CREATE TABLE Script (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    text TEXT NOT NULL,
+    created_At INTEGER NOT NULL
+);
+
+insertScript:
+INSERT INTO Script(id, title, text, created_At)
+VALUES(?, ?, ?, ?);
+
+deleteScriptById:
+DELETE FROM Script WHERE id = ?;
+
+queryAllScripts:
+SELECT Script.* FROM Script;
+
+queryScirptById:
+SELECT Script.* FROM Script WHERE id = ?;
+

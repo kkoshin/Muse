@@ -34,6 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -49,7 +52,7 @@ import kotlin.time.Duration.Companion.seconds
 @Serializable
 class ExportArgs(
     val voiceId: String,
-    val phrases: List<String>,
+    val scriptId: String,
     val fixedDurationEnabled: Boolean,
     val fixedSilenceSeconds: Float,
     val silencePerCharSeconds: Float,
@@ -72,6 +75,16 @@ fun ExportScreen(
             min = args.minDynamicDurationSeconds.toDouble().seconds,
             durationPerChar = args.silencePerCharSeconds.toDouble().seconds,
         )
+    }
+
+    var phrases: List<String> by remember {
+        mutableStateOf(emptyList())
+    }
+
+    LaunchedEffect(key1 = args) {
+        viewModel.queryPhrases(args.scriptId)?.let {
+            phrases = it
+        }
     }
 
     BackHandler {
@@ -100,7 +113,7 @@ fun ExportScreen(
             Box(Modifier.padding(contentPadding)) {
                 Content(
                     modifier = Modifier.fillMaxSize(),
-                    phrases = args.phrases,
+                    phrases = phrases,
                     voiceId = args.voiceId,
                     silence = silenceDuration,
                     progress,
@@ -123,8 +136,10 @@ private fun Content(
     val context = LocalContext.current
 
     LaunchedEffect(voiceId, phrases) {
-        viewModel.startTTS(voiceId, phrases) {
-            viewModel.mixAudioAsMp3(silence, phrases, it)
+        if (phrases.isNotEmpty()) {
+            viewModel.startTTS(voiceId, phrases) {
+                viewModel.mixAudioAsMp3(silence, phrases, it)
+            }
         }
     }
 
@@ -198,7 +213,9 @@ private fun Content(
                     Text("Export done!", style = MaterialTheme.typography.h6)
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 60.dp),
                     ) {
                         Button(
                             modifier = Modifier.fillMaxWidth(),
@@ -243,7 +260,9 @@ private fun Content(
                 ) {
                     Text("_(:з」∠)_", style = MaterialTheme.typography.h4)
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -251,7 +270,9 @@ private fun Content(
                         Text(text = progress.throwable?.message ?: "", maxLines = 4, overflow = TextOverflow.Ellipsis)
                     }
                     Button(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 60.dp),
                         onClick = {
                             when (progress) {
                                 is TTSFailed -> viewModel.startTTS(voiceId, phrases) {

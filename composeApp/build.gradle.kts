@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -35,6 +36,7 @@ kotlin {
                 exclude(group = "com.android.support")
             }
             implementation(libs.browser)
+            implementation(libs.sql.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -140,5 +142,13 @@ android {
         // video export 仅作为 debug 功能
         debugImplementation(libs.bundles.media3)
         implementation(platform(sharedLibs.koin.bom))
+    }
+}
+
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("io.github.kkoshin.muse.database")
+        }
     }
 }
