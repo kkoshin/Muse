@@ -7,12 +7,17 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,23 +25,34 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Checkbox
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,17 +60,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.R
+import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -71,6 +96,7 @@ import androidx.compose.ui.res.stringResource as strResource
 @Serializable
 object DashboardArgs
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
@@ -153,19 +179,48 @@ fun DashboardScreen(
         content = {
             Column(Modifier.padding(it)) {
                 if (scripts.isEmpty()) {
-                    // TODO: 使用颜文字/emoji
-                    Text("No scripts found")
+                    val modId = "modIcon"
+                    val text = buildAnnotatedString {
+                        append("Tap \"")
+                        appendInlineContent(modId, "[icon]")
+                        append("\" to create your first script.")
+
+                    }
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "No scripts :(", style = MaterialTheme.typography.h5)
+                            Text(text = text, inlineContent = mapOf(modId to InlineTextContent(
+                                placeholder = Placeholder(
+                                    width = 24.sp,
+                                    height = 24.sp,
+                                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                                ),
+                                children = {
+                                    Icon(
+                                        Icons.Filled.Edit,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp))
+                                }
+                            )))
+                        }
+                    }
                 } else {
                     LazyColumn(
                         contentPadding = PaddingValues(top = 8.dp, bottom = 56.dp),
                         reverseLayout = true,
                     ) {
-                        items(scripts) { script ->
+                        items(scripts, key = { item -> item.id }) { script ->
                             ScriptItem(
                                 modifier = Modifier.clickable {
                                     onLaunchEditor(script)
                                 },
                                 script = script,
+                                onDelete = {
+                                    viewModel.deleteScript(it)
+                                }
                             )
                         }
                     }
@@ -199,31 +254,75 @@ fun DashboardScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScriptItem(
     modifier: Modifier = Modifier,
     script: Script,
+    onDelete: (UUID) -> Unit
 ) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Icon(
-            Icons.AutoMirrored.Filled.Article,
-            contentDescription = null,
-            Modifier
-                .padding(start = 16.dp)
-                .size(48.dp),
-        )
-        Column(Modifier.weight(1f)) {
-            Text(script.title)
-            Text(script.summary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+    val scope = rememberCoroutineScope()
+
+    val dismissState = rememberDismissState(
+        confirmStateChange = {
+            if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
+                scope.launch {
+                    delay(300)
+                    onDelete(script.id)
+                }
+            }
+            true
         }
-        IconButton(onClick = {}) {
-            Icon(Icons.Filled.MoreVert, contentDescription = null)
+    )
+
+    SwipeToDismiss(
+        state = dismissState,
+        dismissThresholds = { FractionalThreshold(0.33f) },
+        background = {
+            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+
+            val scale by animateFloatAsState(targetValue = if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f)
+
+            val alignment = when (direction) {
+                DismissDirection.EndToStart -> Alignment.CenterEnd
+                DismissDirection.StartToEnd -> Alignment.CenterStart
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.error.copy(alpha = 0.5f))
+                    .padding(horizontal = 12.dp),
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.onError,
+                    modifier = Modifier
+                        .scale(scale)
+                        .align(alignment)
+                )
+            }
+        }) {
+        Row(
+            modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.Article,
+                contentDescription = null,
+                Modifier
+                    .padding(start = 16.dp)
+                    .size(48.dp),
+            )
+            Column(Modifier.weight(1f)) {
+                Text(script.title)
+                Text(script.summary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            }
         }
     }
 }
