@@ -90,6 +90,10 @@ import okio.source
 import okio.use
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import androidx.compose.ui.res.stringResource as strResource
 
@@ -202,7 +206,8 @@ fun DashboardScreen(
                                     Icon(
                                         Icons.Filled.Edit,
                                         contentDescription = null,
-                                        modifier = Modifier.size(24.dp))
+                                        modifier = Modifier.size(24.dp)
+                                    )
                                 }
                             )))
                         }
@@ -308,7 +313,7 @@ private fun ScriptItem(
             modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(vertical = 8.dp),
+                .padding(vertical = 8.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -316,14 +321,24 @@ private fun ScriptItem(
                 Icons.AutoMirrored.Filled.Article,
                 contentDescription = null,
                 Modifier
-                    .padding(start = 16.dp)
                     .size(48.dp),
             )
-            Column(Modifier.weight(1f)) {
-                Text(script.title)
-                Text(script.summary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(script.summary, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.subtitle1)
+                Text(
+                    text = script.createAt.formatTimeDisplay(),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.caption
+                )
             }
         }
+    }
+}
+
+private fun Long.formatTimeDisplay(): String {
+    return Instant.ofEpochMilli(this).let {
+        val time = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(time)
     }
 }
 
