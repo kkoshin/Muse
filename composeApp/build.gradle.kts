@@ -88,7 +88,7 @@ android {
             patch = 0, // bugfix
             code = 1,
         )
-        versionNameSuffix = "-beta1"
+        versionNameSuffix = "-beta2"
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
