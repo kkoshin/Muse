@@ -180,28 +180,32 @@ fun DashboardScreen(
                         append("Tap \"")
                         appendInlineContent(modId, "[icon]")
                         append("\" to create your first script.")
-
                     }
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(text = "No scripts :(", style = MaterialTheme.typography.h5)
-                            Text(text = text, inlineContent = mapOf(modId to InlineTextContent(
-                                placeholder = Placeholder(
-                                    width = 24.sp,
-                                    height = 24.sp,
-                                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                            Text(
+                                text = text,
+                                inlineContent = mapOf(
+                                    modId to InlineTextContent(
+                                        placeholder = Placeholder(
+                                            width = 24.sp,
+                                            height = 24.sp,
+                                            placeholderVerticalAlign = PlaceholderVerticalAlign.Center,
+                                        ),
+                                        children = {
+                                            Icon(
+                                                Icons.Filled.Edit,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp),
+                                            )
+                                        },
+                                    ),
                                 ),
-                                children = {
-                                    Icon(
-                                        Icons.Filled.Edit,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                            )))
+                            )
                         }
                     }
                 } else {
@@ -217,7 +221,7 @@ fun DashboardScreen(
                                 script = script,
                                 onDelete = {
                                     viewModel.deleteScript(it)
-                                }
+                                },
                             )
                         }
                     }
@@ -256,7 +260,7 @@ fun DashboardScreen(
 private fun ScriptItem(
     modifier: Modifier = Modifier,
     script: Script,
-    onDelete: (UUID) -> Unit
+    onDelete: (UUID) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -269,7 +273,7 @@ private fun ScriptItem(
                 }
             }
             true
-        }
+        },
     )
 
     SwipeToDismiss(
@@ -297,13 +301,15 @@ private fun ScriptItem(
                     tint = MaterialTheme.colors.onError,
                     modifier = Modifier
                         .scale(scale)
-                        .align(alignment)
+                        .align(alignment),
                 )
             }
-        }) {
+        },
+    ) {
         Row(
             modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colors.background)
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -319,19 +325,18 @@ private fun ScriptItem(
                 Text(
                     text = script.createAt.formatTimeDisplay(),
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.caption,
                 )
             }
         }
     }
 }
 
-private fun Long.formatTimeDisplay(): String {
-    return Instant.ofEpochMilli(this).let {
+private fun Long.formatTimeDisplay(): String =
+    Instant.ofEpochMilli(this).let {
         val time = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(time)
     }
-}
 
 /**
  * workaround: AppFileHelper 处理对非 document uri 时有问题
