@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.about)
+    alias(libs.plugins.matrix)
 }
 
 kotlin {
@@ -38,6 +39,7 @@ kotlin {
             }
             implementation(libs.browser)
             implementation(libs.sql.android)
+            implementation(libs.bundles.matrix)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

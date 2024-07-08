@@ -4,6 +4,7 @@ import android.app.Application
 import io.github.kkoshin.muse.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.editor.EditorViewModel
 import io.github.kkoshin.muse.export.ExportViewModel
+import io.github.kkoshin.muse.matrix.MatrixManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -44,5 +45,6 @@ class App : Application() {
             androidContext(this@App)
             modules(appModule)
         }
+        MatrixManager.init(this)
     }
 }
