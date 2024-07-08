@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.about)
 }
 
 kotlin {
@@ -48,6 +49,7 @@ kotlin {
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
             implementation(libs.accompanist.navigation.material)
+            implementation(libs.bundles.about)
         }
     }
 }

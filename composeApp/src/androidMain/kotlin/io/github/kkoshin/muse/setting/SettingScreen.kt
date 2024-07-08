@@ -52,6 +52,7 @@ object SettingArgs
 fun SettingScreen(
     modifier: Modifier = Modifier,
     onLaunchVoiceScreen: (Set<String>) -> Unit,
+    onLaunchOpenSourceScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
@@ -202,7 +203,7 @@ fun SettingScreen(
                         Text("Open source license")
                     },
                     onClick = {
-                        context.toast("TODO")
+                        onLaunchOpenSourceScreen()
                     },
                 )
                 preference(
@@ -252,7 +253,7 @@ private fun SummaryText(text: String) {
     )
 }
 
-private fun Context.openURL(url: String) {
+internal fun Context.openURL(url: String) {
     val intent = CustomTabsIntent
         .Builder()
         .build()

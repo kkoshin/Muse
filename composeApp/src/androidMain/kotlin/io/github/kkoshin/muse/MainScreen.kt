@@ -25,6 +25,8 @@ import io.github.kkoshin.muse.export.ExportScreen
 import io.github.kkoshin.muse.export.HistoryArgs
 import io.github.kkoshin.muse.export.HistoryScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
+import io.github.kkoshin.muse.setting.OpenSourceArgs
+import io.github.kkoshin.muse.setting.OpenSourceScreen
 import io.github.kkoshin.muse.setting.SettingArgs
 import io.github.kkoshin.muse.setting.SettingScreen
 import io.github.kkoshin.muse.setting.voice.VoicePicker
@@ -106,6 +108,8 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         composable<SettingArgs> {
             SettingScreen(onLaunchVoiceScreen = {
                 navController.navigate(VoicePickerArgs(it.toList()))
+            }, onLaunchOpenSourceScreen = {
+                navController.navigate(OpenSourceArgs)
             })
         }
 
@@ -155,6 +159,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
         composable<HistoryArgs> {
             HistoryScreen()
+        }
+
+        composable<OpenSourceArgs> {
+            OpenSourceScreen()
         }
     }
 }
