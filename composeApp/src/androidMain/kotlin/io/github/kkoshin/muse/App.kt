@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import xcrash.XCrash
 
 class App : Application() {
     private val appModule = module {
@@ -44,5 +45,6 @@ class App : Application() {
             androidContext(this@App)
             modules(appModule)
         }
+        XCrash.init(this)
     }
 }

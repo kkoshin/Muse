@@ -38,6 +38,7 @@ kotlin {
             }
             implementation(libs.browser)
             implementation(libs.sql.android)
+            implementation(libs.xcrash)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
