@@ -1,7 +1,6 @@
 package io.github.kkoshin.elevenlabs.api
 
 import io.github.kkoshin.elevenlabs.ElevenLabsClient
-import io.github.kkoshin.elevenlabs.bodyAsResult
 import io.github.kkoshin.elevenlabs.model.OptimizeStreamingLatency
 import io.github.kkoshin.elevenlabs.model.OutputFormat
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
@@ -23,7 +22,7 @@ suspend fun ElevenLabsClient.textToSpeech(
             output_format = outputFormat.value,
         ),
         data = textToSpeechRequest,
-    ).bodyAsResult()
+    )
 
 @Resource("/text-to-speech")
 class TextToSpeech {

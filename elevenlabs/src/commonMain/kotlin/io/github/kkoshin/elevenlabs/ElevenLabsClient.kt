@@ -14,23 +14,29 @@ import io.ktor.client.statement.HttpResponse
 class ElevenLabsClient(
     private val apiKey: String,
 ) {
-    internal suspend inline fun <reified T : Any> get(resource: T): HttpResponse =
-        ktorClient.get(resource = resource) {
-            headers {
-                append("xi-api-key", apiKey)
+    internal suspend inline fun <reified T : Any, reified R> get(resource: T): Result<R> =
+        runCatching {
+            ktorClient.get(resource = resource) {
+                headers {
+                    append("xi-api-key", apiKey)
+                }
             }
+        }.mapCatching {
+            it.bodyAsResult()
         }
 
-    internal suspend inline fun <reified T, reified R : Any> post(
+    internal suspend inline fun <reified T, reified R : Any, reified W> post(
         resources: R,
         data: T,
-    ): HttpResponse =
-        ktorClient.post<R>(resources) {
-            headers {
-                append("xi-api-key", apiKey)
+    ): Result<W> =
+        runCatching {
+            ktorClient.post<R>(resources) {
+                headers {
+                    append("xi-api-key", apiKey)
+                }
+                setBody(data)
             }
-            setBody(data)
-        }
+        }.mapCatching { it.bodyAsResult() }
 
     companion object {
         /**
@@ -42,16 +48,15 @@ class ElevenLabsClient(
     }
 }
 
-internal suspend inline fun <reified T> HttpResponse.bodyAsResult(): Result<T> =
-    runCatching {
-        when (status.value) {
-            200 -> body()
-            422 -> body<HttpValidationError>().let {
-                throw UnprocessableEntityError(it)
-            }
+@Throws(UnprocessableEntityError::class, ElevenLabsError::class)
+internal suspend inline fun <reified T> HttpResponse.bodyAsResult(): T =
+    when (status.value) {
+        200 -> body()
+        422 -> body<HttpValidationError>().let {
+            throw UnprocessableEntityError(it)
+        }
 
-            else -> body<APIError>().let {
-                throw ElevenLabsError(status.value, it.detail.message)
-            }
+        else -> body<APIError>().let {
+            throw ElevenLabsError(status.value, it.detail.message)
         }
     }
