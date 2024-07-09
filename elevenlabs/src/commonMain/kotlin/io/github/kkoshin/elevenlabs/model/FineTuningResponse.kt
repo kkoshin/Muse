@@ -34,7 +34,8 @@ data class FineTuningResponse(
     val language: String? = null,
     @SerialName("finetuning_progress")
     val finetuningProgress: Map<String, Double>? = null,
-    val message: String? = null,
+    // 实际返回了 {}, 与官方 SDK 定义不一致
+//    val message: String? = null,
     @SerialName("dataset_duration_seconds")
     val datasetDurationSeconds: Int? = null,
     @SerialName("verification_attempts")
