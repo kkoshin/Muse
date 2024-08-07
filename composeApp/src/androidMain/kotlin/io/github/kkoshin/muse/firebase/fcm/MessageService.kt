@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.fcm
+package io.github.kkoshin.muse.firebase.fcm
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

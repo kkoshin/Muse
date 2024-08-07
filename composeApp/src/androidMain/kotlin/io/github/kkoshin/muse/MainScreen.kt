@@ -12,8 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
-import io.github.kkoshin.muse.fcm.FCMSettingArgs
-import io.github.kkoshin.muse.fcm.FCMSettingScreen
+import io.github.kkoshin.muse.firebase.fcm.FCMSettingArgs
+import io.github.kkoshin.muse.firebase.fcm.FCMSettingScreen
 import io.github.kkoshin.muse.script.ScriptArgs
 import io.github.kkoshin.muse.script.ScriptScreen
 

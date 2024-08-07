@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.fcm
+package io.github.kkoshin.muse.firebase.fcm
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,11 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import com.github.foodiestudio.sugar.notification.toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.debugLog
 import kotlinx.serialization.Serializable
 import logcat.asLog
