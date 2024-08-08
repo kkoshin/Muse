@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -18,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.github.foodiestudio.sugar.notification.toast
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.logEvent
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import io.github.kkoshin.muse.debugLog
 import kotlinx.serialization.Serializable
@@ -65,6 +69,13 @@ fun FCMSettingScreen(modifier: Modifier = Modifier) {
         Column(Modifier.padding(paddingValues)) {
             Text(text = "FCM Token")
             Text(text = fcmToken)
+            Button(onClick = {
+                Firebase.analytics.logEvent("Login") {
+                    param("token", fcmToken)
+                }
+            }) {
+                Text(text = "report login")
+            }
         }
     }
 

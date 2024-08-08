@@ -24,7 +24,7 @@ fun MainScreen() {
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
-            startDestination = ScriptArgs,
+            startDestination = FCMSettingArgs,
         ) {
             composable<ScriptArgs> {
                 ScriptScreen { phrases ->

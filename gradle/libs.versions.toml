@@ -37,7 +37,8 @@ documentfile = "androidx.documentfile:documentfile:1.0.1"
 lame = "com.github.naman14:TAndroidLame:1.1"
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-fcm = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-inapp-message = { module = "com.google.firebase:firebase-inappmessaging-display" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -52,5 +53,6 @@ gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 media3 = ["media3-transformer", "media3-effect", "media3-exoplayer"]
 firebase = [
     "firebase-analytics",
-    "firebase-messaging"
+    "firebase-fcm",
+    "firebase-inapp-message"
 ]
