@@ -66,7 +66,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
@@ -96,7 +95,7 @@ object DashboardArgs
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    contentUri: String?,
+    contentUri: Uri?,
     initScriptId: UUID?,
     viewModel: DashboardViewModel = koinViewModel(),
     onLaunchEditor: (Script) -> Unit,
@@ -129,11 +128,11 @@ fun DashboardScreen(
         }
 
     if (importConfirmDialogVisible && contentUri != null) {
-        val displayName = getFileNameFromContentResolver(context, contentUri.toUri())!!
+        val displayName = getFileNameFromContentResolver(context, contentUri)!!
 
         ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
             scope.launch(Dispatchers.IO) {
-                val content = readTextContent(context, contentUri.toUri(), formatEnabled)
+                val content = readTextContent(context, contentUri, formatEnabled)
                 if (content.length > MAX_TEXT_LENGTH) {
                     withContext(Dispatchers.Main) {
                         context.toast("Text is too long, import failed.")
