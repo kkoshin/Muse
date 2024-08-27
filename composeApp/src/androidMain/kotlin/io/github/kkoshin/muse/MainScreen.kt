@@ -6,6 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -39,6 +43,7 @@ private fun Bundle.getDeepLinkUri(): Uri? =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelable(NavController.KEY_DEEP_LINK_INTENT, Intent::class.java)?.data
     } else {
+        @Suppress("DEPRECATION")
         getParcelable<Intent>(NavController.KEY_DEEP_LINK_INTENT)?.data
     }
 
@@ -57,10 +62,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 },
             ),
         ) { entry ->
-            // TODO: 返回到这个页面的时候，会重复触发，应该忽略上次的情况
+            // 需使用 rememberSaveable 而非 remember, 避免重复处理相同的 deeplink
+            var deeplinkUri: Uri? by rememberSaveable(entry) {
+                mutableStateOf(entry.arguments?.getDeepLinkUri())
+            }
             val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
             DashboardScreen(
-                contentUri = entry.arguments?.getDeepLinkUri(),
+                contentUri = deeplinkUri,
                 initScriptId = initScriptId,
                 onCreateScriptRequest = {
                     navController.navigate(ScriptCreatorArgs)
@@ -77,8 +85,8 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         launchSingleTop = true
                     }
                 },
-                onLaunchHistory = {
-                    navController.navigate(HistoryArgs)
+                onDeepLinkHandled = {
+                    deeplinkUri = null
                 },
             )
         }

@@ -101,7 +101,7 @@ fun DashboardScreen(
     onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
-    onLaunchHistory: () -> Unit,
+    onDeepLinkHandled: () -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -131,6 +131,8 @@ fun DashboardScreen(
         val displayName = getFileNameFromContentResolver(context, contentUri)!!
 
         ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
+            onDeepLinkHandled()
+            importConfirmDialogVisible = false
             scope.launch(Dispatchers.IO) {
                 val content = readTextContent(context, contentUri, formatEnabled)
                 if (content.length > MAX_TEXT_LENGTH) {
@@ -141,8 +143,8 @@ fun DashboardScreen(
                     viewModel.importScript(content)
                 }
             }
-            importConfirmDialogVisible = false
         }, onCancel = {
+            onDeepLinkHandled()
             importConfirmDialogVisible = false
         })
     }
