@@ -2,8 +2,14 @@ package io.github.kkoshin.muse
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -33,6 +39,14 @@ import io.github.kkoshin.muse.setting.voice.VoicePicker
 import io.github.kkoshin.muse.setting.voice.VoicePickerArgs
 import java.util.UUID
 
+private fun Bundle.getDeepLinkUri(): Uri? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getParcelable(NavController.KEY_DEEP_LINK_INTENT, Intent::class.java)?.data
+    } else {
+        @Suppress("DEPRECATION")
+        getParcelable<Intent>(NavController.KEY_DEEP_LINK_INTENT)?.data
+    }
+
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {
     NavHost(
@@ -48,11 +62,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 },
             ),
         ) { entry ->
-            val deepLinkContentUri: Uri? =
-                (entry.arguments?.get(NavController.KEY_DEEP_LINK_INTENT) as? Intent)?.data
+            // 需使用 rememberSaveable 而非 remember, 避免重复处理相同的 deeplink
+            var deeplinkUri: Uri? by rememberSaveable(entry) {
+                mutableStateOf(entry.arguments?.getDeepLinkUri())
+            }
             val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
             DashboardScreen(
-                contentUri = deepLinkContentUri?.toString(),
+                contentUri = deeplinkUri,
                 initScriptId = initScriptId,
                 onCreateScriptRequest = {
                     navController.navigate(ScriptCreatorArgs)
@@ -69,8 +85,8 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         launchSingleTop = true
                     }
                 },
-                onLaunchHistory = {
-                    navController.navigate(HistoryArgs)
+                onDeepLinkHandled = {
+                    deeplinkUri = null
                 },
             )
         }

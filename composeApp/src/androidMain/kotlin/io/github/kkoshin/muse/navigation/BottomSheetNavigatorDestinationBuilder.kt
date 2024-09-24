@@ -47,7 +47,7 @@ class BottomSheetNavigatorDestinationBuilder : NavDestinationBuilder<BottomSheet
      *   [androidx.compose.ui.window.Dialog].
      * @param content composable for the destination
      */
-    public constructor(
+    constructor(
         navigator: BottomSheetNavigator,
         route: String,
         content: @Composable ColumnScope.(backstackEntry: NavBackStackEntry) -> Unit,
@@ -67,7 +67,7 @@ class BottomSheetNavigatorDestinationBuilder : NavDestinationBuilder<BottomSheet
      *   [androidx.compose.ui.window.Dialog].
      * @param content composable for the destination
      */
-    public constructor(
+    constructor(
         navigator: BottomSheetNavigator,
         route: KClass<*>,
         typeMap: Map<KType, @JvmSuppressWildcards NavType<*>>,
