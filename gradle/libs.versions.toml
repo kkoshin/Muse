@@ -18,6 +18,7 @@ media3 = "1.3.1"
 accompanist = "0.34.0"
 sqldelight = "2.0.2"
 about = "11.2.2"
+billing = "7.1.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -48,6 +49,7 @@ accompanist-navigation-material = { module = "com.google.accompanist:accompanist
 sql-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 about-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about" }
 about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "about" }
+play-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
