@@ -23,7 +23,8 @@ class SubscriptionManager(context: Context) {
     private val helper = BillingHelper(context)
 
     // 检查当前设备所安装的 GMS 是否支持订阅，避免版本过低
-    fun checkGooglePlayServiceAvailable(): Boolean = helper.checkSubscriptionsSupported()
+    suspend fun checkGooglePlayServiceAvailable(): Result<Boolean> =
+        helper.checkSubscriptionsSupported()
 
     suspend fun queryProductDetails(productId: String): Result<ProductDetails> =
         helper.queryProductDetails(productId, ProductType.SUBS).mapCatching { it.firstOrNull()!! }
@@ -31,7 +32,7 @@ class SubscriptionManager(context: Context) {
     /**
      * 最终结果是
      */
-    suspend fun launchPurchase(
+    suspend fun purchase(
         activity: Activity,
         productDetails: ProductDetails,
         onResult: (Result<Purchase>) -> Unit

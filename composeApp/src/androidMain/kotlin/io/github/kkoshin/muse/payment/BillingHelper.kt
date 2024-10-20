@@ -46,12 +46,17 @@ private suspend fun BillingClient.connect(): Result<Unit> =
                     // The BillingClient is ready. You can query purchases here.
                     continuation.resume(Result.success(Unit))
                 } else {
-                    continuation.resumeWithException(
-                        BillingException.ConnectionError(
-                            billingResult.responseCode,
-                            billingResult.debugMessage
+                    retryBillingServiceConnection()
+                    if (isReady) {
+                        continuation.resume(Result.success(Unit))
+                    } else {
+                        continuation.resumeWithException(
+                            BillingException.ConnectionError(
+                                billingResult.responseCode,
+                                billingResult.debugMessage
+                            )
                         )
-                    )
+                    }
                 }
             }
 
@@ -61,6 +66,33 @@ private suspend fun BillingClient.connect(): Result<Unit> =
             }
         })
     }
+
+private fun BillingClient.retryBillingServiceConnection() {
+    val maxTries = 3
+    var tries = 1
+    var isConnectionEstablished = false
+    do {
+        try {
+            startConnection(object : BillingClientStateListener {
+                override fun onBillingServiceDisconnected() {
+
+                }
+
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    if (billingResult.responseCode == BillingResponseCode.OK) {
+                        isConnectionEstablished = true
+                    } else {
+                        // "Billing connection retry failed: ${billingResult.debugMessage}"
+                    }
+                }
+            })
+        } catch (e: Exception) {
+//            e.message?.let { Log.e(TAG, it) }
+            tries++
+        }
+    } while (tries <= maxTries && !isConnectionEstablished)
+}
+
 
 private suspend fun createConnectedBillingClient(builder: Builder): Result<BillingClient> {
     val client = builder.build()
@@ -74,12 +106,14 @@ class BillingHelper(private val applicationContext: Context) {
     }
 
     // check SUBSCRIPTIONS is supported
-    fun checkSubscriptionsSupported(): Boolean {
-        val billingClient = BillingClient.newBuilder(applicationContext).build()
-        return listOf(FeatureType.SUBSCRIPTIONS, FeatureType.SUBSCRIPTIONS_UPDATE)
-            .all {
-                billingClient.isFeatureSupported(it).responseCode == BillingResponseCode.OK
-            }
+    suspend fun checkSubscriptionsSupported(): Result<Boolean> {
+        val billingClientBuilder = BillingClient.newBuilder(applicationContext)
+        return createConnectedBillingClient(billingClientBuilder).map { client ->
+            listOf(FeatureType.SUBSCRIPTIONS, FeatureType.SUBSCRIPTIONS_UPDATE)
+                .all {
+                    client.isFeatureSupported(it).responseCode == BillingResponseCode.OK
+                }
+        }
     }
 
     /**
@@ -171,7 +205,7 @@ class BillingHelper(private val applicationContext: Context) {
         }
     }
 
-    suspend fun queryPurchases(productType: String): Result<List<Purchase>>  {
+    suspend fun queryPurchases(productType: String): Result<List<Purchase>> {
         val billingClientBuilder = BillingClient.newBuilder(applicationContext)
         val params = QueryPurchasesParams.newBuilder()
             .setProductType(productType)
@@ -196,7 +230,8 @@ class BillingHelper(private val applicationContext: Context) {
 
     private suspend fun BillingClient.getBillingConfig(): Result<BillingConfig> = suspendCoroutine {
         val getBillingConfigParams = GetBillingConfigParams.newBuilder().build()
-        getBillingConfigAsync(getBillingConfigParams
+        getBillingConfigAsync(
+            getBillingConfigParams
         ) { billingResult, billingConfig ->
             if (billingResult.responseCode == BillingResponseCode.OK
                 && billingConfig != null
