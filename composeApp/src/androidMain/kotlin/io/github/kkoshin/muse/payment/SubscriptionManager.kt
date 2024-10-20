@@ -25,8 +25,8 @@ class SubscriptionManager(context: Context) {
     // 检查当前设备所安装的 GMS 是否支持订阅，避免版本过低
     fun checkGooglePlayServiceAvailable(): Boolean = helper.checkSubscriptionsSupported()
 
-    suspend fun queryProductDetails(productId: String): Result<ProductDetails?> =
-        helper.queryProductDetails(productId, ProductType.SUBS).map { it.firstOrNull() }
+    suspend fun queryProductDetails(productId: String): Result<ProductDetails> =
+        helper.queryProductDetails(productId, ProductType.SUBS).mapCatching { it.firstOrNull()!! }
 
     /**
      * 最终结果是
@@ -36,7 +36,7 @@ class SubscriptionManager(context: Context) {
         productDetails: ProductDetails,
         onResult: (Result<Purchase>) -> Unit
     ) = helper.purchase(activity, productDetails) {
-        onResult(it.map { list -> list.firstOrNull()!! })
+        onResult(it.mapCatching { list -> list.firstOrNull()!! })
     }
 
     // 对于在非App内进行购买，可以主动进行对当前用户的订阅进行查询
