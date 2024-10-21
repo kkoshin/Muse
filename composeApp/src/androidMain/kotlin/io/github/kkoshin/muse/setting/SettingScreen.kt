@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.BuildConfig
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.CharacterQuota
@@ -99,24 +98,24 @@ fun SettingScreen(
                     .fillMaxSize()
                     .padding(paddingValues),
             ) {
-                preferenceCategory(
-                    key = "interface",
-                    title = {
-                        Text("Interface", color = MaterialTheme.colors.primary)
-                    },
-                )
-                preference(
-                    key = "language",
-                    title = {
-                        Text("Language")
-                    },
-                    summary = {
-                        SummaryText("English")
-                    },
-                    onClick = {
-                        context.toast("TODO")
-                    },
-                )
+//                preferenceCategory(
+//                    key = "interface",
+//                    title = {
+//                        Text("Interface", color = MaterialTheme.colors.primary)
+//                    },
+//                )
+//                preference(
+//                    key = "language",
+//                    title = {
+//                        Text("Language")
+//                    },
+//                    summary = {
+//                        SummaryText("English")
+//                    },
+//                    onClick = {
+//                        context.toast("TODO")
+//                    },
+//                )
                 preferenceCategory(
                     key = "elevenlabs",
                     title = {
@@ -153,9 +152,11 @@ fun SettingScreen(
                         Text("Character quota")
                     },
                     summary = {
-                        quota?.let {
-                            SummaryText("${it.remaining}/${it.total}")
-                        }
+                        SummaryText(
+                            quota?.let {
+                                "${it.remaining}/${it.total}"
+                            } ?: "-/-"
+                        )
                     },
                 )
                 preference(
@@ -166,6 +167,17 @@ fun SettingScreen(
                     },
                     title = {
                         Text("Voices setting")
+                    },
+                    summary = {
+                        availableVoiceIds?.let {
+                            SummaryText(
+                                if (it.isEmpty()) {
+                                    "No voices selected"
+                                } else {
+                                    "${it.size} voice(s) selected"
+                                }
+                            )
+                        }
                     },
                     onClick = {
                         onLaunchVoiceScreen(availableVoiceIds!!)
@@ -248,7 +260,9 @@ fun SettingScreen(
 private fun SummaryText(text: String) {
     Text(
         text,
-        color = if (MaterialTheme.colors.isLight) Color.DarkGray.copy(0.7f) else Color.LightGray.copy(alpha = 0.7f),
+        color = if (MaterialTheme.colors.isLight) Color.DarkGray.copy(0.7f) else Color.LightGray.copy(
+            alpha = 0.7f
+        ),
         style = MaterialTheme.typography.body2,
     )
 }
