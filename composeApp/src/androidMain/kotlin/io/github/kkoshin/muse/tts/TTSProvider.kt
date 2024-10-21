@@ -79,6 +79,9 @@ data class Voice(
         @SerialName("irish")
         Irish("irish"),
 
+        @SerialName("transatlantic")
+        Transatlantic("transatlantic"),
+
         @SerialName("other")
         Other("other"),
     }

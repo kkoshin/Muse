@@ -8,6 +8,7 @@ import io.github.kkoshin.elevenlabs.model.FreeTierOutputFormat
 import io.github.kkoshin.elevenlabs.model.ModelId
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -40,13 +41,15 @@ class ElevenLabTTSProvider(
                         name = item.name,
                         description = item.description,
                         previewUrl = item.previewUrl,
-                        accent = Voice.Accent.entries.find { it.raw == item.labels?.get("accent") }
-                            ?: Voice.Accent.Other,
-                        age = Voice.Age.entries.find { it.raw == item.labels?.get("age") }
+                        accent = Voice.Accent.entries.find { it.raw.equals(item.labels?.get("accent"), true) }
+                            ?: Voice.Accent.Other.also {
+                                debugLog { "accent not found: ${item.labels?.get("accent")}" }
+                            },
+                        age = Voice.Age.entries.find { it.raw.equals(item.labels?.get("age"), true) }
                             ?: Voice.Age.Other,
                         useCase = item.labels?.get("use case"),
                         gender = Voice.Gender.entries.find {
-                            it.raw == item.labels?.get("gender")
+                            it.raw.equals(item.labels?.get("gender"), true)
                         },
                     )
                 }
