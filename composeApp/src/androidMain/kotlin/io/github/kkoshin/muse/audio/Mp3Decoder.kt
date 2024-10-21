@@ -95,7 +95,7 @@ class Mp3Decoder {
                     )
                     isEOS = true
                 } else {
-                    val presentationTimeUs: Long = extractor.getSampleTime()
+                    val presentationTimeUs: Long = extractor.sampleTime
                     codec.queueInputBuffer(
                         inputBufferIndex,
                         0,
