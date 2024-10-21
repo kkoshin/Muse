@@ -41,7 +41,6 @@ import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import org.koin.compose.koinInject
 import org.koin.compose.rememberKoinInject
 import java.util.UUID
 
@@ -131,7 +130,10 @@ fun ScriptCreatorScreen(
                                 Button(
                                     shape = RoundedCornerShape(50),
                                     onClick = {
-                                        content = clipboardManager.getText().toString().take(MAX_TEXT_LENGTH)
+                                        clipboardManager.getText()?.toString()
+                                            ?.take(MAX_TEXT_LENGTH)?.let {
+                                            content = it
+                                        }
                                     },
                                 ) {
                                     Icon(
