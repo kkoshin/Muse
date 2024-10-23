@@ -164,5 +164,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         composable<OpenSourceArgs> {
             OpenSourceScreen()
         }
+
+        // TODO: 初次使用需要配置 elvenlabs api key
     }
 }
