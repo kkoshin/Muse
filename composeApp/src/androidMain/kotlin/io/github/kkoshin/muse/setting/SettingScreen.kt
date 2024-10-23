@@ -19,24 +19,30 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.BuildConfig
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.TTSManager
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.setting
@@ -56,6 +62,8 @@ fun SettingScreen(
     val context = LocalContext.current
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val ttsManager = rememberKoinInject<TTSManager>()
+    val accountManager = rememberKoinInject<AccountManager>()
+    val scope = rememberCoroutineScope()
 
     var availableVoiceIds: Set<String>? by remember {
         mutableStateOf(null)
@@ -65,11 +73,12 @@ fun SettingScreen(
         mutableStateOf(null)
     }
 
-    LaunchedEffect(Unit) {
-        availableVoiceIds = ttsManager.queryAvailableVoiceIds() ?: emptySet()
-    }
+    val apiKeyValue: String? by accountManager.apiKey.collectAsState(null)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(apiKeyValue) {
+        if (apiKeyValue.isNullOrEmpty()) return@LaunchedEffect
+        accountManager.setElevenLabsApiKey(apiKeyValue!!)
+        availableVoiceIds = ttsManager.queryAvailableVoiceIds() ?: emptySet()
         quota = ttsManager.queryQuota().getOrNull()
     }
 
@@ -98,91 +107,91 @@ fun SettingScreen(
                     .fillMaxSize()
                     .padding(paddingValues),
             ) {
-//                preferenceCategory(
-//                    key = "interface",
-//                    title = {
-//                        Text("Interface", color = MaterialTheme.colors.primary)
-//                    },
-//                )
-//                preference(
-//                    key = "language",
-//                    title = {
-//                        Text("Language")
-//                    },
-//                    summary = {
-//                        SummaryText("English")
-//                    },
-//                    onClick = {
-//                        context.toast("TODO")
-//                    },
-//                )
                 preferenceCategory(
                     key = "elevenlabs",
                     title = {
                         Text("ElevenLabs", color = MaterialTheme.colors.primary)
                     },
                 )
-                // TODO: config key
-//                    textFieldPreference(
-//                        key = "api_key",
-//                        defaultValue = "",
-//                        title = { Text(text = "API key") },
-//                        textToValue = { it },
-//                        icon = {
-//                            Icon(
-//                                imageVector = Icons.Outlined.Lock,
-//                                contentDescription = null,
-//                            )
-//                        },
-//                        summary = {
-//                            if (it.isEmpty()) {
-//                                SummaryText(text = "Not set")
-//                            } else {
-//                                SummaryText(text = it)
-//                            }
-//                        },
-//                    )
-                preference(
-                    key = "quota",
-                    enabled = availableVoiceIds != null,
-                    icon = {
-                        Icon(Icons.Outlined.Numbers, "voice")
+                editTextPreference(
+                    key = "api_key",
+                    value = apiKeyValue ?: "",
+                    onValueUpdate = { newValue ->
+                        if (newValue.isNotEmpty()) {
+                            scope.launch {
+                                accountManager.setElevenLabsApiKey(newValue)
+                            }
+                        }
                     },
-                    title = {
-                        Text("Character quota")
+                    title = { Text(text = "API key") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null,
+                        )
                     },
                     summary = {
                         SummaryText(
-                            quota?.let {
-                                "${it.remaining}/${it.total}"
-                            } ?: "-/-"
+                            text = if (apiKeyValue.isNullOrEmpty()) "Not set" else apiKeyValue!!.replaceRange(
+                                0,
+                                apiKeyValue!!.length - 2,
+                                "•".repeat(apiKeyValue!!.length - 2),
+                            )
                         )
                     },
-                )
-                preference(
-                    key = "voice_setting",
-                    enabled = availableVoiceIds != null,
-                    icon = {
-                        Icon(Icons.Outlined.Audiotrack, "voice")
-                    },
-                    title = {
-                        Text("Voices setting")
-                    },
-                    summary = {
-                        availableVoiceIds?.let {
-                            SummaryText(
-                                if (it.isEmpty()) {
-                                    "No voices selected"
-                                } else {
-                                    "${it.size} voice(s) selected"
-                                }
-                            )
+                    dialogTitle = "ElevenLabs API Key",
+                    inputLabel = "API Key",
+                    widgetContainer = {
+                        IconButton(onClick = {
+                            context.openURL("https://elevenlabs.io/app/speech-synthesis/text-to-speech")
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.Launch, "launch")
                         }
                     },
-                    onClick = {
-                        onLaunchVoiceScreen(availableVoiceIds!!)
-                    },
                 )
+                if (apiKeyValue != null) {
+                    preference(
+                        key = "quota",
+                        enabled = availableVoiceIds != null,
+                        icon = {
+                            Icon(Icons.Outlined.Numbers, "voice")
+                        },
+                        title = {
+                            Text("Character quota")
+                        },
+                        summary = {
+                            SummaryText(
+                                quota?.let {
+                                    "${it.remaining}/${it.total}"
+                                } ?: "-/-"
+                            )
+                        },
+                    )
+                    preference(
+                        key = "voice_setting",
+                        enabled = availableVoiceIds != null,
+                        icon = {
+                            Icon(Icons.Outlined.Audiotrack, "voice")
+                        },
+                        title = {
+                            Text("Voices accent")
+                        },
+                        summary = {
+                            availableVoiceIds?.let {
+                                SummaryText(
+                                    if (it.isEmpty()) {
+                                        "No voices selected"
+                                    } else {
+                                        "${it.size} voice(s) selected"
+                                    }
+                                )
+                            }
+                        },
+                        onClick = {
+                            onLaunchVoiceScreen(availableVoiceIds!!)
+                        },
+                    )
+                }
                 preference(
                     key = "export_folder",
                     icon = {
