@@ -8,7 +8,8 @@ import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
-import io.github.kkoshin.muse.tts.vendor.GroupedTTSProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext
@@ -20,21 +21,16 @@ import org.koin.dsl.module
 
 class App : Application() {
     private val appModule = module {
-        single<TTSProvider> {
-//            MockTTSProvider()
-            GroupedTTSProvider(
-                listOf(
-                    ElevenLabTTSProvider("d41ee34b857479772db5ce143549bcd9"),
-                    // 备用
-                    ElevenLabTTSProvider("7904879831bf1d4fd56f4f6baee9167b"),
-                ),
-            )
-        }
         singleOf(::MuseRepo)
         viewModelOf(::EditorViewModel)
         viewModel { ExportViewModel(get(), get()) }
         viewModel { DashboardViewModel(get()) }
         singleOf(::TTSManager)
+        singleOf(::AccountManager)
+        single<CoroutineScope> { MainScope() }
+        single<TTSProvider> {
+            ElevenLabTTSProvider(get(), get())
+        }
     }
 
     override fun onCreate() {
