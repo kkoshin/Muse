@@ -66,7 +66,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
@@ -96,13 +95,13 @@ object DashboardArgs
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    contentUri: String?,
+    contentUri: Uri?,
     initScriptId: UUID?,
     viewModel: DashboardViewModel = koinViewModel(),
     onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
-    onLaunchHistory: () -> Unit,
+    onDeepLinkHandled: () -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -129,11 +128,13 @@ fun DashboardScreen(
         }
 
     if (importConfirmDialogVisible && contentUri != null) {
-        val displayName = getFileNameFromContentResolver(context, contentUri.toUri())!!
+        val displayName = getFileNameFromContentResolver(context, contentUri)!!
 
         ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
+            onDeepLinkHandled()
+            importConfirmDialogVisible = false
             scope.launch(Dispatchers.IO) {
-                val content = readTextContent(context, contentUri.toUri(), formatEnabled)
+                val content = readTextContent(context, contentUri, formatEnabled)
                 if (content.length > MAX_TEXT_LENGTH) {
                     withContext(Dispatchers.Main) {
                         context.toast("Text is too long, import failed.")
@@ -142,8 +143,8 @@ fun DashboardScreen(
                     viewModel.importScript(content)
                 }
             }
-            importConfirmDialogVisible = false
         }, onCancel = {
+            onDeepLinkHandled()
             importConfirmDialogVisible = false
         })
     }
