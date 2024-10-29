@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -109,12 +108,12 @@ fun ScriptCreatorScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 32.dp),
                 value = content,
-                textStyle = MaterialTheme.typography.h5,
+                textStyle = MaterialTheme.typography.h5.copy(color = MaterialTheme.colors.onSurface),
                 onValueChange = {
                     if (it.length <= MAX_TEXT_LENGTH) {
                         content = it
                     } else {
-                        context.toast("Text too long, limit $MAX_TEXT_LENGTH length")
+                        context.toast("The text has exceeded the maximum limit of $MAX_TEXT_LENGTH characters")
                     }
                 },
                 decorationBox = { field ->
@@ -125,7 +124,7 @@ fun ScriptCreatorScreen(
                                 Text(
                                     "Enter text",
                                     style = MaterialTheme.typography.h5,
-                                    color = Color.DarkGray,
+                                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
                                 )
                                 Button(
                                     shape = RoundedCornerShape(50),
