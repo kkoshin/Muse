@@ -1,6 +1,6 @@
 <resources>
     <string name="setting">Setting</string>
-    <string name="format_replace_newlines_with_spaces">Replace newlines with spaces</string>
-    <string name="import_file_content_with_file_name">Import the contents of the %1$s file?</string>
+    <string name="format_replace_newlines_with_spaces">Convert line breaks to spaces</string>
+    <string name="import_file_content_with_file_name">Import %1$s?</string>
     <string name="voices">Voices</string>
 </resources>

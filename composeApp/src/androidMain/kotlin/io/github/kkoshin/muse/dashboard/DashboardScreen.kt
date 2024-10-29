@@ -401,14 +401,15 @@ private fun ImportConfirmDialog(
         onDismissRequest = {
             onCancel()
         },
-        title = { Text("Confirm") },
+        title = { Text("Import Text", style = MaterialTheme.typography.h6) },
         text = {
             Column {
-                Text(stringResource(Res.string.import_file_content_with_file_name, fileName))
+                Text(stringResource(Res.string.import_file_content_with_file_name, fileName), style = MaterialTheme.typography.body1)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         stringResource(Res.string.format_replace_newlines_with_spaces),
                         modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.body1,
                     )
                     Checkbox(replaceEnabled, onCheckedChange = {
                         replaceEnabled = it
@@ -420,14 +421,14 @@ private fun ImportConfirmDialog(
             TextButton(onClick = {
                 onConfirm(replaceEnabled)
             }) {
-                Text("Import")
+                Text("Import", style = MaterialTheme.typography.button)
             }
         },
         dismissButton = {
             TextButton(onClick = {
                 onCancel()
             }) {
-                Text("Cancel")
+                Text("Cancel", style = MaterialTheme.typography.button)
             }
         },
     )
