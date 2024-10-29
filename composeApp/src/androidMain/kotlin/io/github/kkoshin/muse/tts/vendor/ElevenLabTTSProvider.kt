@@ -9,7 +9,6 @@ import io.github.kkoshin.elevenlabs.model.ModelId
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
-import io.github.kkoshin.muse.debugLog
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import logcat.logcat
 
 class ElevenLabTTSProvider(
     accountManager: AccountManager,
@@ -75,7 +75,7 @@ class ElevenLabTTSProvider(
                             accent = Voice.Accent.entries.find {
                                 it.raw.equals(item.labels?.get("accent"), true)
                             } ?: Voice.Accent.Other.also {
-                                debugLog { "accent not found: ${item.labels?.get("accent")}" }
+                                logcat { "accent not found: ${item.labels?.get("accent")}" }
                             },
                             age = Voice.Age.entries.find {
                                 it.raw.equals(item.labels?.get("age"), true)
