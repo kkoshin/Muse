@@ -195,5 +195,6 @@ private fun getAccentFlag(accent: Voice.Accent): String =
         Voice.Accent.BritishSwedish -> "🇸🇪"
         Voice.Accent.Australian -> "🇦🇺"
         Voice.Accent.Irish -> "🇮🇪"
+        Voice.Accent.Transatlantic -> "🇺🇸"
         Voice.Accent.Other -> "❓"
     }

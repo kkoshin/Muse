@@ -66,7 +66,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
@@ -96,13 +95,13 @@ object DashboardArgs
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    contentUri: String?,
+    contentUri: Uri?,
     initScriptId: UUID?,
     viewModel: DashboardViewModel = koinViewModel(),
     onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
-    onLaunchHistory: () -> Unit,
+    onDeepLinkHandled: () -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -129,11 +128,13 @@ fun DashboardScreen(
         }
 
     if (importConfirmDialogVisible && contentUri != null) {
-        val displayName = getFileNameFromContentResolver(context, contentUri.toUri())!!
+        val displayName = getFileNameFromContentResolver(context, contentUri)!!
 
         ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
+            onDeepLinkHandled()
+            importConfirmDialogVisible = false
             scope.launch(Dispatchers.IO) {
-                val content = readTextContent(context, contentUri.toUri(), formatEnabled)
+                val content = readTextContent(context, contentUri, formatEnabled)
                 if (content.length > MAX_TEXT_LENGTH) {
                     withContext(Dispatchers.Main) {
                         context.toast("Text is too long, import failed.")
@@ -142,8 +143,8 @@ fun DashboardScreen(
                     viewModel.importScript(content)
                 }
             }
-            importConfirmDialogVisible = false
         }, onCancel = {
+            onDeepLinkHandled()
             importConfirmDialogVisible = false
         })
     }
@@ -400,14 +401,15 @@ private fun ImportConfirmDialog(
         onDismissRequest = {
             onCancel()
         },
-        title = { Text("Confirm") },
+        title = { Text("Import Text", style = MaterialTheme.typography.h6) },
         text = {
             Column {
-                Text(stringResource(Res.string.import_file_content_with_file_name, fileName))
+                Text(stringResource(Res.string.import_file_content_with_file_name, fileName), style = MaterialTheme.typography.body1)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         stringResource(Res.string.format_replace_newlines_with_spaces),
                         modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.body1,
                     )
                     Checkbox(replaceEnabled, onCheckedChange = {
                         replaceEnabled = it
@@ -419,14 +421,14 @@ private fun ImportConfirmDialog(
             TextButton(onClick = {
                 onConfirm(replaceEnabled)
             }) {
-                Text("Import")
+                Text("Import", style = MaterialTheme.typography.button)
             }
         },
         dismissButton = {
             TextButton(onClick = {
                 onCancel()
             }) {
-                Text("Cancel")
+                Text("Cancel", style = MaterialTheme.typography.button)
             }
         },
     )

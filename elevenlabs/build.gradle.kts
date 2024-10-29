@@ -35,7 +35,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
 
     packaging {
@@ -48,6 +47,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     dependencies {
+    }
+
+    lint {
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
 }
 
