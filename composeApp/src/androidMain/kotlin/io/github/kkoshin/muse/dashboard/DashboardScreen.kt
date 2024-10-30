@@ -333,7 +333,7 @@ private fun ScriptItem(
     }
 }
 
-private fun Long.formatTimeDisplay(): String =
+internal fun Long.formatTimeDisplay(): String =
     Instant.ofEpochMilli(this).let {
         val time = LocalDateTime.ofInstant(it, ZoneId.systemDefault())
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(time)
