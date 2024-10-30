@@ -43,3 +43,11 @@ jobs:
           path: ${{steps.sign_app.outputs.signedFile}}
           if-no-files-found: error
           retention-days: 20
+
+      - name: Upload Mapping
+        uses: actions/upload-artifact@v4
+        with:
+          name: mapping.txt
+          path: composeApp/build/outputs/mapping/release/mapping.txt
+          if-no-files-found: error
+          retention-days: 20
