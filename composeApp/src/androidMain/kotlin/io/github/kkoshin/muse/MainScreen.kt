@@ -28,8 +28,6 @@ import io.github.kkoshin.muse.editor.ExportConfigSheet
 import io.github.kkoshin.muse.editor.ExportConfigSheetArgs
 import io.github.kkoshin.muse.export.ExportArgs
 import io.github.kkoshin.muse.export.ExportScreen
-import io.github.kkoshin.muse.export.HistoryArgs
-import io.github.kkoshin.muse.export.HistoryScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
 import io.github.kkoshin.muse.setting.OpenSourceArgs
 import io.github.kkoshin.muse.setting.OpenSourceScreen
@@ -171,10 +169,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     navController.popBackStack()
                 }
             })
-        }
-
-        composable<HistoryArgs> {
-            HistoryScreen()
         }
 
         composable<OpenSourceArgs> {
