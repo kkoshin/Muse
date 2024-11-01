@@ -80,6 +80,9 @@ fun SettingScreen(
         accountManager.setElevenLabsApiKey(apiKeyValue!!)
         availableVoiceIds = ttsManager.queryAvailableVoiceIds() ?: emptySet()
         quota = ttsManager.queryQuota().getOrNull()
+        quota?.status?.let {
+            accountManager.setSubscriptionStatus(it)
+        }
     }
 
     Scaffold(

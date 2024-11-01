@@ -57,6 +57,7 @@ class ElevenLabTTSProvider(
                         CharacterQuota(
                             consumed = it.characterCount,
                             total = it.characterLimit,
+                            status = it.status,
                         )
                     }
                 }
