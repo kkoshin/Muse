@@ -1,8 +1,6 @@
 import com.android.build.api.dsl.ApplicationBaseFlavor
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.text.SimpleDateFormat
-import java.util.Date
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -99,11 +97,7 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "Muse-${defaultConfig.versionName + (defaultConfig.versionNameSuffix ?: "")}-${
-                    SimpleDateFormat(
-                        "yyyy-MM-dd",
-                    ).format(Date())
-                }.apk"
+                "Muse-${defaultConfig.versionName + (defaultConfig.versionNameSuffix ?: "")}.apk"
         }
     }
 
