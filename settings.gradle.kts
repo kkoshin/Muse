@@ -37,3 +37,5 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":elevenlabs")
+
+rootProject.name = "Muse"
