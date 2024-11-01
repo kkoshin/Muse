@@ -30,7 +30,7 @@ class App : Application() {
     private val appModule = module {
         singleOf(::MuseRepo)
         viewModelOf(::EditorViewModel)
-        viewModel { ExportViewModel(get(), get()) }
+        viewModel { ExportViewModel(get(), get(), get()) }
         viewModel { DashboardViewModel(get()) }
         singleOf(::TTSManager)
         singleOf(::AccountManager)

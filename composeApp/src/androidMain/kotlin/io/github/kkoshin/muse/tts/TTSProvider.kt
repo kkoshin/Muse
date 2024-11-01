@@ -1,5 +1,6 @@
 package io.github.kkoshin.muse.tts
 
+import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
 import io.github.kkoshin.muse.audio.AudioSampleMetadata
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,18 +35,20 @@ data class TTSResult(
 data class CharacterQuota(
     val consumed: Int,
     val total: Int,
+    val status: SubscriptionStatus?,
 ) {
     val remaining: Int
         get() = total - consumed
 
     infix operator fun plus(other: CharacterQuota): CharacterQuota {
         require(consumed >= 0 && total >= 0)
-        return CharacterQuota(consumed + other.consumed, total + other.total)
+        require(status == other.status)
+        return CharacterQuota(consumed + other.consumed, total + other.total, status)
     }
 
     companion object {
-        val unknown = CharacterQuota(-1, -1)
-        val empty = CharacterQuota(0, 0)
+        val unknown = CharacterQuota(-1, -1, null)
+        val empty = CharacterQuota(0, 0, null)
     }
 }
 

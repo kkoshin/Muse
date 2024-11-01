@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import com.github.foodiestudio.sugar.notification.toast
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -267,7 +266,7 @@ private fun Content(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(text = progress.errorMsg, style = MaterialTheme.typography.h6)
-                        Text(text = progress.throwable?.message ?: "", maxLines = 4, overflow = TextOverflow.Ellipsis)
+                        Text(text = progress.throwable?.message ?: "", maxLines = 6, overflow = TextOverflow.Ellipsis)
                     }
                     Button(
                         modifier = Modifier

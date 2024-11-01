@@ -16,7 +16,7 @@ import org.koin.java.KoinJavaComponent.inject
 class MockTTSProvider : TTSProvider {
     private val appContext: Context by inject(Context::class.java)
 
-    override suspend fun queryQuota(): Result<CharacterQuota> = Result.success(CharacterQuota(100, 100))
+    override suspend fun queryQuota(): Result<CharacterQuota> = Result.success(CharacterQuota(100, 100, null))
 
     override suspend fun queryVoices(): Result<List<Voice>> {
         delay(1000)
