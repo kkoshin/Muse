@@ -89,7 +89,6 @@ android {
             patch = 0, // bugfix
             code = 1,
         )
-        versionNameSuffix = "-rc1"
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
