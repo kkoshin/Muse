@@ -41,11 +41,10 @@ jobs:
         run: |
           signedFile="${{ steps.sign_app.outputs.signedFile }}"
           dir=$(dirname "$signedFile")
-          newFileName=$(basename "$signedFile" | sed 's/_signed//')
-          echo "newFileName=$newFileName"
+          fileName=$(basename "$signedFile")
           mkdir -p "$dir/signed"
-          mv "$signedFile" "$dir/signed/$newFileName"
-          echo "filePath=$dir/signed/$newFileName" >> $GITHUB_OUTPUT
+          mv "$signedFile" "$dir/signed/${fileName/_signed/}"
+          echo "filePath=$dir/signed/${fileName/_signed/}" >> $GITHUB_OUTPUT
 
       - name: List release files
         run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed)
