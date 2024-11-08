@@ -35,6 +35,20 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 34.0.0
 
+      - name: rename signed file
+        id: rename_signed_file
+        outputs:
+          signedFilePath: ${{ steps.move_signed_file.outputs.filePath }}
+        steps:
+          - id: move_signed_file
+          - run: |
+              signedFile="${{ steps.sign_app.outputs.signedFile }}"
+              dir=$(dirname "$signedFile")
+              newFileName=$(basename "$signedFile" | sed 's/_signed//')
+              mkdir -p "$dir/signed"
+              mv "$signedFile" "$dir/signed/$newFileName"
+              echo "filePath=$dir/signed/$newFileName" >> $GITHUB_OUTPUT
+
       - name: List release files
         run: ls -la composeApp/build/outputs/apk/release
 
@@ -43,7 +57,7 @@ jobs:
         with:
           name: release-artifacts
           path: |
-            ${{steps.sign_app.outputs.signedFile}}
+            ${{steps.rename_signed_file.outputs.signedFilePath}}
             composeApp/build/outputs/mapping/release/mapping.txt
           if-no-files-found: error
           retention-days: 20
