@@ -42,12 +42,13 @@ jobs:
           signedFile="${{ steps.sign_app.outputs.signedFile }}"
           dir=$(dirname "$signedFile")
           newFileName=$(basename "$signedFile" | sed 's/_signed//')
+          echo "newFileName=$newFileName"
           mkdir -p "$dir/signed"
           mv "$signedFile" "$dir/signed/$newFileName"
           echo "filePath=$dir/signed/$newFileName" >> $GITHUB_OUTPUT
 
       - name: List release files
-        run: ls -la composeApp/build/outputs/apk/release
+        run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed)
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
