@@ -30,7 +30,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.navigation)
             implementation(sharedLibs.logcat)
-            implementation(sharedLibs.sugar)
+            implementation(libs.sugar)
             implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
                 exclude(group = "androidx.appcompat")
             }
