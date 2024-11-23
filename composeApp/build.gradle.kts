@@ -143,6 +143,7 @@ android {
         // video export 仅作为 debug 功能
         debugImplementation(libs.bundles.media3)
         implementation(platform(sharedLibs.koin.bom))
+        debugImplementation(libs.devtools)
     }
 }
 
