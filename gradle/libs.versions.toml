@@ -45,8 +45,8 @@ sql-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sq
 about-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about" }
 about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "about" }
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"
-sugar = "com.github.foodiestudio:sugar:1.0.1"
-devtools = "com.github.foodiestudio:devtools:0.1.7"
+sugar = "com.github.foodiestudio:sugar:1.0.2"
+devtools = "com.github.foodiestudio:devtools:0.1.8"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
