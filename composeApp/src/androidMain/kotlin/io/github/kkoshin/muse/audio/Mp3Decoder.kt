@@ -72,9 +72,6 @@ class Mp3Decoder {
         codec.configure(format, null,  /* surface */null,  /* crypto */0 /* flags */)
         codec.start()
 
-        val inputBuffers = codec.inputBuffers
-        val outputBuffers = codec.outputBuffers
-
         // Loop to feed input data and retrieve decoded output data
         var isEOS = false
         val timeoutUs: Long = 10000
@@ -82,7 +79,7 @@ class Mp3Decoder {
         while (!isEOS) {
             val inputBufferIndex = codec.dequeueInputBuffer(timeoutUs)
             if (inputBufferIndex >= 0) {
-                val inputBuffer = inputBuffers[inputBufferIndex]
+                val inputBuffer = codec.getInputBuffer(inputBufferIndex)!!
                 val sampleSize: Int = extractor.readSampleData(inputBuffer, 0)
                 if (sampleSize < 0) {
                     // End of stream
@@ -110,7 +107,7 @@ class Mp3Decoder {
             val bufferInfo = MediaCodec.BufferInfo()
             var outputBufferIndex = codec.dequeueOutputBuffer(bufferInfo, timeoutUs)
             while (outputBufferIndex >= 0) {
-                val outputBuffer = outputBuffers[outputBufferIndex]
+                val outputBuffer = codec.getOutputBuffer(outputBufferIndex)!!
                 val pcmData = ByteArray(bufferInfo.size)
                 outputBuffer[pcmData]
                 outputBuffer.clear()
