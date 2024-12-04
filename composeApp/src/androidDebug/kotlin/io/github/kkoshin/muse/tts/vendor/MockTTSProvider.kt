@@ -33,6 +33,7 @@ class MockTTSProvider : TTSProvider {
                     accent = Voice.Accent.American,
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
+                    descriptive = null,
                     previewUrl =
                     "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),
@@ -44,6 +45,7 @@ class MockTTSProvider : TTSProvider {
                     accent = Voice.Accent.British,
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
+                    descriptive = null,
                     previewUrl =
                     "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),
@@ -55,6 +57,7 @@ class MockTTSProvider : TTSProvider {
                     accent = Voice.Accent.British,
                     age = Voice.Age.Young,
                     gender = Voice.Gender.Female,
+                    descriptive = null,
                     previewUrl =
                     "https://storage.googleapis.com/eleven-public-prod/premade/voices/ThT5KcBeYPX3keUQqHPh/981f0855-6598-48d2-9f8f-b6d92fbbe3fc.mp3",
                 ),

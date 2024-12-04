@@ -36,6 +36,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.tts.TTSManager
@@ -144,7 +145,11 @@ fun VoicePicker(
                                     style = MaterialTheme.typography.subtitle1,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(if (MaterialTheme.colors.isLight) Color(0xFFEDEDED) else Color.DarkGray)
+                                        .background(
+                                            if (MaterialTheme.colors.isLight) Color(
+                                                0xFFEDEDED
+                                            ) else Color.DarkGray
+                                        )
                                         .padding(horizontal = 16.dp, vertical = 12.dp),
                                 )
                             }
@@ -172,13 +177,21 @@ private fun VoiceItem(
     onSelected: (Voice, selected: Boolean) -> Unit,
 ) {
     ListItem(
-        text = { Text(text = getAccentFlag(voice.accent) + " " + voice.name) },
+        text = {
+            Text(
+                text = getAccentFlag(voice.accent) + " " + voice.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
         secondaryText = {
-            listOfNotNull(voice.gender?.raw, voice.age?.raw, voice.description)
-                .joinToString("・")
-                .let {
-                    Text(it)
-                }
+            Column {
+                listOfNotNull(voice.gender?.raw, voice.age?.raw, voice.descriptive)
+                    .joinToString("・")
+                    .let {
+                        Text(it)
+                    }
+            }
         },
         trailing = {
             Checkbox(selectedVoiceIds.contains(voice.voiceId), onCheckedChange = { isChecked ->
