@@ -62,6 +62,7 @@ data class Voice(
     val useCase: String?,
     val gender: Gender?,
     val age: Age?,
+    val descriptive: String?,
 ) {
     @Serializable
     enum class Accent(

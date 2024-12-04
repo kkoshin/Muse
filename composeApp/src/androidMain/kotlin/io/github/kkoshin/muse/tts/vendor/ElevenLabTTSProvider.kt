@@ -84,7 +84,8 @@ class ElevenLabTTSProvider(
                             useCase = item.labels?.get("use case"),
                             gender = Voice.Gender.entries.find {
                                 it.raw.equals(item.labels?.get("gender"), true)
-                            }
+                            },
+                            descriptive = item.labels?.get("descriptive")
                         )
                     }
                 }
