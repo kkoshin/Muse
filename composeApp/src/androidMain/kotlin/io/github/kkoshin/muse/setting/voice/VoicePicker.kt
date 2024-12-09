@@ -2,16 +2,24 @@ package io.github.kkoshin.muse.setting.voice
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -55,7 +63,7 @@ class VoicePickerArgs(
     val selectedVoiceIds: List<String>,
 )
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun VoicePicker(
     modifier: Modifier = Modifier,
@@ -75,6 +83,11 @@ fun VoicePicker(
     val ttsManager = rememberKoinInject<TTSManager>()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    var previewVoice: Voice? by remember {
+        mutableStateOf(null)
+    }
+    var playbackBarVisible by remember { mutableStateOf(false) }
 
     BackHandler {
         scope.launch {
@@ -154,15 +167,40 @@ fun VoicePicker(
                                 )
                             }
                             items(voicesList) {
-                                VoiceItem(it, selected.toSet()) { voice, isChecked ->
+                                VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
                                     if (isChecked) {
                                         selected.add(voice.voiceId)
                                     } else {
                                         selected.remove(voice.voiceId)
                                     }
-                                }
+                                }, onClick = { voice ->
+                                    previewVoice = voice
+                                    playbackBarVisible = true
+                                })
                             }
                         }
+                }
+            }
+        },
+        bottomBar = {
+            AnimatedVisibility(
+                visible = playbackBarVisible,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+             ) {
+                previewVoice?.let { voice ->
+                    PlaybackBar(
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .background(
+                                MaterialTheme.colors.secondary,
+                                RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                            ),
+                        voice = voice,
+                        onClose = {
+                            playbackBarVisible = false
+                        },
+                    )
                 }
             }
         },
@@ -175,8 +213,12 @@ private fun VoiceItem(
     voice: Voice,
     selectedVoiceIds: Set<String>,
     onSelected: (Voice, selected: Boolean) -> Unit,
+    onClick: (Voice) -> Unit,
 ) {
     ListItem(
+        modifier = Modifier.clickable {
+            onClick(voice)
+        },
         text = {
             Text(
                 text = getAccentFlag(voice.accent) + " " + voice.name,
@@ -201,7 +243,7 @@ private fun VoiceItem(
     )
 }
 
-private fun getAccentFlag(accent: Voice.Accent): String =
+internal fun getAccentFlag(accent: Voice.Accent): String =
     when (accent) {
         Voice.Accent.American -> "🇺🇸"
         Voice.Accent.British -> "🇬🇧"

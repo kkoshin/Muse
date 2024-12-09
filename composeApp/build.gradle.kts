@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.browser)
             implementation(libs.sql.android)
             implementation(libs.xcrash)
+            implementation(libs.bundles.media3)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -140,8 +141,6 @@ android {
     dependencies {
         debugImplementation(compose.preview)
         debugImplementation(compose.uiTooling)
-        // video export 仅作为 debug 功能
-        debugImplementation(libs.bundles.media3)
         implementation(platform(sharedLibs.koin.bom))
         debugImplementation(libs.devtools)
     }
