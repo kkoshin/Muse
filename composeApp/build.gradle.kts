@@ -90,8 +90,8 @@ android {
         setUpStableVersion(
             major = 0, // breaking change
             minor = 1, // feature
-            patch = 0, // bugfix
-            code = 1,
+            patch = 1, // bugfix
+            code = 2,
         )
         ndk {
             abiFilters.clear()

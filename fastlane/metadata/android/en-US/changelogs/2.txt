@@ -1,0 +1,3 @@
+- Now compatible with Android 15
+- Added voice preview feature in Voice Picker
+- listen to voice samples before making your selection!
