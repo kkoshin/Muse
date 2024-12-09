@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -322,7 +325,12 @@ private fun ScriptItem(
                     .size(48.dp),
             )
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(script.summary, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.subtitle1)
+                Text(
+                    script.summary,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.subtitle1
+                )
                 Text(
                     text = script.createAt.formatTimeDisplay(),
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
@@ -404,16 +412,26 @@ private fun ImportConfirmDialog(
         title = { Text("Import Text", style = MaterialTheme.typography.h6) },
         text = {
             Column {
-                Text(stringResource(Res.string.import_file_content_with_file_name, fileName), style = MaterialTheme.typography.body1)
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(Res.string.import_file_content_with_file_name, fileName),
+                    style = MaterialTheme.typography.body1
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    // workaround: add negative margin to align checkbox with text
+                    modifier = Modifier.offset(x = (-16).dp)
+                ) {
+                    Checkbox(
+                        replaceEnabled,
+                        onCheckedChange = {
+                            replaceEnabled = it
+                        })
                     Text(
                         stringResource(Res.string.format_replace_newlines_with_spaces),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.body1,
                     )
-                    Checkbox(replaceEnabled, onCheckedChange = {
-                        replaceEnabled = it
-                    })
                 }
             }
         },
