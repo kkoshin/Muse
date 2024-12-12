@@ -149,15 +149,13 @@ androidComponents {
             ndk.abiFilters += "x86_64"
         }
     }
+    // only rename the apk file for single-apk build
     onVariants(selector().withBuildType("release")) { variant ->
-        variant.outputs.forEach {
-            if (it is com.android.build.api.variant.impl.VariantOutputImpl) {
-                // only rename the apk file for single-apk build
-                if (it.outputType == VariantOutputConfiguration.OutputType.SINGLE) {
-                    it.outputFileName = "Muse-${it.versionName.get()}.apk"
-                }
+        variant.outputs.filterIsInstance<com.android.build.api.variant.impl.VariantOutputImpl>()
+            .filter { it.outputType == VariantOutputConfiguration.OutputType.SINGLE }
+            .forEach {
+                it.outputFileName = "Muse-${it.versionName.get()}.apk"
             }
-        }
     }
 }
 
