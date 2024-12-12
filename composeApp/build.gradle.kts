@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationBaseFlavor
+import com.android.build.api.variant.VariantOutputConfiguration
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -59,16 +60,6 @@ kotlin {
     }
 }
 
-private fun ApplicationBaseFlavor.setUpStableVersion(
-    major: Int = 0,
-    minor: Int = 1,
-    patch: Int = 0,
-    code: Int,
-) {
-    versionName = "$major.$minor.$patch"
-    versionCode = code
-}
-
 android {
     namespace = "io.github.kkoshin.muse"
     compileSdk = libs.versions.android.compileSdk
@@ -87,23 +78,10 @@ android {
         targetSdk = libs.versions.android.targetSdk
             .get()
             .toInt()
-        setUpStableVersion(
-            major = 0, // breaking change
-            minor = 1, // feature
-            patch = 1, // bugfix
-            code = 2,
-        )
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
             abiFilters += "arm64-v8a"
-        }
-    }
-
-    applicationVariants.all {
-        outputs.all {
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "Muse-${defaultConfig.versionName + (defaultConfig.versionNameSuffix ?: "")}.apk"
         }
     }
 
@@ -113,12 +91,6 @@ android {
         }
     }
     buildTypes {
-        debug {
-            applicationIdSuffix = ".debug"
-            ndk {
-                abiFilters += "x86_64"
-            }
-        }
         release {
             // 这里不配置签名，对应操作在外部进行
             isMinifyEnabled = true
@@ -153,3 +125,39 @@ sqldelight {
         }
     }
 }
+
+private fun ApplicationBaseFlavor.setUpStableVersion(
+    major: Int = 0,
+    minor: Int = 1,
+    patch: Int = 0,
+    code: Int,
+) {
+    versionName = "$major.$minor.$patch"
+    versionCode = code
+}
+
+androidComponents {
+    finalizeDsl { extension ->
+        extension.defaultConfig.setUpStableVersion(
+            major = 0, // breaking change
+            minor = 1, // feature
+            patch = 1, // bugfix
+            code = 2,
+        )
+        extension.buildTypes.getByName("debug").apply {
+            applicationIdSuffix = ".debug"
+            ndk.abiFilters += "x86_64"
+        }
+    }
+    onVariants(selector().withBuildType("release")) { variant ->
+        variant.outputs.forEach {
+            if (it is com.android.build.api.variant.impl.VariantOutputImpl) {
+                // only rename the apk file for single-apk build
+                if (it.outputType == VariantOutputConfiguration.OutputType.SINGLE) {
+                    it.outputFileName = "Muse-${it.versionName.get()}.apk"
+                }
+            }
+        }
+    }
+}
+
