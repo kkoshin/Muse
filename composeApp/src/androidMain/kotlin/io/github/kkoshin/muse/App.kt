@@ -3,6 +3,7 @@ package io.github.kkoshin.muse
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.os.StrictMode
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -42,6 +43,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            StrictMode.enableDefaults()
+        }
         AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
         startKoin {
             androidContext(this@App)
