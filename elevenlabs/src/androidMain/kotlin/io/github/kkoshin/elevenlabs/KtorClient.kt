@@ -20,7 +20,7 @@ private const val BASE_HOST = "api.elevenlabs.io/v1"
 
 actual val ktorClient = HttpClient(OkHttp) {
     install(Logging) {
-        level = LogLevel.BODY
+        level = LogLevel.ALL
         logger = object : Logger {
             override fun log(message: String) {
                 Log.d("Network", message)

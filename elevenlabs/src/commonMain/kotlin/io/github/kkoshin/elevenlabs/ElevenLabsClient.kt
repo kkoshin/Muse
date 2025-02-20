@@ -7,12 +7,14 @@ import io.github.kkoshin.elevenlabs.model.HttpValidationError
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 
 class ElevenLabsClient(
     private val apiKey: String,
@@ -41,23 +43,37 @@ class ElevenLabsClient(
             }
         }.mapCatching { it.bodyAsResult() }
 
-        // TODO: Add file upload
-        internal suspend inline fun <reified T, reified R : Any, reified W> postAsForm(
-            resources: R,
-            fileName: String,
-        ): Result<W> =  runCatching {
-            ktorClient.post<R>(resources) {
-                headers {
-                    append("xi-api-key", apiKey)
-                }
-                contentType(ContentType.MultiPart.FormData)
-                formData {
-                    append("audio", fileName)
-                }
+    internal suspend inline fun <reified R : Any, reified W> postAsForm(
+        resources: R,
+        audioFile: ByteArray, // 修改为接收字节数组
+        fileName: String,
+        contentType: ContentType
+    ): Result<W> = runCatching {
+        ktorClient.post<R>(resources) {
+            headers {
+                append("xi-api-key", apiKey)
             }
-        }.mapCatching {
-            it.bodyAsResult()
+//            contentType(ContentType.MultiPart.FormData)
+            setBody(
+                MultiPartFormDataContent(
+                    formData {
+                        append(
+                            "audio",
+                            audioFile,
+                            headers = Headers.build {
+                                append(
+                                    HttpHeaders.ContentDisposition,
+                                    "form-data; name=\"audio\"; filename=\"$fileName\""
+                                )
+                                append(HttpHeaders.ContentType, contentType.toString())
+                            }
+                        )
+                    })
+            )
         }
+    }.mapCatching {
+        it.bodyAsResult()
+    }
 
     companion object {
         /**

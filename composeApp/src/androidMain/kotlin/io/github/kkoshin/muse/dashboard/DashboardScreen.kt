@@ -104,6 +104,7 @@ fun DashboardScreen(
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
     onDeepLinkHandled: () -> Unit,
+    onLaunchAudioIsolation: (Uri) -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -116,9 +117,7 @@ fun DashboardScreen(
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                scope.launch(Dispatchers.IO) {
-                    // TODO: upload audio file
-                }
+                onLaunchAudioIsolation(uri)
             }
         }
 

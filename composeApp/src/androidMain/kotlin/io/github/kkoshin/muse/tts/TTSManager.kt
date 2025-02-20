@@ -10,9 +10,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
+import com.github.foodiestudio.sugar.storage.AppFileHelper
+import com.github.foodiestudio.sugar.storage.filesystem.displayName
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
+import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.R
+import io.github.kkoshin.muse.isolation.AudioIsolationProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -22,6 +26,7 @@ import okio.source
 class TTSManager(
     private val appContext: Context,
     private val provider: TTSProvider,
+    private val isolationProvider: AudioIsolationProvider,
 ) {
     /**
      * 持久化 text:Uri
@@ -101,6 +106,21 @@ class TTSManager(
                         }
                 }
             }
+        }
+    }
+
+    /**
+     * 对 audioUri 进行背景噪音移除
+     * @return 移除后的音频文件的 Base64 字符串
+     */
+    suspend fun removeBackgroundNoise(audioUri: Uri): Result<ByteArray> {
+        return withContext(Dispatchers.IO) {
+            val fileSystem = AppFileHelper(appContext).fileSystem
+            val name = fileSystem.metadata(audioUri.toOkioPath()).displayName
+            isolationProvider.removeBackgroundNoise(
+                fileSystem.source(audioUri.toOkioPath()),
+                name
+            )
         }
     }
 }

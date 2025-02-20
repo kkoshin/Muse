@@ -9,6 +9,7 @@ import io.github.kkoshin.elevenlabs.model.ModelId
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.isolation.AudioIsolationProvider
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -21,11 +22,13 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import logcat.logcat
+import okio.Source
+import removeBackgroundAudio
 
-class ElevenLabTTSProvider(
+class ElevenLabProvider(
     accountManager: AccountManager,
     scope: CoroutineScope,
-) : TTSProvider {
+) : TTSProvider, AudioIsolationProvider {
     private lateinit var client: ElevenLabsClient
 
     init {
@@ -113,6 +116,14 @@ class ElevenLabTTSProvider(
                 ).getOrThrow().let {
                     TTSResult(it, SupportedAudioType.MP3, MonoAudioSampleMetadata())
                 }
+            }
+        }
+    }
+
+    override suspend fun removeBackgroundNoise(audio: Source, audioName: String): Result<ByteArray> {
+        return withContext(Dispatchers.IO) {
+            requireClient().mapCatching { client ->
+                client.removeBackgroundAudio(audio, audioName).getOrThrow()
             }
         }
     }
