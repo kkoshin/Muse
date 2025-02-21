@@ -56,6 +56,7 @@ kotlin {
             implementation(project(":elevenlabs"))
             implementation(libs.accompanist.navigation.material)
             implementation(libs.bundles.about)
+            implementation("me.saket.bytesize:bytesize:2.0.0-beta04")
         }
     }
 }
