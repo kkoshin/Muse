@@ -48,11 +48,13 @@ import me.saket.bytesize.decimalBytes
 import me.saket.bytesize.megabytes
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.audio_isolation
-import muse.composeapp.generated.resources.audio_isolation_error_source_file_unsupported
+import muse.composeapp.generated.resources.audio_isolation_error_audio_file_too_large
+import muse.composeapp.generated.resources.audio_isolation_error_audio_file_too_short
 import muse.composeapp.generated.resources.remove_noise
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 class AudioIsolationPreviewArgs(
@@ -101,11 +103,12 @@ fun AudioIsolationPreviewScreen(
     }
 
     audioMetadata?.let {
-        if (it.size > maxFileSize || it.duration > maxDuration) {
+        if (it.size > maxFileSize || it.duration > maxDuration || it.duration < minDuration) {
             AudioNotSupported(
                 modifier = modifier
                     .navigationBarsPadding()
-                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                isTooShort = it.duration < minDuration,
             )
         } else {
             Content(
@@ -213,9 +216,10 @@ private fun Content(
 
 private val maxFileSize = 500.megabytes
 private val maxDuration = 1.hours
+private val minDuration = 4.6.seconds
 
 @Composable
-private fun AudioNotSupported(modifier: Modifier = Modifier) {
+private fun AudioNotSupported(modifier: Modifier = Modifier, isTooShort: Boolean) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -231,7 +235,9 @@ private fun AudioNotSupported(modifier: Modifier = Modifier) {
                 .size(40.dp),
         )
         Text(
-            text = stringResource(Res.string.audio_isolation_error_source_file_unsupported),
+            text = stringResource(
+                if (isTooShort) Res.string.audio_isolation_error_audio_file_too_short else Res.string.audio_isolation_error_audio_file_too_large
+            ),
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.error.copy(alpha = 0.7f),
