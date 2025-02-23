@@ -53,7 +53,6 @@ class ElevenLabsClient(
             headers {
                 append("xi-api-key", apiKey)
             }
-//            contentType(ContentType.MultiPart.FormData)
             setBody(
                 MultiPartFormDataContent(
                     formData {

@@ -14,5 +14,5 @@ suspend fun ElevenLabsClient.removeBackgroundAudio(
     resources = AudioIsolation(),
     audioFile = audio.buffer().readByteArray(),
     fileName = audioName,
-    contentType = ContentType.Audio.MPEG
+    contentType = ContentType.Audio.Any
 )

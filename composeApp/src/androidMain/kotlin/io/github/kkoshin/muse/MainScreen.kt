@@ -29,6 +29,8 @@ import io.github.kkoshin.muse.editor.ExportConfigSheetArgs
 import io.github.kkoshin.muse.export.ExportArgs
 import io.github.kkoshin.muse.export.ExportScreen
 import io.github.kkoshin.muse.isolation.AudioIsolationArgs
+import io.github.kkoshin.muse.isolation.AudioIsolationPreviewArgs
+import io.github.kkoshin.muse.isolation.AudioIsolationPreviewScreen
 import io.github.kkoshin.muse.isolation.AudioIsolationScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
 import io.github.kkoshin.muse.setting.OpenSourceArgs
@@ -90,7 +92,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 },
                 onLaunchAudioIsolation = { uri ->
                     navController.navigate(
-                        AudioIsolationArgs(
+                        AudioIsolationPreviewArgs(
                             audioUri = uri.toString(),
                         ),
                     )
@@ -170,9 +172,20 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             )
         }
 
-        bottomSheet<AudioIsolationArgs> { entry ->
+        bottomSheet<AudioIsolationPreviewArgs> { entry ->
+            val args: AudioIsolationPreviewArgs = entry.toRoute()
+            AudioIsolationPreviewScreen(args = args) {
+                navController.navigate(AudioIsolationArgs(args.audioUri)) {
+                    popUpTo(DashboardArgs)
+                }
+            }
+        }
+
+        composable<AudioIsolationArgs> { entry ->
             val args: AudioIsolationArgs = entry.toRoute()
-            AudioIsolationScreen(args = args)
+            AudioIsolationScreen(args = args) {
+                navController.popBackStack()
+            }
         }
 
         composable<ExportArgs> { entry ->
