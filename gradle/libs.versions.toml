@@ -4,6 +4,7 @@ android-compileSdk = "35"
 android-minSdk = "29"
 android-targetSdk = "35"
 androidx-activityCompose = "1.9.3"
+bytesize = "2.0.0-beta04"
 compose-plugin = "1.6.11"
 junit = "4.13.2"
 kotlin = "2.0.0"
@@ -18,6 +19,7 @@ sqldelight = "2.0.2"
 about = "11.2.2"
 
 [libraries]
+bytesize = { module = "me.saket.bytesize:bytesize", version.ref = "bytesize" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
