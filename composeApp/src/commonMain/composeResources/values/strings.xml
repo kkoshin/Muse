@@ -11,5 +11,6 @@
     <string name="open_with_other_app">Open with other app</string>
     <string name="export_done">Export done!</string>
     <string name="denoise_done">Denoise done!</string>
-    <string name="audio_isolation_error_source_file_unsupported">Audio files must be under 500 MB or 1 hour in length. Files exceeding these limits cannot be processed.</string>
+    <string name="audio_isolation_error_audio_file_too_large">Audio files must be under 500 MB or 1 hour in length. Files exceeding these limits cannot be processed.</string>
+    <string name="audio_isolation_error_audio_file_too_short">Please ensure your audio file is at least 4.6 seconds long. Shorter files cannot be processed.</string>
 </resources>
