@@ -9,6 +9,7 @@ import io.github.kkoshin.elevenlabs.model.ModelId
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.isolation.AudioIsolationProvider
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
 import io.github.kkoshin.muse.tts.TTSProvider
@@ -16,34 +17,56 @@ import io.github.kkoshin.muse.tts.TTSResult
 import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import logcat.logcat
+import okio.Source
+import removeBackgroundAudio
 
-class ElevenLabTTSProvider(
-    accountManager: AccountManager,
-    scope: CoroutineScope,
-) : TTSProvider {
+class ElevenLabProvider(
+    private val accountManager: AccountManager,
+    private val scope: CoroutineScope,
+) : TTSProvider, AudioIsolationProvider {
     private lateinit var client: ElevenLabsClient
 
-    init {
-        scope.launch {
-            accountManager.apiKey
-                .distinctUntilChanged()
-                .collectLatest { apiKey ->
-                    if (apiKey != null) {
-                        client = ElevenLabsClient(apiKey)
+    @Volatile
+    private var isInitialized = false
+
+    private var initJob: Job? = null
+
+    private fun initialize() {
+        if (!isInitialized) {
+            initJob?.cancel()
+            initJob = scope.launch {
+                accountManager.apiKey
+                    .onStart {
+                        isInitialized = true
                     }
-                }
+                    .distinctUntilChanged()
+                    .collectLatest { apiKey ->
+                        if (apiKey != null) {
+                            client = ElevenLabsClient(apiKey)
+                        }
+                    }
+            }
         }
     }
 
-    private fun requireClient(): Result<ElevenLabsClient> {
+    private suspend fun requireClient(retryCount: Int = 2): Result<ElevenLabsClient> {
         // check client is initialized
         return if (!::client.isInitialized) {
-            Result.failure(IllegalStateException("apiKey is not set"))
+            if (!isInitialized && retryCount > 0) {
+                initialize()
+                delay(200)
+                requireClient(retryCount - 1)
+            } else {
+                Result.failure(IllegalStateException("apiKey is not set"))
+            }
         } else {
             Result.success(client)
         }
@@ -113,6 +136,17 @@ class ElevenLabTTSProvider(
                 ).getOrThrow().let {
                     TTSResult(it, SupportedAudioType.MP3, MonoAudioSampleMetadata())
                 }
+            }
+        }
+    }
+
+    override suspend fun removeBackgroundNoise(
+        audio: Source,
+        audioName: String
+    ): Result<ByteArray> {
+        return withContext(Dispatchers.IO) {
+            requireClient().mapCatching { client ->
+                client.removeBackgroundAudio(audio, audioName).getOrThrow()
             }
         }
     }

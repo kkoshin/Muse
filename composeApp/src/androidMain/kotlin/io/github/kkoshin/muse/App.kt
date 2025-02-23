@@ -11,10 +11,12 @@ import io.github.kkoshin.muse.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.diagnosis.CrashLogActivity
 import io.github.kkoshin.muse.editor.EditorViewModel
 import io.github.kkoshin.muse.export.ExportViewModel
+import io.github.kkoshin.muse.isolation.AudioIsolationProvider
+import io.github.kkoshin.muse.isolation.AudioIsolationViewModel
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
-import io.github.kkoshin.muse.tts.vendor.ElevenLabTTSProvider
+import io.github.kkoshin.muse.tts.vendor.ElevenLabProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import logcat.AndroidLogcatLogger
@@ -33,11 +35,15 @@ class App : Application() {
         viewModelOf(::EditorViewModel)
         viewModel { ExportViewModel(get(), get(), get()) }
         viewModel { DashboardViewModel(get()) }
+        viewModel { AudioIsolationViewModel(get()) }
         singleOf(::TTSManager)
         singleOf(::AccountManager)
         single<CoroutineScope> { MainScope() }
         single<TTSProvider> {
-            ElevenLabTTSProvider(get(), get())
+            ElevenLabProvider(get(), get())
+        }
+        single<AudioIsolationProvider> {
+            ElevenLabProvider(get(), get())
         }
     }
 

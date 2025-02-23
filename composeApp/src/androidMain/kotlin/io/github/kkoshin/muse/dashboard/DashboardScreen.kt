@@ -49,7 +49,7 @@ import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.MusicOff
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,7 +70,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.foodiestudio.sugar.notification.toast
-import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -80,6 +79,7 @@ import kotlinx.serialization.Serializable
 import muse.composeapp.generated.resources.Res
 import muse.composeapp.generated.resources.format_replace_newlines_with_spaces
 import muse.composeapp.generated.resources.import_file_content_with_file_name
+import muse.composeapp.generated.resources.projects
 import okio.buffer
 import okio.source
 import okio.use
@@ -90,7 +90,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import androidx.compose.ui.res.stringResource as strResource
 
 @Serializable
 object DashboardArgs
@@ -105,6 +104,7 @@ fun DashboardScreen(
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
     onDeepLinkHandled: () -> Unit,
+    onLaunchAudioIsolation: (Uri) -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -117,16 +117,7 @@ fun DashboardScreen(
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                scope.launch(Dispatchers.IO) {
-                    val content = readTextContent(context, uri, false)
-                    if (content.length > MAX_TEXT_LENGTH) {
-                        withContext(Dispatchers.Main) {
-                            context.toast("Text is too long, import failed.")
-                        }
-                    } else {
-                        viewModel.importScript(content)
-                    }
-                }
+                onLaunchAudioIsolation(uri)
             }
         }
 
@@ -162,7 +153,7 @@ fun DashboardScreen(
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets.statusBars,
-                title = { Text(text = strResource(id = R.string.app_name)) },
+                title = { Text(text = stringResource(Res.string.projects)) },
                 backgroundColor = MaterialTheme.colors.surface,
                 actions = {
 //                    IconButton(onClick = {
@@ -183,14 +174,14 @@ fun DashboardScreen(
                     val text = buildAnnotatedString {
                         append("Tap \"")
                         appendInlineContent(modId, "[icon]")
-                        append("\" to create your first script.")
+                        append("\" to create your first project.")
                     }
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "No scripts :(", style = MaterialTheme.typography.h5)
+                            Text(text = "No projects :(", style = MaterialTheme.typography.h5)
                             Text(
                                 text = text,
                                 inlineContent = mapOf(
@@ -241,10 +232,10 @@ fun DashboardScreen(
                     modifier = Modifier.size(40.dp),
                     backgroundColor = MaterialTheme.colors.background,
                     onClick = {
-                        filePicker.launch("text/*")
+                        filePicker.launch("audio/*")
                     },
                 ) {
-                    Icon(Icons.Outlined.FileOpen, contentDescription = null)
+                    Icon(Icons.Outlined.MusicOff, contentDescription = null)
                 }
                 FloatingActionButton(
                     backgroundColor = MaterialTheme.colors.primary,
@@ -375,7 +366,7 @@ fun getFileNameFromContentResolver(
     return null
 }
 
-private fun readTextContent(
+internal fun readTextContent(
     context: Context,
     contentUri: Uri,
     formatEnabled: Boolean,

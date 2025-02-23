@@ -1,21 +1,15 @@
-package io.github.kkoshin.muse.setting.voice
+package io.github.kkoshin.muse.audio.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +27,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -45,10 +38,14 @@ enum class PlaybackState {
 }
 
 @Composable
-fun PlaybackBar(modifier: Modifier = Modifier, voice: Voice, onClose: () -> Unit) {
-    val audioUrl by remember(voice) { mutableStateOf<String?>(voice.previewUrl) }
+fun AudioPlaybackButton(
+    modifier: Modifier = Modifier,
+    audioSource: Uri?,
+    onProgress: (Float) -> Unit = {}
+) {
+    val audioUri by remember(audioSource) { mutableStateOf(audioSource) }
     val context = LocalContext.current
-    val playbackState = remember { mutableStateOf<PlaybackState>(PlaybackState.Idle) }
+    val playbackState = remember { mutableStateOf(PlaybackState.Idle) }
     var progress by remember { mutableFloatStateOf(0f) }
     val player by remember { mutableStateOf(ExoPlayer.Builder(context).build()) }
 
@@ -101,46 +98,38 @@ fun PlaybackBar(modifier: Modifier = Modifier, voice: Voice, onClose: () -> Unit
         }
     }
 
+    LaunchedEffect(progress) {
+        onProgress(progress)
+    }
+
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
         player.pause()
     }
 
-    LaunchedEffect(audioUrl) {
-        audioUrl?.let {
+    LaunchedEffect(audioUri) {
+        audioUri?.let {
             player.setMediaItem(MediaItem.fromUri(it))
             player.prepare()
             player.play()
         }
     }
-    Row(
-        modifier = modifier.padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(Modifier.width(16.dp))
-        Text(getAccentFlag(voice.accent), style = MaterialTheme.typography.h5)
-        Spacer(Modifier.width(8.dp))
-        Column(Modifier.weight(1f)) {
-            Text(voice.name, style = MaterialTheme.typography.body1)
-            listOfNotNull(voice.gender?.raw, voice.age?.raw, voice.descriptive)
-                .joinToString("・")
-                .let { Text(it, style = MaterialTheme.typography.caption) }
-        }
-        PlaybackButton(
-            playbackState = playbackState.value,
-            progress = progress,
-            isPlaying = playing,
-            onResetProgress = {
-                player.seekTo(0)
-                progress = 0f
-            },
-            onUpdatePlayWhenReady = { playWhenReady -> player.playWhenReady = playWhenReady }
-        )
-        IconButton(onClick = { onClose() }) { Icon(Icons.Outlined.KeyboardArrowDown, "close") }
-    }
+
+    PlaybackButton(
+        modifier = modifier,
+        playbackState = playbackState.value,
+        progress = progress,
+        isPlaying = playing,
+        onResetProgress = {
+            player.seekTo(0)
+            progress = 0f
+        },
+        onUpdatePlayWhenReady = { playWhenReady -> player.playWhenReady = playWhenReady }
+    )
 }
 
 @Composable
-fun PlaybackButton(
+private fun PlaybackButton(
+    modifier: Modifier,
     playbackState: PlaybackState,
     progress: Float,
     isPlaying: Boolean,
@@ -148,6 +137,7 @@ fun PlaybackButton(
     onUpdatePlayWhenReady: (Boolean) -> Unit,
 ) {
     IconButton(
+        modifier = modifier,
         onClick = {
             when (playbackState) {
                 PlaybackState.Ready -> {
@@ -186,7 +176,7 @@ fun PlaybackButton(
 }
 
 @Composable
-fun PlaybackButtonContent(progress: Float?, isPlaying: Boolean) {
+private fun PlaybackButtonContent(progress: Float?, isPlaying: Boolean) {
     Box(contentAlignment = Alignment.Center) {
         if (progress == null) {
             CircularProgressIndicator(
