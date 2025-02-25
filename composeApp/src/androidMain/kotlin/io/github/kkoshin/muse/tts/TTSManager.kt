@@ -17,16 +17,21 @@ import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
 import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.isolation.AudioIsolationProvider
+import io.github.kkoshin.muse.noise.SoundEffectConfig
+import io.github.kkoshin.muse.noise.SoundEffectProvider
+import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okio.source
+import java.time.Instant
 
 @OptIn(ExperimentalSugarApi::class)
 class TTSManager(
     private val appContext: Context,
     private val provider: TTSProvider,
     private val isolationProvider: AudioIsolationProvider,
+    private val soundEffectProvider: SoundEffectProvider,
 ) {
     /**
      * 持久化 text:Uri
@@ -121,6 +126,30 @@ class TTSManager(
                 fileSystem.source(audioUri.toOkioPath()),
                 name
             )
+        }
+    }
+
+    suspend fun makeSoundEffects(
+        prompt: String,
+        config: SoundEffectConfig,
+        fileNameWithoutExtension: String = "Sound_${Instant.now().epochSecond}",
+    ): Result<Unit> {
+        val targetUri = MediaFile
+            .create(
+                appContext,
+                MediaStoreType.Downloads,
+                "$fileNameWithoutExtension.mp3",
+                MuseRepo.getExportRelativePath(appContext),
+                enablePending = false,
+            ).mediaUri
+        return withContext(Dispatchers.IO) {
+            appContext.contentResolver.openOutputStream(targetUri)!!.use { outputStream ->
+                soundEffectProvider.makeSoundEffects(
+                    prompt,
+                    config,
+                    outputStream,
+                )
+            }
         }
     }
 }
