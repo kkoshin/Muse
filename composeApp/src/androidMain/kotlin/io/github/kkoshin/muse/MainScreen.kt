@@ -33,6 +33,8 @@ import io.github.kkoshin.muse.isolation.AudioIsolationPreviewArgs
 import io.github.kkoshin.muse.isolation.AudioIsolationPreviewScreen
 import io.github.kkoshin.muse.isolation.AudioIsolationScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
+import io.github.kkoshin.muse.noise.WhiteNoiseScreen
+import io.github.kkoshin.muse.noise.WhiteNoiseScreenArgs
 import io.github.kkoshin.muse.setting.OpenSourceArgs
 import io.github.kkoshin.muse.setting.OpenSourceScreen
 import io.github.kkoshin.muse.setting.SettingArgs
@@ -96,6 +98,9 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                             audioUri = uri.toString(),
                         ),
                     )
+                },
+                onLaunchWhiteNoise = {
+                    navController.navigate(WhiteNoiseScreenArgs)
                 }
             )
         }
@@ -200,6 +205,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
 
         composable<OpenSourceArgs> {
             OpenSourceScreen()
+        }
+
+        composable<WhiteNoiseScreenArgs> {
+            WhiteNoiseScreen()
         }
     }
 }
