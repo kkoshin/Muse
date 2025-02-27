@@ -13,7 +13,7 @@ class SoundGeneration
 suspend fun ElevenLabsClient.makeSoundEffects(
     prompt: String,
     durationSeconds: Double?,
-    promptInfluence: Double,
+    promptInfluence: Float,
     outputStream: OutputStream
 ): Result<Unit> =
     post<SoundGenerationRequest, SoundGeneration, ByteReadChannel>(

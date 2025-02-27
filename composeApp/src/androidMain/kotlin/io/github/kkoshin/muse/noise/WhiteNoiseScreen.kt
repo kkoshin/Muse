@@ -1,50 +1,47 @@
 package io.github.kkoshin.muse.noise
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.export.AudioProcessingView
 import kotlinx.serialization.Serializable
+import muse.composeapp.generated.resources.Res
+import muse.composeapp.generated.resources.generate_done
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
-object WhiteNoiseScreenArgs
+class WhiteNoiseScreenArgs(
+    val prompt: String,
+    val durationInMills: Long? = null,
+    val promptInfluence: Float = 0.3f,
+)
 
 @Composable
 fun WhiteNoiseScreen(
     modifier: Modifier = Modifier,
     viewModel: WhiteNoiseViewModel = koinViewModel(),
+    args: WhiteNoiseScreenArgs,
 ) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
-    var prompt by remember {
-        mutableStateOf("")
-    }
+    val progress by viewModel.progress.collectAsState()
 
     Scaffold(
         modifier = modifier,
@@ -66,36 +63,29 @@ fun WhiteNoiseScreen(
             )
         },
         content = { paddingValues ->
-            Column(Modifier.padding(paddingValues)) {
-                // TODO: Update UI
-                TextField(
-                    value = prompt,
-                    onValueChange = {
-                        prompt = it
-                    },
-                    label = { Text(text = "Prompt") },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                backgroundColor = MaterialTheme.colors.primary,
-                shape = RoundedCornerShape(16.dp),
-                onClick = {
-                    if (prompt.isNotEmpty()) {
-                        viewModel.generate(prompt)
-                    }
-                },
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                ) {
-                    Icon(Icons.Filled.AutoFixHigh, contentDescription = null)
-                    Text("Generate")
+            Box(Modifier.padding(paddingValues)) {
+                LaunchedEffect(key1 = Unit) {
+                    viewModel.generate(
+                        args.prompt,
+                        SoundEffectConfig(
+                            duration = args.durationInMills?.milliseconds,
+                            promptInfluence = args.promptInfluence
+                        )
+                    )
                 }
+
+                AudioProcessingView(
+                    modifier,
+                    progress = progress,
+                    successLabel = stringResource(Res.string.generate_done),
+                    onRetry = {
+                        viewModel.generate(
+                            args.prompt, SoundEffectConfig(
+                                duration = args.durationInMills?.milliseconds,
+                                promptInfluence = args.promptInfluence
+                            )
+                        )
+                    })
             }
         }
     )

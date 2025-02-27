@@ -12,7 +12,7 @@ data class SoundGenerationRequest(
 
     // [0.0, 1.0]
     @SerialName("prompt_influence")
-    val promptInfluence: Double = 0.3,
+    val promptInfluence: Float = 0.3f,
 ) {
     init {
         require(durationSeconds == null || durationSeconds in 0.5..22.0) { "duration_seconds must be in [0.5, 22.0]" }

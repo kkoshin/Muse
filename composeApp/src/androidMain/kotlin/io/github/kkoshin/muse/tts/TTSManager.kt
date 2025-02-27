@@ -133,7 +133,7 @@ class TTSManager(
         prompt: String,
         config: SoundEffectConfig,
         fileNameWithoutExtension: String = "Sound_${Instant.now().epochSecond}",
-    ): Result<Unit> {
+    ): Result<Uri> {
         val targetUri = MediaFile
             .create(
                 appContext,
@@ -150,6 +150,7 @@ class TTSManager(
                     outputStream,
                 )
             }
+            Result.success(targetUri)
         }
     }
 }

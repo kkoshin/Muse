@@ -11,7 +11,7 @@ interface SoundEffectProvider {
     ): Result<Unit>
 }
 
-class SoundEffectConfig(
+data class SoundEffectConfig(
     val duration: Duration? = null,
-    val promptInfluence: Double = 0.3,
+    val promptInfluence: Float = 1f,
 )
