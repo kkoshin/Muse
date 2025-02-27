@@ -33,6 +33,8 @@ import io.github.kkoshin.muse.isolation.AudioIsolationPreviewArgs
 import io.github.kkoshin.muse.isolation.AudioIsolationPreviewScreen
 import io.github.kkoshin.muse.isolation.AudioIsolationScreen
 import io.github.kkoshin.muse.navigation.bottomSheet
+import io.github.kkoshin.muse.noise.WhiteNoiseConfigScreen
+import io.github.kkoshin.muse.noise.WhiteNoiseConfigScreenArgs
 import io.github.kkoshin.muse.noise.WhiteNoiseScreen
 import io.github.kkoshin.muse.noise.WhiteNoiseScreenArgs
 import io.github.kkoshin.muse.setting.OpenSourceArgs
@@ -100,7 +102,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                     )
                 },
                 onLaunchWhiteNoise = {
-                    navController.navigate(WhiteNoiseScreenArgs)
+                    navController.navigate(WhiteNoiseConfigScreenArgs)
                 }
             )
         }
@@ -126,7 +128,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             )
         }
 
-        composable<ScriptCreatorArgs> { entry ->
+        composable<ScriptCreatorArgs> {
             ScriptCreatorScreen(onResult = { scriptId ->
                 navController.popBackStack()
                 navController.currentBackStackEntry
@@ -207,8 +209,19 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             OpenSourceScreen()
         }
 
-        composable<WhiteNoiseScreenArgs> {
-            WhiteNoiseScreen()
+        composable<WhiteNoiseConfigScreenArgs> {
+            WhiteNoiseConfigScreen { prompt, config ->
+                navController.navigate(
+                    WhiteNoiseScreenArgs(
+                        prompt,
+                        config.duration?.inWholeMilliseconds,
+                        config.promptInfluence
+                    )
+                )
+            }
+        }
+        composable<WhiteNoiseScreenArgs> { entry ->
+            WhiteNoiseScreen(args = entry.toRoute())
         }
     }
 }
