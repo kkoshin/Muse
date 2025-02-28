@@ -7,14 +7,12 @@ import io.github.kkoshin.elevenlabs.model.HttpValidationError
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.forms.FormBuilder
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders
 
 class ElevenLabsClient(
     private val apiKey: String,
@@ -43,11 +41,9 @@ class ElevenLabsClient(
             }
         }.mapCatching { it.bodyAsResult() }
 
-    internal suspend inline fun <reified R : Any, reified W> postAsForm(
+    internal suspend inline fun <reified R : Any, reified W> postForm(
         resources: R,
-        audioFile: ByteArray, // 修改为接收字节数组
-        fileName: String,
-        contentType: ContentType
+        noinline formDataBuilder: FormBuilder.() -> Unit,
     ): Result<W> = runCatching {
         ktorClient.post<R>(resources) {
             headers {
@@ -55,19 +51,8 @@ class ElevenLabsClient(
             }
             setBody(
                 MultiPartFormDataContent(
-                    formData {
-                        append(
-                            "audio",
-                            audioFile,
-                            headers = Headers.build {
-                                append(
-                                    HttpHeaders.ContentDisposition,
-                                    "form-data; name=\"audio\"; filename=\"$fileName\""
-                                )
-                                append(HttpHeaders.ContentType, contentType.toString())
-                            }
-                        )
-                    })
+                    formData(formDataBuilder)
+                )
             )
         }
     }.mapCatching {
