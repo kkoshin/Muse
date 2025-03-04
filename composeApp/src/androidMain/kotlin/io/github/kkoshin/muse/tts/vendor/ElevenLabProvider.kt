@@ -3,6 +3,7 @@ package io.github.kkoshin.muse.tts.vendor
 import io.github.kkoshin.elevenlabs.ElevenLabsClient
 import io.github.kkoshin.elevenlabs.api.getSubscription
 import io.github.kkoshin.elevenlabs.api.getVoices
+import io.github.kkoshin.elevenlabs.api.makeSoundEffects
 import io.github.kkoshin.elevenlabs.api.textToSpeech
 import io.github.kkoshin.elevenlabs.api.transcribeWithAudio
 import io.github.kkoshin.elevenlabs.model.FreeTierOutputFormat
@@ -12,6 +13,8 @@ import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
 import io.github.kkoshin.muse.isolation.AudioIsolationProvider
+import io.github.kkoshin.muse.noise.SoundEffectConfig
+import io.github.kkoshin.muse.noise.SoundEffectProvider
 import io.github.kkoshin.muse.stt.STTProvider
 import io.github.kkoshin.muse.tts.CharacterQuota
 import io.github.kkoshin.muse.tts.SupportedAudioType
@@ -30,11 +33,12 @@ import kotlinx.coroutines.withContext
 import logcat.logcat
 import okio.Source
 import removeBackgroundAudio
+import java.io.OutputStream
 
 class ElevenLabProvider(
     private val accountManager: AccountManager,
     private val scope: CoroutineScope,
-) : TTSProvider, AudioIsolationProvider, STTProvider {
+) : TTSProvider, AudioIsolationProvider, SoundEffectProvider, STTProvider {
     private lateinit var client: ElevenLabsClient
 
     @Volatile
@@ -150,6 +154,23 @@ class ElevenLabProvider(
         return withContext(Dispatchers.IO) {
             requireClient().mapCatching { client ->
                 client.removeBackgroundAudio(audio, audioName).getOrThrow()
+            }
+        }
+    }
+
+    override suspend fun makeSoundEffects(
+        prompt: String,
+        config: SoundEffectConfig,
+        target: OutputStream,
+    ): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            requireClient().mapCatching { client ->
+                client.makeSoundEffects(
+                    prompt,
+                    durationSeconds = config.duration?.inWholeMilliseconds?.let { it / 1000.0 },
+                    promptInfluence = config.promptInfluence,
+                    outputStream = target,
+                ).getOrThrow()
             }
         }
     }

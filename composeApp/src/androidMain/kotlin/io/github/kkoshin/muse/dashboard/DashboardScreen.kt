@@ -49,6 +49,7 @@ import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.MusicOff
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
@@ -105,6 +106,7 @@ fun DashboardScreen(
     onLaunchSettingsPage: () -> Unit,
     onDeepLinkHandled: () -> Unit,
     onLaunchAudioIsolation: (Uri) -> Unit,
+    onLaunchWhiteNoise: () -> Unit,
 ) {
     val scripts by viewModel.scripts.collectAsState()
     val context = LocalContext.current
@@ -228,6 +230,16 @@ fun DashboardScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                FloatingActionButton(
+                    modifier = Modifier.size(40.dp),
+                    backgroundColor = MaterialTheme.colors.background,
+                    onClick = {
+                        onLaunchWhiteNoise()
+                    },
+                ) {
+                    Icon(Icons.Outlined.Campaign, contentDescription = null)
+                }
+
                 FloatingActionButton(
                     modifier = Modifier.size(40.dp),
                     backgroundColor = MaterialTheme.colors.background,

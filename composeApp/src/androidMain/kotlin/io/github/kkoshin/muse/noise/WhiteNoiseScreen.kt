@@ -1,6 +1,5 @@
-package io.github.kkoshin.muse.isolation
+package io.github.kkoshin.muse.noise
 
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,72 +10,83 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import io.github.kkoshin.muse.export.AudioProcessingView
 import kotlinx.serialization.Serializable
 import muse.composeapp.generated.resources.Res
-import muse.composeapp.generated.resources.denoise_done
+import muse.composeapp.generated.resources.generate_done
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
-class AudioIsolationArgs(
-    val audioUri: String,
+class WhiteNoiseScreenArgs(
+    val prompt: String,
+    val durationInMills: Long? = null,
+    val promptInfluence: Float = 0.3f,
 )
 
 @Composable
-fun AudioIsolationScreen(
+fun WhiteNoiseScreen(
     modifier: Modifier = Modifier,
-    args: AudioIsolationArgs,
-    viewModel: AudioIsolationViewModel = koinViewModel(),
-    onExit: () -> Unit,
+    viewModel: WhiteNoiseViewModel = koinViewModel(),
+    args: WhiteNoiseScreenArgs,
 ) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val progress by viewModel.progress.collectAsState()
-
-    BackHandler {
-        onExit()
-    }
 
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             TopAppBar(
-                title = {},
+                windowInsets = WindowInsets.statusBars,
+                backgroundColor = MaterialTheme.colors.surface,
                 navigationIcon = {
                     IconButton(onClick = {
                         backPressedDispatcher?.onBackPressed()
                     }) {
-                        Icon(Icons.Filled.Close, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp,
+                title = {
+                    Text(text = "White Noise")
+                },
             )
         },
-        content = { contentPadding ->
-            Box(Modifier.padding(contentPadding)) {
+        content = { paddingValues ->
+            Box(Modifier.padding(paddingValues)) {
                 LaunchedEffect(key1 = Unit) {
-                    viewModel.removeBackgroundNoise(args.audioUri.toUri())
+                    viewModel.generate(
+                        args.prompt,
+                        SoundEffectConfig(
+                            duration = args.durationInMills?.milliseconds,
+                            promptInfluence = args.promptInfluence
+                        )
+                    )
                 }
 
                 AudioProcessingView(
                     modifier,
                     progress = progress,
-                    successLabel = stringResource(Res.string.denoise_done),
-                    onRetry = { viewModel.removeBackgroundNoise(args.audioUri.toUri()) })
+                    successLabel = stringResource(Res.string.generate_done),
+                    onRetry = {
+                        viewModel.generate(
+                            args.prompt, SoundEffectConfig(
+                                duration = args.durationInMills?.milliseconds,
+                                promptInfluence = args.promptInfluence
+                            )
+                        )
+                    })
             }
-        },
+        }
     )
 }
