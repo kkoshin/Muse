@@ -43,6 +43,8 @@ import io.github.kkoshin.muse.setting.SettingArgs
 import io.github.kkoshin.muse.setting.SettingScreen
 import io.github.kkoshin.muse.setting.voice.VoicePicker
 import io.github.kkoshin.muse.setting.voice.VoicePickerArgs
+import io.github.kkoshin.muse.stt.SttArgs
+import io.github.kkoshin.muse.stt.SttScreen
 import java.util.UUID
 
 private fun Bundle.getDeepLinkUri(): Uri? =
@@ -222,6 +224,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
         composable<WhiteNoiseScreenArgs> { entry ->
             WhiteNoiseScreen(args = entry.toRoute())
+        }
+
+        composable<SttArgs> { entry ->
+            SttScreen(args = entry.toRoute())
         }
     }
 }

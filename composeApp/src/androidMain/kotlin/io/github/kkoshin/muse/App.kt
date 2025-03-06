@@ -16,6 +16,8 @@ import io.github.kkoshin.muse.isolation.AudioIsolationViewModel
 import io.github.kkoshin.muse.noise.SoundEffectProvider
 import io.github.kkoshin.muse.noise.WhiteNoiseViewModel
 import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.stt.STTProvider
+import io.github.kkoshin.muse.stt.SttViewModel
 import io.github.kkoshin.muse.tts.TTSManager
 import io.github.kkoshin.muse.tts.TTSProvider
 import io.github.kkoshin.muse.tts.vendor.ElevenLabProvider
@@ -38,6 +40,7 @@ class App : Application() {
         viewModel { ExportViewModel(get(), get(), get()) }
         viewModel { DashboardViewModel(get()) }
         viewModel { AudioIsolationViewModel(get()) }
+        viewModel { SttViewModel(get()) }
         viewModel { WhiteNoiseViewModel(get()) }
         singleOf(::TTSManager)
         singleOf(::AccountManager)
@@ -49,6 +52,9 @@ class App : Application() {
             ElevenLabProvider(get(), get())
         }
         single<SoundEffectProvider> {
+            ElevenLabProvider(get(), get())
+        }
+        single<STTProvider> {
             ElevenLabProvider(get(), get())
         }
     }

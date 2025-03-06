@@ -15,23 +15,27 @@ import com.github.foodiestudio.sugar.storage.filesystem.displayName
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
 import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
+import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.R
 import io.github.kkoshin.muse.isolation.AudioIsolationProvider
 import io.github.kkoshin.muse.noise.SoundEffectConfig
 import io.github.kkoshin.muse.noise.SoundEffectProvider
 import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.stt.STTProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okio.source
 import java.time.Instant
 
+// TODO: rename to MuseManager
 @OptIn(ExperimentalSugarApi::class)
 class TTSManager(
     private val appContext: Context,
     private val provider: TTSProvider,
     private val isolationProvider: AudioIsolationProvider,
     private val soundEffectProvider: SoundEffectProvider,
+    private val sttProvider: STTProvider,
 ) {
     /**
      * 持久化 text:Uri
@@ -151,6 +155,20 @@ class TTSManager(
                 )
             }
             Result.success(targetUri)
+        }
+    }
+
+    /**
+     * 对音频进行转录
+     */
+    suspend fun transcribeAudio(audioUri: Uri): Result<SpeechToTextChunkResponseModel> {
+        return withContext(Dispatchers.IO) {
+            val fileSystem = AppFileHelper(appContext).fileSystem
+            val name = fileSystem.metadata(audioUri.toOkioPath()).displayName
+            sttProvider.transcribeAudio(
+                fileSystem.source(audioUri.toOkioPath()),
+                name
+            )
         }
     }
 }
