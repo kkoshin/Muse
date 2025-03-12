@@ -1,9 +1,9 @@
 package io.github.kkoshin.muse.tts.vendor
 
-import io.github.kkoshin.muse.tts.CharacterQuota
-import io.github.kkoshin.muse.tts.TTSProvider
-import io.github.kkoshin.muse.tts.TTSResult
-import io.github.kkoshin.muse.tts.Voice
+import io.github.kkoshin.muse.core.provider.CharacterQuota
+import io.github.kkoshin.muse.core.provider.TTSProvider
+import io.github.kkoshin.muse.core.provider.TTSResult
+import io.github.kkoshin.muse.core.provider.Voice
 
 class GroupedTTSProvider(
     private val providers: List<TTSProvider>,

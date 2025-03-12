@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
+import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.export.ProgressStatus
 import io.github.kkoshin.muse.repo.MuseRepo
-import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ import org.koin.java.KoinJavaComponent.inject
 import java.time.Instant
 
 class AudioIsolationViewModel(
-    private val ttsManager: TTSManager,
+    private val speechProcessorManager: SpeechProcessorManager,
 ) : ViewModel() {
 
     private val appContext: Context by inject(Context::class.java)
@@ -34,7 +34,7 @@ class AudioIsolationViewModel(
         _progress.value = ProgressStatus.Processing("remove background noise")
         lastJob?.cancel()
         lastJob = viewModelScope.launch {
-            ttsManager.removeBackgroundNoise(audioUri)
+            speechProcessorManager.removeBackgroundNoise(audioUri)
                 .onSuccess {
                     val targetUri = MediaFile
                         .create(

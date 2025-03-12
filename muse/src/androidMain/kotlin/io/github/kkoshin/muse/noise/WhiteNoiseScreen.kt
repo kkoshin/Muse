@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.export.AudioProcessingView
 import kotlinx.serialization.Serializable
 import muse.muse.generated.resources.Res

@@ -2,12 +2,12 @@ package io.github.kkoshin.muse.tts.vendor
 
 import android.content.Context
 import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
+import io.github.kkoshin.muse.core.provider.CharacterQuota
+import io.github.kkoshin.muse.core.provider.SupportedAudioType
+import io.github.kkoshin.muse.core.provider.TTSProvider
+import io.github.kkoshin.muse.core.provider.TTSResult
+import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.muse.debugLog
-import io.github.kkoshin.muse.tts.CharacterQuota
-import io.github.kkoshin.muse.tts.SupportedAudioType
-import io.github.kkoshin.muse.tts.TTSProvider
-import io.github.kkoshin.muse.tts.TTSResult
-import io.github.kkoshin.muse.tts.Voice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext

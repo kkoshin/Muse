@@ -1,9 +1,9 @@
 package io.github.kkoshin.muse.tts.vendor
 
 import android.content.Context
+import io.github.kkoshin.muse.core.provider.SoundEffectConfig
+import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.debugLog
-import io.github.kkoshin.muse.noise.SoundEffectConfig
-import io.github.kkoshin.muse.noise.SoundEffectProvider
 import kotlinx.coroutines.delay
 import org.koin.java.KoinJavaComponent.inject
 import java.io.OutputStream

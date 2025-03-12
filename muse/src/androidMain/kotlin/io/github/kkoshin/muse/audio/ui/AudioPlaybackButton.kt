@@ -38,10 +38,10 @@ enum class PlaybackState {
 }
 
 @Composable
-fun AudioPlaybackButton(
-    modifier: Modifier = Modifier,
+actual fun AudioPlaybackButton(
+    modifier: Modifier,
     audioSource: Uri?,
-    onProgress: (Float) -> Unit = {}
+    onProgress: (Float) -> Unit
 ) {
     val audioUri by remember(audioSource) { mutableStateOf(audioSource) }
     val context = LocalContext.current

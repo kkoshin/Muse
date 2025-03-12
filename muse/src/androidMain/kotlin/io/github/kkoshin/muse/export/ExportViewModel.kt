@@ -9,11 +9,11 @@ import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
 import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
 import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
-import io.github.kkoshin.muse.AccountManager
 import io.github.kkoshin.muse.audio.Mp3Decoder
+import io.github.kkoshin.muse.core.manager.AccountManager
+import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
-import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,7 @@ import java.time.Instant
 import java.util.UUID
 
 class ExportViewModel(
-    private val ttsManager: TTSManager,
+    private val speechProcessorManager: SpeechProcessorManager,
     accountManager: AccountManager,
     private val repo: MuseRepo,
 ) : ViewModel() {
@@ -70,7 +70,7 @@ class ExportViewModel(
                 val requests = batch.map { phrase ->
                     async {
                         // mp3 原始文件暂时没有记录
-                        ttsManager
+                        speechProcessorManager
                             .getOrGenerate(voiceId, phrase)
                             .mapCatching {
                                 saveAsPcm(

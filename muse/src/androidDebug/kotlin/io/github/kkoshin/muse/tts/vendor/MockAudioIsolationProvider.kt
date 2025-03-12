@@ -1,8 +1,8 @@
 package io.github.kkoshin.muse.tts.vendor
 
 import android.content.Context
+import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
 import io.github.kkoshin.muse.debugLog
-import io.github.kkoshin.muse.isolation.AudioIsolationProvider
 import kotlinx.coroutines.delay
 import okio.Source
 import org.koin.java.KoinJavaComponent.inject

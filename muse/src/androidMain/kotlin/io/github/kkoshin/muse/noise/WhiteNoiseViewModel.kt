@@ -2,8 +2,9 @@ package io.github.kkoshin.muse.noise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
+import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.export.ProgressStatus
-import io.github.kkoshin.muse.tts.TTSManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class WhiteNoiseViewModel(
-    private val ttsManager: TTSManager,
+    private val speechProcessorManager: SpeechProcessorManager,
 ) : ViewModel() {
 
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
@@ -23,7 +24,7 @@ class WhiteNoiseViewModel(
         _progress.value = ProgressStatus.Processing("remove background noise")
         lastJob?.cancel()
         lastJob = viewModelScope.launch {
-            ttsManager.makeSoundEffects(
+            speechProcessorManager.makeSoundEffects(
                 prompt,
                 config = config
             ).fold(

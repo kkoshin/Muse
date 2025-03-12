@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import kotlinx.serialization.Serializable
 import muse.muse.generated.resources.Res
 import muse.muse.generated.resources.sound_effect

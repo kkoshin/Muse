@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.github.foodiestudio.sugar.notification.toast
-import io.github.kkoshin.muse.dashboard.formatTimeDisplay
+import io.github.kkoshin.muse.feature.dashboard.formatTimeDisplay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
