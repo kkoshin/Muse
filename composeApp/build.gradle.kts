@@ -76,7 +76,7 @@ dependencies {
     implementation(compose.material)
     implementation(compose.ui)
 
-    implementation(libs.navigation)
+    implementation(libs.navigation.compose)
     implementation(libs.xcrash)
     implementation(sharedLibs.logcat)
     implementation(platform(sharedLibs.koin.bom))

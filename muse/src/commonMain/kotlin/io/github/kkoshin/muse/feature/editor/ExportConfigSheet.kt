@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
-import java.util.Locale
 
 @Serializable
 class ExportConfigSheetArgs(
@@ -200,7 +199,7 @@ fun SliderBar(
     value: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     onValueChange: (Float) -> Unit,
-    format: (Float) -> String = { String.format(Locale.getDefault(), "%.1f", it) },
+    format: (Float) -> String = { formatDecimal(it, 1) },
 ) {
     Row(
         modifier,

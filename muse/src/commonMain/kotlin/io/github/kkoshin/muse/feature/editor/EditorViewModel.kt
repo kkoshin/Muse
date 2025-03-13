@@ -1,11 +1,11 @@
 package io.github.kkoshin.muse.feature.editor
 
 import androidx.lifecycle.ViewModel
+import com.benasher44.uuid.uuidFrom
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
-import java.util.UUID
 
 class EditorViewModel(
     private val speechProcessorManager: SpeechProcessorManager,
@@ -21,5 +21,5 @@ class EditorViewModel(
             }
     }
 
-    suspend fun queryPhrases(scriptId: String): List<String>? = repo.queryPhrases(UUID.fromString(scriptId))
+    suspend fun queryPhrases(scriptId: String): List<String>? = repo.queryPhrases(uuidFrom(scriptId))
 }

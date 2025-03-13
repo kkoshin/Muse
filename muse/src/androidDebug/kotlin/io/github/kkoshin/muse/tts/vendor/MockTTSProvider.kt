@@ -11,6 +11,7 @@ import io.github.kkoshin.muse.debugLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import okio.source
 import org.koin.java.KoinJavaComponent.inject
 
 class MockTTSProvider : TTSProvider {
@@ -73,7 +74,7 @@ class MockTTSProvider : TTSProvider {
             withContext(Dispatchers.IO) {
                 delay(1000)
                 TTSResult(
-                    content = appContext.assets.open("english.mp3"),
+                    content = appContext.assets.open("english.mp3").source(),
                     mimeType = SupportedAudioType.MP3,
                     audioSampleMetadata = MonoAudioSampleMetadata(),
                 )

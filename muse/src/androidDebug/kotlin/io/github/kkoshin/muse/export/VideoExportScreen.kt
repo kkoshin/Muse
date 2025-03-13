@@ -20,7 +20,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.transformer.Effects
+import io.github.kkoshin.muse.feature.export.rememberAudioExportPipeline
 import kotlinx.serialization.Serializable
+import okio.Path.Companion.toPath
 
 @Serializable
 data class VideoExportArgs(
@@ -52,7 +54,7 @@ fun VideoExportScreen(
     val audioExportPipeline =
         rememberAudioExportPipeline(
             context = context,
-            input = args.pcmUriList.map { it.toUri() },
+            input = args.pcmUriList.map { it.toPath() },
         )
 
     Scaffold(

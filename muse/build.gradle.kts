@@ -24,24 +24,35 @@ kotlin {
         }
     }
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "muse"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(libs.navigation)
+//            implementation(libs.navigation)
             implementation(sharedLibs.logcat)
             implementation(libs.sugar)
+            implementation(sharedLibs.bundles.jetpack)
+            implementation(libs.documentfile)
             implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
                 exclude(group = "androidx.appcompat")
             }
-            implementation(sharedLibs.bundles.jetpack)
-            implementation(libs.documentfile)
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
             implementation(libs.browser)
             implementation(libs.sql.android)
-//            implementation(libs.xcrash)
             implementation(libs.bundles.media3)
+            implementation(libs.accompanist.navigation.material)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,11 +63,31 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
-            implementation(libs.accompanist.navigation.material)
             implementation(libs.bundles.about)
             implementation(libs.bytesize)
+            implementation(sharedLibs.okio)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.uuid)
+            implementation(libs.navigation.compose)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.lifecycle.viewmodel)
+            implementation(libs.lifecycle.runtime.compose)
         }
     }
+
+    targets.configureEach {
+        compilations.configureEach {
+            compileTaskProvider.get().compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation(platform(sharedLibs.koin.bom))
 }
 
 android {
@@ -67,20 +98,11 @@ android {
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk
             .get()
             .toInt()
-//        targetSdk = libs.versions.android.targetSdk
-//            .get()
-//            .toInt()
-//        ndk {
-//            abiFilters.clear()
-//            //noinspection ChromeOsAbiSupport
-//            abiFilters += "arm64-v8a"
-//        }
     }
 
     packaging {
@@ -106,7 +128,10 @@ android {
     dependencies {
         debugImplementation(compose.preview)
         debugImplementation(compose.uiTooling)
-        implementation(platform(sharedLibs.koin.bom))
+    }
+
+    lint {
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
 }
 

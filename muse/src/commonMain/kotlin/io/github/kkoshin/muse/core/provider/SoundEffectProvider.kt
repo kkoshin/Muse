@@ -1,13 +1,13 @@
 package io.github.kkoshin.muse.core.provider
 
-import java.io.OutputStream
+import okio.Sink
 import kotlin.time.Duration
 
 interface SoundEffectProvider {
     suspend fun makeSoundEffects(
         prompt: String,
         config: SoundEffectConfig,
-        target: OutputStream
+        target: Sink
     ): Result<Unit>
 }
 

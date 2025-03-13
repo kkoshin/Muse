@@ -18,8 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import io.github.kkoshin.muse.export.ExportArgs
-import io.github.kkoshin.muse.export.ExportScreen
+import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
@@ -28,23 +27,26 @@ import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.feature.export.ExportArgs
+import io.github.kkoshin.muse.feature.export.ExportScreen
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewScreen
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreenArgs
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreenArgs
 import io.github.kkoshin.muse.feature.setting.OpenSourceArgs
 import io.github.kkoshin.muse.feature.setting.OpenSourceScreen
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
 import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
 import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
-import io.github.kkoshin.muse.feature.workaround.bottomSheet
-import io.github.kkoshin.muse.isolation.AudioIsolationArgs
-import io.github.kkoshin.muse.isolation.AudioIsolationPreviewArgs
-import io.github.kkoshin.muse.isolation.AudioIsolationPreviewScreen
-import io.github.kkoshin.muse.isolation.AudioIsolationScreen
-import io.github.kkoshin.muse.noise.WhiteNoiseConfigScreen
-import io.github.kkoshin.muse.noise.WhiteNoiseConfigScreenArgs
-import io.github.kkoshin.muse.noise.WhiteNoiseScreen
-import io.github.kkoshin.muse.noise.WhiteNoiseScreenArgs
-import io.github.kkoshin.muse.stt.SttArgs
-import io.github.kkoshin.muse.stt.SttScreen
+import io.github.kkoshin.muse.feature.stt.SttArgs
+import io.github.kkoshin.muse.feature.stt.SttScreen
+import io.github.kkoshin.muse.workaround.bottomSheet
+import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
 
 private fun Bundle.getDeepLinkUri(): Uri? =
@@ -76,7 +78,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             }
             val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
             DashboardScreen(
-                contentUri = deeplinkUri,
+                contentUri = deeplinkUri?.toOkioPath(),
                 initScriptId = initScriptId,
                 onCreateScriptRequest = {
                     navController.navigate(ScriptCreatorArgs)
@@ -99,13 +101,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onLaunchAudioIsolation = { uri ->
                     navController.navigate(
                         AudioIsolationPreviewArgs(
-                            audioUri = uri.toString(),
+                            audioUri = uri,
                         ),
                     )
                 },
                 onLaunchWhiteNoise = {
                     navController.navigate(WhiteNoiseConfigScreenArgs)
-                }
+                },
+                viewModel = koinViewModel(),
             )
         }
 
@@ -127,6 +130,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onPickVoice = {
                     navController.navigate(VoicePickerArgs(emptyList()))
                 },
+                viewModel = koinViewModel(),
             )
         }
 
@@ -144,10 +148,10 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 versionName = BuildConfig.VERSION_NAME,
                 versionCode = BuildConfig.VERSION_CODE,
                 onLaunchVoiceScreen = {
-                navController.navigate(VoicePickerArgs(it.toList()))
-            }, onLaunchOpenSourceScreen = {
-                navController.navigate(OpenSourceArgs)
-            })
+                    navController.navigate(VoicePickerArgs(it.toList()))
+                }, onLaunchOpenSourceScreen = {
+                    navController.navigate(OpenSourceArgs)
+                })
         }
 
         composable<VoicePickerArgs> { entry ->
@@ -226,7 +230,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             }
         }
         composable<WhiteNoiseScreenArgs> { entry ->
-            WhiteNoiseScreen(args = entry.toRoute())
+            WhiteNoiseScreen(args = entry.toRoute()) { isSuccess ->
+                if (isSuccess) {
+                    navController.popBackStack(DashboardArgs, false)
+                } else {
+                    navController.popBackStack()
+                }
+            }
         }
 
         composable<SttArgs> { entry ->

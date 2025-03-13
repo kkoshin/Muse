@@ -1,11 +1,11 @@
 package io.github.kkoshin.muse.core.manager
 
-import android.net.Uri
 import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.core.provider.Voice
-import java.time.Instant
+import kotlinx.datetime.Clock
+import okio.Path
 
 expect class SpeechProcessorManager {
 
@@ -20,15 +20,15 @@ expect class SpeechProcessorManager {
     suspend fun getOrGenerate(
         voiceId: String,
         text: String,
-    ): Result<Uri>
+    ): Result<Path>
 
-    suspend fun removeBackgroundNoise(audioUri: Uri): Result<ByteArray>
+    suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray>
 
     suspend fun makeSoundEffects(
         prompt: String,
         config: SoundEffectConfig,
-        fileNameWithoutExtension: String = "Sound_${Instant.now().epochSecond}",
-    ): Result<Uri>
+        fileNameWithoutExtension: String = "Sound_${Clock.System.now().epochSeconds}",
+    ): Result<Path>
 
-    suspend fun transcribeAudio(audioUri: Uri): Result<SpeechToTextChunkResponseModel>
+    suspend fun transcribeAudio(audioUri: Path): Result<SpeechToTextChunkResponseModel>
 }

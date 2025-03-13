@@ -13,6 +13,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import kotlin.coroutines.cancellation.CancellationException
 
 class ElevenLabsClient(
     private val apiKey: String,
@@ -69,7 +70,7 @@ class ElevenLabsClient(
     }
 }
 
-@Throws(UnprocessableEntityError::class, ElevenLabsError::class)
+@Throws(UnprocessableEntityError::class, ElevenLabsError::class, CancellationException::class)
 internal suspend inline fun <reified T> HttpResponse.bodyAsResult(): T =
     when (status.value) {
         200 -> body()

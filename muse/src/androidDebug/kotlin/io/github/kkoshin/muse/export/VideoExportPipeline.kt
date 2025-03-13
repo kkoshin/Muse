@@ -16,7 +16,7 @@ import androidx.media3.transformer.ProgressHolder
 import androidx.media3.transformer.Transformer
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.AppFileHelper
-import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
+import io.github.kkoshin.muse.feature.export.ExportPipeline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import okio.Path
 import okio.Path.Companion.toPath
 import java.io.File
 import java.io.IOException
@@ -104,7 +105,7 @@ class VideoExportPipeline(
     }
 
     @OptIn(ExperimentalSugarApi::class)
-    override suspend fun start(target: Uri): Result<ExportResult> =
+    override suspend fun start(target: Path): Result<ExportResult> =
         coroutineScope {
             launch {
                 updateProgress()
@@ -114,7 +115,7 @@ class VideoExportPipeline(
                 withContext(Dispatchers.IO) {
                     appFileHelper.fileSystem.copy(
                         exportingCache.absolutePath.toPath(),
-                        target.toOkioPath(),
+                        target,
                     )
                 }
             }

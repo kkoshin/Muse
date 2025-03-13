@@ -4,7 +4,7 @@ import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
 import io.github.kkoshin.muse.audio.AudioSampleMetadata
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.io.InputStream
+import okio.Source
 
 interface TTSProvider {
     /**
@@ -27,7 +27,7 @@ enum class SupportedAudioType {
 }
 
 data class TTSResult(
-    val content: InputStream,
+    val content: Source,
     val mimeType: SupportedAudioType,
     val audioSampleMetadata: AudioSampleMetadata,
 )

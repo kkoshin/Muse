@@ -28,6 +28,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.documentfile.provider.DocumentFile
 import com.github.foodiestudio.sugar.notification.toast
+import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
+import io.github.kkoshin.muse.feature.export.AudioExportPipeline
+import io.github.kkoshin.muse.feature.export.ExportPipeline
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +64,7 @@ internal fun ExportButton(
 
     fun doExport() {
         scope.launch {
-            exportPipeline.start(targetDocument!!.uri)
+            exportPipeline.start(targetDocument!!.uri.toOkioPath())
                 .onFailure {
                     it.printStackTrace()
                     context.toast(it.message)

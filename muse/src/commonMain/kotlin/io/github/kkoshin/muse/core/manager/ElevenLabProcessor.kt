@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.core.manager
 
-//import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.elevenlabs.ElevenLabsClient
 import io.github.kkoshin.elevenlabs.api.getSubscription
 import io.github.kkoshin.elevenlabs.api.getVoices
@@ -23,6 +22,7 @@ import io.github.kkoshin.muse.core.provider.TTSResult
 import io.github.kkoshin.muse.core.provider.Voice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -30,10 +30,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import logcat.logcat
+import okio.Sink
 import okio.Source
 import removeBackgroundAudio
-import java.io.OutputStream
+import kotlin.concurrent.Volatile
 
 class ElevenLabProcessor(
     private val accountManager: AccountManager,
@@ -100,8 +100,8 @@ class ElevenLabProcessor(
                     client.getVoices().getOrThrow().map { item ->
                         val accent = Voice.Accent.entries.find {
                             it.raw.equals(item.labels?.get("accent"), true)
-                        }?.also {
-                            logcat { "accent not found: ${item.labels?.get("accent")}" }
+//                        }?.also {
+//                            logcat { "accent not found: ${item.labels?.get("accent")}" }
                         }
 
                         Voice(
@@ -163,7 +163,7 @@ class ElevenLabProcessor(
     override suspend fun makeSoundEffects(
         prompt: String,
         config: SoundEffectConfig,
-        target: OutputStream,
+        target: Sink,
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             requireClient().mapCatching { client ->
@@ -171,7 +171,7 @@ class ElevenLabProcessor(
                     prompt,
                     durationSeconds = config.duration?.inWholeMilliseconds?.let { it / 1000.0 },
                     promptInfluence = config.promptInfluence,
-                    outputStream = target,
+                    sink = target,
                 ).getOrThrow()
             }
         }
