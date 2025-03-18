@@ -112,8 +112,7 @@ android {
     }
     buildTypes {
         release {
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+            consumerProguardFiles(
                 "proguard-rules.pro",
             )
         }
