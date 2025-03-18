@@ -30,10 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.toUri
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.open_with_other_app
-import muse.muse.generated.resources.retry
-import muse.muse.generated.resources.share_to_other_app
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.open_with_other_app
+import muse.feature.generated.resources.retry
+import muse.feature.generated.resources.share_to_other_app
 import org.jetbrains.compose.resources.stringResource
 
 /**

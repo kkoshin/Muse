@@ -70,7 +70,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":muse"))
+    implementation(project(":feature"))
     implementation(compose.runtime)
     implementation(compose.foundation)
     implementation(compose.material)

@@ -42,8 +42,8 @@ import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.launch
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.setting
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.setting
 import okio.Path.Companion.toOkioPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.rememberKoinInject

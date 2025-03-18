@@ -58,8 +58,8 @@ import io.github.kkoshin.muse.core.provider.Voice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.voices
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.voices
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.rememberKoinInject

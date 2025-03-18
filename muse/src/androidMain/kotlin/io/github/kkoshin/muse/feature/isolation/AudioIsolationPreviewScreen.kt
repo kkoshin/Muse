@@ -46,11 +46,11 @@ import kotlinx.serialization.Serializable
 import me.saket.bytesize.DecimalByteSize
 import me.saket.bytesize.decimalBytes
 import me.saket.bytesize.megabytes
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.audio_isolation
-import muse.muse.generated.resources.audio_isolation_error_audio_file_too_large
-import muse.muse.generated.resources.audio_isolation_error_audio_file_too_short
-import muse.muse.generated.resources.remove_noise
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.audio_isolation
+import muse.feature.generated.resources.audio_isolation_error_audio_file_too_large
+import muse.feature.generated.resources.audio_isolation_error_audio_file_too_short
+import muse.feature.generated.resources.remove_noise
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours

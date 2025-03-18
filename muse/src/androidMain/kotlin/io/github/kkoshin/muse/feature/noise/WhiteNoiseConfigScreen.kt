@@ -54,9 +54,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import kotlinx.serialization.Serializable
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.sound_effect
-import muse.muse.generated.resources.white_noise_start
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.sound_effect
+import muse.feature.generated.resources.white_noise_start
 import org.jetbrains.compose.resources.stringResource
 import java.util.Locale
 import kotlin.time.Duration

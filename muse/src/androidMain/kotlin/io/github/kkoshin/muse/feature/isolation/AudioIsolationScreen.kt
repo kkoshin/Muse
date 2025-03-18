@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import kotlinx.serialization.Serializable
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.denoise_done
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.denoise_done
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 

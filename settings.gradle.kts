@@ -35,7 +35,8 @@ dependencyResolutionManagement {
     }
 }
 
-include(":muse")
+include(":feature")
+project(":feature").projectDir = file("muse")
 include(":elevenlabs")
 include(":composeApp")
 

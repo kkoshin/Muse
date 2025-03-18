@@ -79,10 +79,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import muse.muse.generated.resources.Res
-import muse.muse.generated.resources.format_replace_newlines_with_spaces
-import muse.muse.generated.resources.import_file_content_with_file_name
-import muse.muse.generated.resources.projects
+import muse.feature.generated.resources.Res
+import muse.feature.generated.resources.format_replace_newlines_with_spaces
+import muse.feature.generated.resources.import_file_content_with_file_name
+import muse.feature.generated.resources.projects
 import okio.Path
 import okio.buffer
 import okio.source
