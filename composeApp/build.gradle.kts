@@ -8,14 +8,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.sqldelight)
-    alias(libs.plugins.about)
-}
-
-aboutLibraries {
-    // Remove the "generated" timestamp to allow for reproducible builds
-    excludeFields = arrayOf("generated")
 }
 
 kotlin {
@@ -25,51 +17,16 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-
-    sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.navigation)
-            implementation(sharedLibs.logcat)
-            implementation(libs.sugar)
-            implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
-                exclude(group = "androidx.appcompat")
-            }
-            implementation(sharedLibs.bundles.jetpack)
-            implementation(libs.documentfile)
-            implementation(dependencies.create(libs.lame.get()).toString()) {
-                exclude(group = "com.android.support")
-            }
-            implementation(libs.browser)
-            implementation(libs.sql.android)
-            implementation(libs.xcrash)
-            implementation(libs.bundles.media3)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
-            implementation(libs.kotlinx.json)
-            implementation(project(":elevenlabs"))
-            implementation(libs.accompanist.navigation.material)
-            implementation(libs.bundles.about)
-            implementation(libs.bytesize)
-        }
-    }
 }
 
 android {
-    namespace = "io.github.kkoshin.muse"
+    namespace = "io.github.kkoshin.muse.app"
     compileSdk = libs.versions.android.compileSdk
-        .get()
-        .toInt()
+    .get()
+    .toInt()
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    sourceSets["main"].manifest.srcFile("src/main/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/main/res")
 
     defaultConfig {
         applicationId = "io.github.kkoshin.muse"
@@ -79,6 +36,11 @@ android {
         targetSdk = libs.versions.android.targetSdk
             .get()
             .toInt()
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         ndk {
             abiFilters.clear()
             //noinspection ChromeOsAbiSupport
@@ -86,20 +48,14 @@ android {
         }
     }
 
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
     buildTypes {
         release {
             // 这里不配置签名，对应操作在外部进行
             isMinifyEnabled = true
             isShrinkResources = true
-
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
@@ -111,20 +67,28 @@ android {
         compose = true
         buildConfig = true
     }
-    dependencies {
-        debugImplementation(compose.preview)
-        debugImplementation(compose.uiTooling)
-        implementation(platform(sharedLibs.koin.bom))
-        debugImplementation(libs.devtools)
-    }
 }
 
-sqldelight {
-    databases {
-        create("AppDatabase") {
-            packageName.set("io.github.kkoshin.muse.database")
-        }
+dependencies {
+    implementation(project(":feature"))
+    implementation(compose.runtime)
+    implementation(compose.foundation)
+    implementation(compose.material)
+    implementation(compose.ui)
+
+    implementation(libs.navigation.compose)
+    implementation(libs.xcrash)
+    implementation(sharedLibs.logcat)
+    implementation(platform(sharedLibs.koin.bom))
+    implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
+        exclude(group = "androidx.appcompat")
     }
+    implementation(libs.sugar)
+    implementation(compose.materialIconsExtended)
+    implementation(libs.androidx.activity.compose)
+    implementation(sharedLibs.bundles.jetpack)
+    implementation(libs.accompanist.navigation.material)
+    debugImplementation(libs.devtools)
 }
 
 private fun ApplicationBaseFlavor.setUpStableVersion(
@@ -159,4 +123,3 @@ androidComponents {
             }
     }
 }
-
