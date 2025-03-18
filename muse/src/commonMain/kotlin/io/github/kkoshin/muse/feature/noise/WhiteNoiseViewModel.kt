@@ -21,7 +21,7 @@ class WhiteNoiseViewModel(
     private var lastJob: Job? = null
 
     fun generate(prompt: String, config: SoundEffectConfig) {
-        _progress.value = ProgressStatus.Processing("remove background noise")
+        _progress.value = ProgressStatus.Processing("Generating...")
         lastJob?.cancel()
         lastJob = viewModelScope.launch {
             speechProcessorManager.makeSoundEffects(
