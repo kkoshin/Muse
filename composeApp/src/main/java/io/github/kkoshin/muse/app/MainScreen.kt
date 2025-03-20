@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.app
 
 import android.content.Intent
@@ -47,7 +49,8 @@ import io.github.kkoshin.muse.feature.stt.SttArgs
 import io.github.kkoshin.muse.feature.stt.SttScreen
 import io.github.kkoshin.muse.workaround.bottomSheet
 import org.koin.androidx.compose.koinViewModel
-import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 private fun Bundle.getDeepLinkUri(): Uri? =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -76,7 +79,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             var deeplinkUri: Uri? by rememberSaveable(entry) {
                 mutableStateOf(entry.arguments?.getDeepLinkUri())
             }
-            val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
+            val initScriptId = entry.savedStateHandle.get<Uuid?>(ScriptCreatorArgs.RESULT_KEY)
             DashboardScreen(
                 contentUri = deeplinkUri?.toOkioPath(),
                 initScriptId = initScriptId,

@@ -20,9 +20,9 @@ import io.github.kkoshin.muse.feature.stt.SttViewModel
 import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 private val Context.accountDataStore: DataStore<Preferences> by preferencesDataStore(name = "account")

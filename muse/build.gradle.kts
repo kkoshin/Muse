@@ -38,7 +38,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-//            implementation(libs.navigation)
             implementation(sharedLibs.logcat)
             implementation(libs.sugar)
             implementation(sharedLibs.bundles.jetpack)
@@ -71,7 +70,6 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.uuid)
             implementation(libs.navigation.compose)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)

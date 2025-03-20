@@ -1,4 +1,5 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
+@file:OptIn(ExperimentalUuidApi::class)
 
 package io.github.kkoshin.muse.feature.dashboard
 
@@ -70,7 +71,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.benasher44.uuid.Uuid
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import io.github.kkoshin.muse.repo.model.Script
@@ -92,8 +92,10 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 actual fun DashboardScreen(
     modifier: Modifier,
@@ -266,7 +268,7 @@ actual fun DashboardScreen(
 private fun ScriptItem(
     modifier: Modifier = Modifier,
     script: Script,
-    onDelete: (UUID) -> Unit,
+    onDelete: (Uuid) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 

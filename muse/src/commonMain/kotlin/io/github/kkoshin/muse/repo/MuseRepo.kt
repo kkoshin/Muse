@@ -1,10 +1,13 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.repo
 
-import com.benasher44.uuid.Uuid
 import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.Path
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 expect class MuseRepo {
     fun getPcmCache(

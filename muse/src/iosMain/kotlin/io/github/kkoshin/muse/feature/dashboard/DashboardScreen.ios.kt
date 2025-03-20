@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.feature.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +35,13 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.benasher44.uuid.Uuid
 import io.github.kkoshin.muse.repo.model.Script
 import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.projects
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 actual fun DashboardScreen(

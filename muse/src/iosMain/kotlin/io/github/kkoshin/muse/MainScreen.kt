@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,48 +9,51 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
+import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
+import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 internal fun MainScreen(navController: NavHostController = rememberNavController()) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,
-        startDestination = ScriptCreatorArgs,
+        startDestination = DashboardArgs,
     ) {
-//        composable<DashboardArgs> { entry ->
-//            DashboardScreen(
-//                contentUri = null,
-//                initScriptId = null,
-//                onCreateScriptRequest = {
-//                    navController.navigate(ScriptCreatorArgs)
-//                },
-//                onLaunchEditor = { script ->
+        composable<DashboardArgs> { entry ->
+            DashboardScreen(
+                contentUri = null,
+                initScriptId = null,
+                onCreateScriptRequest = {
+                    navController.navigate(ScriptCreatorArgs)
+                },
+                onLaunchEditor = { script ->
 //                    navController.navigate(
 //                        EditorArgs(
 //                            scriptId = script.id.toString(),
 //                        ),
 //                    )
-//                },
-//                onLaunchSettingsPage = {
+                },
+                onLaunchSettingsPage = {
 //                    navController.navigate(SettingArgs) {
 //                        launchSingleTop = true
 //                    }
-//                },
-//                onDeepLinkHandled = {},
-//                onLaunchAudioIsolation = { uri ->
-////                    navController.navigate(
-////                        AudioIsolationPreviewArgs(
-////                            audioUri = uri,
-////                        ),
-////                    )
-//                },
-//                onLaunchWhiteNoise = {
-////                    navController.navigate(WhiteNoiseConfigScreenArgs)
-//                },
-//            )
-//        }
+                },
+                onDeepLinkHandled = {},
+                onLaunchAudioIsolation = { uri ->
+//                    navController.navigate(
+//                        AudioIsolationPreviewArgs(
+//                            audioUri = uri,
+//                        ),
+//                    )
+                },
+                onLaunchWhiteNoise = {
+//                    navController.navigate(WhiteNoiseConfigScreenArgs)
+                },
+            )
+        }
 
         composable<ScriptCreatorArgs> {
             ScriptCreatorScreen(onResult = { scriptId ->

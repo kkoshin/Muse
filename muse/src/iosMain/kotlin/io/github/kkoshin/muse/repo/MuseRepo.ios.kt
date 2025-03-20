@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.repo
 
-import com.benasher44.uuid.Uuid
 import io.github.kkoshin.muse.repo.model.Script
 import okio.Path
 import okio.Path.Companion.toPath
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // TODO: Implement MuseRepo
 actual class MuseRepo {

@@ -1,11 +1,13 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.repo.model
 
-import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
 import kotlinx.datetime.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 data class Script(
-    val id: Uuid = uuid4(),
+    val id: Uuid = Uuid.random(),
     val title: String = "Untitled",
     val text: String,
     val createAt: Long = Clock.System.now().toEpochMilliseconds(),

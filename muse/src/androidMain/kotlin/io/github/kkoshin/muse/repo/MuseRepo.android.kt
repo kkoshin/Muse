@@ -1,7 +1,8 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.repo
 
 import android.content.Context
-import com.benasher44.uuid.Uuid
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.AppFileHelper
 import io.github.kkoshin.muse.database.AppDatabase
@@ -12,6 +13,8 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.koin.java.KoinJavaComponent
 import java.io.File
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalSugarApi::class)
 actual class MuseRepo(
@@ -40,13 +43,13 @@ actual class MuseRepo(
 
     actual suspend fun queryAllScripts(): List<Script> = withContext(Dispatchers.IO) {
         scriptDao.queryAllScripts().executeAsList().map {
-            Script(Uuid.fromString(it.id), it.title, it.text, it.created_At)
+            Script(Uuid.parse(it.id), it.title, it.text, it.created_At)
         }
     }
 
     actual suspend fun queryScript(id: Uuid): Script? = withContext(Dispatchers.IO) {
         scriptDao.queryScirptById(id.toString()).executeAsOneOrNull()?.let {
-            Script(Uuid.fromString(it.id), it.title, it.text, it.created_At)
+            Script(Uuid.parse(it.id), it.title, it.text, it.created_At)
         }
     }
 

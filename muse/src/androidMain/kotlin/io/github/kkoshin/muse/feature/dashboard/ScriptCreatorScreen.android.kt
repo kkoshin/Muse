@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.feature.dashboard
 
 import androidx.activity.compose.BackHandler
@@ -42,7 +44,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.benasher44.uuid.Uuid
 import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import io.github.kkoshin.muse.repo.MuseRepo
@@ -51,6 +52,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 actual fun ScriptCreatorScreen(

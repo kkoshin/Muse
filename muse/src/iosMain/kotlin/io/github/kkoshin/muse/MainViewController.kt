@@ -1,27 +1,26 @@
 package io.github.kkoshin.muse
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.ComposeUIViewController
+import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
+import io.github.kkoshin.muse.repo.MuseRepo
+import org.koin.compose.KoinApplication
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-//private val baseModule = module {
+private val baseModule = module {
 //    single<CoroutineScope> { MainScope() }
-//    singleOf(::MuseRepo)
-//    viewModelOf(::DashboardViewModel)
-//}
+    viewModel {
+        DashboardViewModel(get())
+    }
+    singleOf(::MuseRepo)
+}
 
 fun MainViewController() = ComposeUIViewController {
-//    KoinApplication(application = {
-////        modules(baseModule)
-//    }) {
-//        MainScreen()
-//    }
-
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("ScriptCreatorScreen")
+    KoinApplication(application = {
+        modules(baseModule)
+    }) {
+        MainScreen()
     }
 }
 
