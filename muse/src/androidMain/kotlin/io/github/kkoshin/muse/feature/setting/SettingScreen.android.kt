@@ -46,7 +46,7 @@ import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.setting
 import okio.Path.Companion.toOkioPath
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @Composable
 actual fun SettingScreen(
@@ -58,8 +58,8 @@ actual fun SettingScreen(
 ) {
     val context = LocalContext.current
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val speechProcessorManager = rememberKoinInject<SpeechProcessorManager>()
-    val accountManager = rememberKoinInject<AccountManager>()
+    val speechProcessorManager = koinInject<SpeechProcessorManager>()
+    val accountManager = koinInject<AccountManager>()
     val scope = rememberCoroutineScope()
 
     var availableVoiceIds: Set<String>? by remember {

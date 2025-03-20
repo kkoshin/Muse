@@ -50,7 +50,7 @@ import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @Composable
 actual fun ScriptCreatorScreen(
@@ -64,7 +64,7 @@ actual fun ScriptCreatorScreen(
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     val clipboardManager = LocalClipboardManager.current
-    val repo = rememberKoinInject<MuseRepo>()
+    val repo = koinInject<MuseRepo>()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 

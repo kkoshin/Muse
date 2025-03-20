@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.accompanist.navigation.material)
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.koin.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -67,6 +68,8 @@ kotlin {
             implementation(libs.bytesize)
             implementation(sharedLibs.okio)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
             implementation(libs.uuid)
             implementation(libs.navigation.compose)
@@ -84,10 +87,6 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-    implementation(platform(sharedLibs.koin.bom))
 }
 
 android {

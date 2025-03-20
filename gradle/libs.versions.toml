@@ -9,6 +9,7 @@ bytesize = "2.0.0-beta04"
 compose-plugin = "1.7.3"
 datastore = "1.1.0"
 junit = "4.13.2"
+koinBom = "4.0.2"
 kotlin = "2.0.0"
 kotlinxDatetime = "0.6.2"
 lifecycleViewmodel = "2.8.4"
@@ -23,14 +24,16 @@ navigationCompose = "2.8.0-alpha10"
 sqldelight = "2.0.2"
 about = "11.2.2"
 uuid = "0.8.4"
-koin = "3.5.0"
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
 bytesize = { module = "me.saket.bytesize:bytesize", version.ref = "bytesize" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -62,7 +62,7 @@ import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.voices
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.rememberKoinInject
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -81,7 +81,7 @@ actual fun VoicePicker(
 
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    val speechProcessorManager = rememberKoinInject<SpeechProcessorManager>()
+    val speechProcessorManager = koinInject<SpeechProcessorManager>()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 

@@ -1,5 +1,7 @@
 package io.github.kkoshin.muse.feature.dashboard
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.benasher44.uuid.Uuid
@@ -12,4 +14,7 @@ actual fun ScriptCreatorScreen(
     onResult: (scriptId: Uuid?) -> Unit
 ) {
     // TODO implement ScriptCreatorScreen
+    Box {
+        Text("ScriptCreatorScreen")
+    }
 }

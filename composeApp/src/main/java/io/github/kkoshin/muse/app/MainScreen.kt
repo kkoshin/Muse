@@ -108,7 +108,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onLaunchWhiteNoise = {
                     navController.navigate(WhiteNoiseConfigScreenArgs)
                 },
-                viewModel = koinViewModel(),
             )
         }
 

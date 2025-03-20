@@ -8,6 +8,7 @@ import com.benasher44.uuid.Uuid
 import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.serialization.Serializable
 import okio.Path
+import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object DashboardArgs
@@ -17,7 +18,7 @@ expect fun DashboardScreen(
     modifier: Modifier = Modifier,
     contentUri: Path?,
     initScriptId: Uuid?,
-    viewModel: DashboardViewModel,
+    viewModel: DashboardViewModel = koinViewModel(),
     onLaunchEditor: (Script) -> Unit,
     onCreateScriptRequest: () -> Unit,
     onLaunchSettingsPage: () -> Unit,
