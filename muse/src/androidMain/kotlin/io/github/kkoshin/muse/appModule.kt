@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.github.foodiestudio.sugar.notification.toast
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
@@ -17,6 +18,7 @@ import io.github.kkoshin.muse.feature.export.ExportViewModel
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationViewModel
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseViewModel
 import io.github.kkoshin.muse.feature.stt.SttViewModel
+import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -41,6 +43,14 @@ internal val baseModule = module {
         AccountManager(context.accountDataStore)
     }
     single<CoroutineScope> { MainScope() }
+    single<ToastManager> {
+        val context = get<Context>()
+        object : ToastManager {
+            override fun show(message: String) {
+                context.toast(message)
+            }
+        }
+    }
 }
 
 val appModule = module {

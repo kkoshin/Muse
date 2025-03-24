@@ -44,7 +44,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.github.foodiestudio.sugar.notification.toast
+import io.github.kkoshin.muse.platformbridge.LocalToaster
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.model.Script
@@ -70,6 +70,7 @@ actual fun ScriptCreatorScreen(
     val repo = koinInject<MuseRepo>()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val toaster = LocalToaster.current
 
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -78,7 +79,7 @@ actual fun ScriptCreatorScreen(
                     val text = readTextContent(context, uri, false)
                     if (text.length > MAX_TEXT_LENGTH) {
                         withContext(Dispatchers.Main) {
-                            context.toast("Text is too long, import failed.")
+                            toaster.show("Text is too long, import failed.")
                         }
                     } else {
                         content = text
@@ -136,7 +137,7 @@ actual fun ScriptCreatorScreen(
                     if (it.length <= MAX_TEXT_LENGTH) {
                         content = it
                     } else {
-                        context.toast("The text has exceeded the maximum limit of $MAX_TEXT_LENGTH characters")
+                        toaster.show("The text has exceeded the maximum limit of $MAX_TEXT_LENGTH characters")
                     }
                 },
                 cursorBrush = SolidColor(MaterialTheme.colors.onBackground),
