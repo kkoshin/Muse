@@ -24,6 +24,8 @@ import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
+import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.getScriptId
+import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
@@ -50,7 +52,6 @@ import io.github.kkoshin.muse.feature.stt.SttScreen
 import io.github.kkoshin.muse.workaround.bottomSheet
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 private fun Bundle.getDeepLinkUri(): Uri? =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -79,7 +80,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             var deeplinkUri: Uri? by rememberSaveable(entry) {
                 mutableStateOf(entry.arguments?.getDeepLinkUri())
             }
-            val initScriptId = entry.savedStateHandle.get<Uuid?>(ScriptCreatorArgs.RESULT_KEY)
+            val initScriptId = entry.savedStateHandle.getScriptId()
             DashboardScreen(
                 contentUri = deeplinkUri?.toOkioPath(),
                 initScriptId = initScriptId,
@@ -140,8 +141,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             ScriptCreatorScreen(onResult = { scriptId ->
                 navController.popBackStack()
                 navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.set(ScriptCreatorArgs.RESULT_KEY, scriptId)
+                    ?.savedStateHandle?.setScriptId(scriptId)
             })
         }
 
