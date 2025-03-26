@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.CharacterQuota
-import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.launch
 import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.setting
@@ -206,7 +206,7 @@ actual fun SettingScreen(
                                 .getExternalStoragePublicDirectory(
                                     Environment.DIRECTORY_DOWNLOADS,
                                 ).toOkioPath()
-                                .resolve("../${MuseRepo.getExportRelativePath()}", true)
+                                .resolve("../${MusePathManager.getExportRelativePath()}", true)
                                 .toString(),
                         )
                     },

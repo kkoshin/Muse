@@ -23,7 +23,7 @@ import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.SupportedAudioType
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
-import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -102,7 +102,7 @@ actual class SpeechProcessorManager(
                             appContext,
                             MediaStoreType.Audio,
                             "${text.lowercase()}$fileExtName",
-                            "${MuseRepo.getMusicRelativePath()}/$voiceId",
+                            "${MusePathManager.getMusicRelativePath()}/$voiceId",
                             enablePending = true,
                         ).let {
                             it.write {
@@ -144,7 +144,7 @@ actual class SpeechProcessorManager(
                 appContext,
                 MediaStoreType.Downloads,
                 "$fileNameWithoutExtension.mp3",
-                MuseRepo.getExportRelativePath(),
+                MusePathManager.getExportRelativePath(),
                 enablePending = false,
             ).mediaUri
         return withContext(Dispatchers.IO) {

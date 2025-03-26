@@ -76,6 +76,9 @@ kotlin {
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
         }
+        iosMain.dependencies {
+            implementation(libs.sql.ios)
+        }
     }
 
     targets.configureEach {

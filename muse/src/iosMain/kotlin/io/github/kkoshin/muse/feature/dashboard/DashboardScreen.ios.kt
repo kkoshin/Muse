@@ -1,16 +1,20 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package io.github.kkoshin.muse.feature.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.FloatingActionButton
@@ -21,11 +25,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.MusicOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.kkoshin.muse.repo.model.Script
@@ -43,6 +50,7 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 actual fun DashboardScreen(
     modifier: Modifier,
@@ -58,6 +66,10 @@ actual fun DashboardScreen(
 ) {
 
     val scripts by viewModel.scripts.collectAsState()
+
+    LaunchedEffect(initScriptId) {
+        viewModel.loadScripts()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -116,11 +128,41 @@ actual fun DashboardScreen(
                         }
                     }
                 } else {
-//                    LazyColumn(
-//                        contentPadding = PaddingValues(top = 8.dp, bottom = 56.dp),
-//                        reverseLayout = true,
-//                    ) {
-//                        items(scripts, key = { item -> item.id }) { script ->
+                    LazyColumn(
+                        contentPadding = PaddingValues(top = 8.dp, bottom = 56.dp),
+                        reverseLayout = true,
+                    ) {
+                        items(scripts, key = { item -> item.id }) { script ->
+                            Row(
+                                modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colors.background)
+                                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.Article,
+                                    contentDescription = null,
+                                    Modifier
+                                        .size(48.dp),
+                                )
+                                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(
+                                        script.summary,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.subtitle1
+                                    )
+                                    Text(
+//                                        text = script.createAt.formatTimeDisplay(),
+                                        text = script.createAt.toString(),
+                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                                        style = MaterialTheme.typography.caption,
+                                    )
+                                }
+                            }
+
 //                            ScriptItem(
 //                                modifier = Modifier.clickable {
 //                                    onLaunchEditor(script)
@@ -130,8 +172,8 @@ actual fun DashboardScreen(
 //                                    viewModel.deleteScript(it)
 //                                },
 //                            )
-//                        }
-//                    }
+                        }
+                    }
                 }
             }
         },

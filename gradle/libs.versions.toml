@@ -59,6 +59,7 @@ preference-ui = 'me.zhanghai.compose.preference:library:1.0.0'
 browser = "androidx.browser:browser:1.8.0"
 accompanist-navigation-material = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 sql-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sql-ios = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 about-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about" }
 about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "about" }
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"

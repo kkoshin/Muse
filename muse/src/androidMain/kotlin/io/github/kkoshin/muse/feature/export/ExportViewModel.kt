@@ -14,6 +14,7 @@ import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
 import io.github.kkoshin.muse.audio.Mp3Decoder
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
+import io.github.kkoshin.muse.repo.MusePathManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
 import io.github.kkoshin.toUri
@@ -153,7 +154,7 @@ class ExportViewModel(
                 appContext,
                 MediaStoreType.Downloads,
                 "Audio_${Instant.now().epochSecond}.mp3",
-                MuseRepo.getExportRelativePath(),
+                MusePathManager.getExportRelativePath(),
                 enablePending = false,
             ).mediaUri
 

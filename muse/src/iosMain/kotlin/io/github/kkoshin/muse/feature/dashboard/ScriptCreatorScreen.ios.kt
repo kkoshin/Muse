@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import io.github.kkoshin.muse.platformbridge.DocumentPicker
 import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.logcat
 import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
 import io.github.kkoshin.muse.platformbridge.toNsUrl
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
@@ -26,6 +27,7 @@ actual fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker {
     val scope = rememberCoroutineScope()
     val toaster = LocalToaster.current
     return rememberDocumentPicker { path ->
+        logcat { "rememberPicker path: $path" }
         val didPickDocumentAtURL = path.toNsUrl()
         didPickDocumentAtURL?.let {
             try {
