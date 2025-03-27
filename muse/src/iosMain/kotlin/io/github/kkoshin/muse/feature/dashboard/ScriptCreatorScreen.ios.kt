@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import io.github.kkoshin.muse.platformbridge.DocumentPicker
 import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.MimeType
 import io.github.kkoshin.muse.platformbridge.logcat
 import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
 import io.github.kkoshin.muse.platformbridge.toNsUrl
@@ -26,7 +27,7 @@ import kotlin.uuid.ExperimentalUuidApi
 actual fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker {
     val scope = rememberCoroutineScope()
     val toaster = LocalToaster.current
-    return rememberDocumentPicker { path ->
+    return rememberDocumentPicker(MimeType.Text) { path ->
         logcat { "rememberPicker path: $path" }
         val didPickDocumentAtURL = path.toNsUrl()
         didPickDocumentAtURL?.let {

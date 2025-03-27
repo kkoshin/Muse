@@ -8,6 +8,7 @@ import platform.Foundation.NSURL
 import platform.UIKit.UIDocumentPickerDelegateProtocol
 import platform.UIKit.UIDocumentPickerViewController
 import platform.UIKit.UIViewController
+import platform.UniformTypeIdentifiers.UTTypeAudio
 import platform.UniformTypeIdentifiers.UTTypePlainText
 import platform.UniformTypeIdentifiers.UTTypeText
 import platform.darwin.NSObject
@@ -23,11 +24,18 @@ actual class DocumentPicker(
 
 // TODO: 待验证
 @Composable
-actual fun rememberDocumentPicker(onResult: (path: Path?) -> Unit): DocumentPicker {
+actual fun rememberDocumentPicker(
+    mimeType: MimeType,
+    onResult: (path: Path?) -> Unit
+): DocumentPicker {
     val uiViewController = LocalUIViewController.current
     return remember {
+        val forOpeningContentTypes = when (mimeType) {
+            MimeType.Audio -> listOf(UTTypeAudio)
+            MimeType.Text -> listOf(UTTypeText, UTTypePlainText)
+        }
         val viewController = UIDocumentPickerViewController(
-            forOpeningContentTypes = listOf(UTTypeText, UTTypePlainText),
+            forOpeningContentTypes = forOpeningContentTypes,
             false
         ).apply {
             delegate = object : NSObject(), UIDocumentPickerDelegateProtocol {

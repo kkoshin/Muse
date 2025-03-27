@@ -9,19 +9,29 @@ import androidx.compose.runtime.remember
 import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import okio.Path
 
-actual class DocumentPicker(private val launcher: ManagedActivityResultLauncher<String, Uri?>) {
+actual class DocumentPicker(
+    private val mimeType: MimeType,
+    private val launcher: ManagedActivityResultLauncher<String, Uri?>
+) {
 
     actual fun launch() {
-        launcher.launch("text/*")
+        val type = when (mimeType) {
+            MimeType.Audio -> "audio/*"
+            MimeType.Text -> "text/*"
+        }
+        launcher.launch(type)
     }
 }
 
 @Composable
-actual fun rememberDocumentPicker(onResult: (path: Path?) -> Unit): DocumentPicker {
+actual fun rememberDocumentPicker(
+    mimeType: MimeType,
+    onResult: (path: Path?) -> Unit
+): DocumentPicker {
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         onResult(uri?.toOkioPath())
     }
     return remember {
-        DocumentPicker(launcher)
+        DocumentPicker(mimeType, launcher)
     }
 }

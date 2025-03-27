@@ -29,11 +29,7 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
         ) {
             composable<DashboardArgs> { entry ->
                 DashboardScreen(
-                    contentUri = null,
                     initScriptId = null,
-                    onCreateScriptRequest = {
-                        navController.navigate(ScriptCreatorArgs)
-                    },
                     onLaunchEditor = { script ->
 //                    navController.navigate(
 //                        EditorArgs(
@@ -41,12 +37,14 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
 //                        ),
 //                    )
                     },
+                    onCreateScriptRequest = {
+                        navController.navigate(ScriptCreatorArgs)
+                    },
                     onLaunchSettingsPage = {
 //                    navController.navigate(SettingArgs) {
 //                        launchSingleTop = true
 //                    }
                     },
-                    onDeepLinkHandled = {},
                     onLaunchAudioIsolation = { uri ->
 //                    navController.navigate(
 //                        AudioIsolationPreviewArgs(
