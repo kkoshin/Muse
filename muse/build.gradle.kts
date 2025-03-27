@@ -48,7 +48,6 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
-            implementation(libs.browser)
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
             implementation(libs.accompanist.navigation.material)

@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.OpenableColumns
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,12 +58,14 @@ import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
 import io.github.kkoshin.muse.feature.stt.SttArgs
 import io.github.kkoshin.muse.feature.stt.SttScreen
 import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.toUri
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
+import io.github.kkoshin.muse.repo.MusePathManager
 import io.github.kkoshin.muse.workaround.bottomSheet
-import io.github.kkoshin.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.Path.Companion.toOkioPath
 import okio.use
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -182,14 +186,29 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<SettingArgs> {
+            val context = LocalContext.current
             SettingScreen(
                 versionName = BuildConfig.VERSION_NAME,
                 versionCode = BuildConfig.VERSION_CODE,
+                folderPath = Environment
+                    .getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS,
+                    ).toOkioPath()
+                    .resolve("../${MusePathManager.getExportRelativePath()}", true)
+                    .toString(),
                 onLaunchVoiceScreen = {
                     navController.navigate(VoicePickerArgs(it.toList()))
-                }, onLaunchOpenSourceScreen = {
+                },
+                onLaunchOpenSourceScreen = {
                     navController.navigate(OpenSourceArgs)
-                })
+                },
+                onOpenURL = { url ->
+                    val intent = CustomTabsIntent
+                        .Builder()
+                        .build()
+                    intent.launchUrl(context, Uri.parse(url))
+                },
+            )
         }
 
         composable<VoicePickerArgs> { entry ->

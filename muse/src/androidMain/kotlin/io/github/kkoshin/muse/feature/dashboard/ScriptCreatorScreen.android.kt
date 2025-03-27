@@ -9,8 +9,8 @@ import io.github.kkoshin.muse.platformbridge.DocumentPicker
 import io.github.kkoshin.muse.platformbridge.LocalToaster
 import io.github.kkoshin.muse.platformbridge.MimeType
 import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
+import io.github.kkoshin.muse.platformbridge.toUri
 import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
-import io.github.kkoshin.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

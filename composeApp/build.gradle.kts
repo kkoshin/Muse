@@ -88,6 +88,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(sharedLibs.bundles.jetpack)
     implementation(libs.accompanist.navigation.material)
+    implementation(libs.browser)
+
     debugImplementation(libs.devtools)
 }
 

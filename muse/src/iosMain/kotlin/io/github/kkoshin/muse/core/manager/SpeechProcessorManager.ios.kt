@@ -3,20 +3,22 @@ package io.github.kkoshin.muse.core.manager
 import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
+import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
 import okio.Path
 
-actual class SpeechProcessorManager {
-    actual suspend fun queryQuota(): Result<CharacterQuota> {
-        TODO("Not yet implemented")
-    }
+// TODO: Implement SpeechProcessorManager
+actual class SpeechProcessorManager(
+    private val provider: TTSProvider,
+) {
+    actual suspend fun queryQuota(): Result<CharacterQuota> = provider.queryQuota()
 
     actual suspend fun queryVoiceList(skipCache: Boolean): Result<List<Voice>> {
-        TODO("Not yet implemented")
+        return Result.failure(Exception("Not yet implemented"))
     }
 
     actual suspend fun queryAvailableVoiceIds(): Set<String>? {
-        TODO("Not yet implemented")
+        return null
     }
 
     actual suspend fun updateAvailableVoice(voiceIds: Set<String>) {
@@ -26,11 +28,11 @@ actual class SpeechProcessorManager {
         voiceId: String,
         text: String
     ): Result<Path> {
-        TODO("Not yet implemented")
+        return Result.failure(Exception("Not yet implemented"))
     }
 
     actual suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray> {
-        TODO("Not yet implemented")
+        return Result.failure(Exception("Not yet implemented"))
     }
 
     actual suspend fun makeSoundEffects(
@@ -38,11 +40,11 @@ actual class SpeechProcessorManager {
         config: SoundEffectConfig,
         fileNameWithoutExtension: String
     ): Result<Path> {
-        TODO("Not yet implemented")
+        return Result.failure(Exception("Not yet implemented"))
     }
 
     actual suspend fun transcribeAudio(audioUri: Path): Result<SpeechToTextChunkResponseModel> {
-        TODO("Not yet implemented")
+        return Result.failure(Exception("Not yet implemented"))
     }
 
 }

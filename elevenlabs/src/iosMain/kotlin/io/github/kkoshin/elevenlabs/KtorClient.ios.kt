@@ -22,7 +22,7 @@ actual val ktorClient: HttpClient
             level = LogLevel.ALL
             logger = object : Logger {
                 override fun log(message: String) {
-                    NSLog("Network", message)
+                    NSLog("Network/Ktor: $message")
                 }
             }
         }

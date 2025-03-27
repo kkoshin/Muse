@@ -1,11 +1,10 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package io.github.kkoshin.muse
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.interop.LocalUIViewController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,8 +14,14 @@ import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
+import io.github.kkoshin.muse.feature.setting.SettingArgs
+import io.github.kkoshin.muse.feature.setting.SettingScreen
+import platform.Foundation.NSBundle
+import platform.Foundation.NSURL
+import platform.SafariServices.SFSafariViewController
 import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 internal fun MainScreen(navController: NavHostController = rememberNavController()) {
     CompositionLocalProvider(
@@ -41,9 +46,9 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                         navController.navigate(ScriptCreatorArgs)
                     },
                     onLaunchSettingsPage = {
-//                    navController.navigate(SettingArgs) {
-//                        launchSingleTop = true
-//                    }
+                        navController.navigate(SettingArgs) {
+                            launchSingleTop = true
+                        }
                     },
                     onLaunchAudioIsolation = { uri ->
 //                    navController.navigate(
@@ -64,6 +69,32 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                     navController.currentBackStackEntry
                         ?.savedStateHandle?.setScriptId(scriptId)
                 })
+            }
+
+            composable<SettingArgs> {
+                val viewController = LocalUIViewController.current
+
+                SettingScreen(
+                    versionName = NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString")
+                        ?.toString() ?: "Unknown",
+                    versionCode = NSBundle.mainBundle.infoDictionary?.get("CFBundleVersion")
+                        ?.toString()?.toInt()
+                        ?: 0,
+                    folderPath = "TODO", // TODO: Implement SettingScreen
+                    onLaunchVoiceScreen = {
+//                        navController.navigate(VoicePickerArgs(it.toList()))
+                    },
+                    onLaunchOpenSourceScreen = {
+//                        navController.navigate(OpenSourceArgs)
+                    },
+                    onOpenURL = { url ->
+                        viewController.presentViewController(
+                            SFSafariViewController(NSURL.URLWithString(url)!!),
+                            animated = true,
+                            null
+                        )
+                    }
+                )
             }
         }
     }
