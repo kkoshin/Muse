@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
@@ -16,6 +17,8 @@ import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
+import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
+import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
 import platform.Foundation.NSBundle
 import platform.Foundation.NSURL
 import platform.SafariServices.SFSafariViewController
@@ -71,6 +74,13 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                 })
             }
 
+            composable<VoicePickerArgs> { entry ->
+                val args = entry.toRoute<VoicePickerArgs>()
+                VoicePicker(selectedVoiceIds = args.selectedVoiceIds.toSet()) {
+                    navController.popBackStack()
+                }
+            }
+
             composable<SettingArgs> {
                 val viewController = LocalUIViewController.current
 
@@ -82,7 +92,7 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                         ?: 0,
                     folderPath = "TODO", // TODO: Implement SettingScreen
                     onLaunchVoiceScreen = {
-//                        navController.navigate(VoicePickerArgs(it.toList()))
+                        navController.navigate(VoicePickerArgs(it.toList()))
                     },
                     onLaunchOpenSourceScreen = {
 //                        navController.navigate(OpenSourceArgs)

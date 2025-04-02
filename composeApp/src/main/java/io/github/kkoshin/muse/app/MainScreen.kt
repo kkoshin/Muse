@@ -272,7 +272,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<OpenSourceArgs> {
-            OpenSourceScreen()
+            val context = LocalContext.current
+            OpenSourceScreen(onOpenURL = { url ->
+                val intent = CustomTabsIntent
+                    .Builder()
+                    .build()
+                intent.launchUrl(context, Uri.parse(url))
+            })
         }
 
         composable<WhiteNoiseConfigScreenArgs> {
@@ -301,7 +307,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
     }
 }
-
 
 
 /**

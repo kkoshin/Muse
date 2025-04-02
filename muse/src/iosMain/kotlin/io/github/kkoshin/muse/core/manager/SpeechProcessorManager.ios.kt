@@ -11,10 +11,22 @@ import okio.Path
 actual class SpeechProcessorManager(
     private val provider: TTSProvider,
 ) {
+    /**
+     * 内存中缓存
+     */
+    private var voicesCache: List<Voice>? = null
+
     actual suspend fun queryQuota(): Result<CharacterQuota> = provider.queryQuota()
 
     actual suspend fun queryVoiceList(skipCache: Boolean): Result<List<Voice>> {
-        return Result.failure(Exception("Not yet implemented"))
+        if (!skipCache) {
+            voicesCache?.let {
+                return Result.success(it)
+            }
+        }
+        return provider.queryVoices().onSuccess {
+            voicesCache = it
+        }
     }
 
     actual suspend fun queryAvailableVoiceIds(): Set<String>? {
