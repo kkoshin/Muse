@@ -1,0 +1,17 @@
+[
+  {
+    "label": "launch iOS simulator",
+    "command": "xcrun simctl boot 'iPhone 16 Pro' && open -a Simulator",
+    "shell": "system"
+  },
+  {
+    "label": "build iOS(debug)",
+    "command": "xcodebuild -project swiftApp/swiftApp.xcodeproj -scheme swiftApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build",
+    "shell": "system"
+  },
+  {
+    "label": "run iOS(debug)",
+    "command": "xcodebuild -project swiftApp/swiftApp.xcodeproj -scheme swiftApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build && xcrun simctl install booted build/ios/Debug-iphonesimulator/swiftApp.app && xcrun simctl launch booted io.github.kkoshin.muse",
+    "shell": "system"
+  }
+]
