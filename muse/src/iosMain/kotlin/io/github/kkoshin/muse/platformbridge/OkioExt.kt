@@ -10,6 +10,11 @@ internal fun NSURL.toOkioPath(): Path? {
 
 internal fun Path?.toNsUrl(): NSURL? {
     return this?.let {
-        NSURL.URLWithString(it.toString())
+        val str = it.toString()
+        if (str.startsWith("https:/") && !str.startsWith("https://")) {
+            NSURL.URLWithString(str.replace("https:/", "https://"))
+        } else {
+            NSURL.URLWithString(str)
+        }
     }
 }

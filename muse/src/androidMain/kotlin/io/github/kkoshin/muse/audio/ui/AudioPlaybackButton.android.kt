@@ -31,13 +31,6 @@ import kotlinx.coroutines.delay
 import okio.Path
 import kotlin.time.Duration.Companion.milliseconds
 
-enum class PlaybackState {
-    Idle,
-    Ready,
-    Buffering,
-    Finished,
-}
-
 @Composable
 actual fun AudioPlaybackButton(
     modifier: Modifier,

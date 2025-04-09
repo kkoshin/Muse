@@ -8,12 +8,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 
 @Composable
-actual fun AppBackButton() {
+actual fun AppBackButton(onBack: () -> Unit) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     IconButton(
         onClick = {
-        backPressedDispatcher?.onBackPressed()
-    }) {
+            backPressedDispatcher?.onBackPressed()
+        }) {
         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
     }
 }
