@@ -1,15 +1,22 @@
 package io.github.kkoshin.muse.core.manager
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
+import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
+import kotlinx.coroutines.flow.first
 import okio.Path
 
 // TODO: Implement SpeechProcessorManager
 actual class SpeechProcessorManager(
     private val provider: TTSProvider,
+    private val mediaStoreHelper: MediaStoreHelper,
+    private val voicePreference: DataStore<Preferences>
 ) {
     /**
      * 内存中缓存
@@ -30,10 +37,13 @@ actual class SpeechProcessorManager(
     }
 
     actual suspend fun queryAvailableVoiceIds(): Set<String>? {
-        return null
+        return voicePreference.data.first()[availableVoiceIdsKey]
     }
 
     actual suspend fun updateAvailableVoice(voiceIds: Set<String>) {
+        voicePreference.edit {
+            it[availableVoiceIdsKey] = voiceIds
+        }
     }
 
     actual suspend fun getOrGenerate(

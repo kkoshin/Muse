@@ -34,6 +34,8 @@ import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.platformbridge.AppBackButton
+import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
+import io.github.kkoshin.muse.platformbridge.Platform
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import muse.feature.generated.resources.Res
@@ -183,20 +185,23 @@ fun SettingScreen(
                         },
                     )
                 }
-                preference(
-                    key = "export_folder",
-                    icon = {
-                        Icon(Icons.Outlined.Folder, "export folder")
-                    },
-                    title = {
-                        Text("Export folder")
-                    },
-                    summary = {
-                        SummaryText(
-                            folderPath,
-                        )
-                    },
-                )
+                when(CURRENT_PLATFORM) {
+                    Platform.Android -> preference(
+                        key = "export_folder",
+                        icon = {
+                            Icon(Icons.Outlined.Folder, "export folder")
+                        },
+                        title = {
+                            Text("Export folder")
+                        },
+                        summary = {
+                            SummaryText(
+                                folderPath,
+                            )
+                        },
+                    )
+                    Platform.Ios -> {}
+                }
 
                 preferenceCategory(
                     key = "about",

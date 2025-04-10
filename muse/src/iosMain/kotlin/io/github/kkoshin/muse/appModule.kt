@@ -9,6 +9,7 @@ import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
+import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
 import io.github.kkoshin.muse.repo.MusePathManager
@@ -30,7 +31,10 @@ val appModule = module {
     single<TTSProvider> {
         ElevenLabProcessor(get(), get())
     }
-    singleOf(::SpeechProcessorManager)
+    single {
+        SpeechProcessorManager(get(), get(), preferencesDataStore("voices"))
+    }
+    singleOf(::MediaStoreHelper)
     viewModel {
         DashboardViewModel(get())
     }

@@ -19,6 +19,7 @@ import io.github.kkoshin.muse.feature.export.ExportViewModel
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationViewModel
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseViewModel
 import io.github.kkoshin.muse.feature.stt.SttViewModel
+import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
 import io.github.kkoshin.muse.repo.MusePathManager
@@ -46,6 +47,7 @@ internal val baseModule = module {
     viewModel { SttViewModel(get()) }
     viewModel { WhiteNoiseViewModel(get()) }
     singleOf(::SpeechProcessorManager)
+    singleOf(::MediaStoreHelper)
     single<AccountManager> {
         val context = get<Context>()
         AccountManager(context.accountDataStore)

@@ -1,11 +1,17 @@
 package io.github.kkoshin.muse.core.manager
 
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.core.provider.Voice
 import kotlinx.datetime.Clock
 import okio.Path
+
+/**
+ * 存储当前可用的 voice
+ */
+internal val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
 
 expect class SpeechProcessorManager {
 
