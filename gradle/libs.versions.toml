@@ -6,20 +6,19 @@ android-targetSdk = "35"
 androidx-activityCompose = "1.9.3"
 atomicfu = "0.23.2"
 bytesize = "2.0.0-beta04"
-compose-plugin = "1.7.3"
+compose-plugin = "1.8.0"
 datastore = "1.1.0"
 junit = "4.13.2"
-koinBom = "4.0.2"
-kotlin = "2.0.20"
+koinBom = "4.1.0-RC1"
+kotlin = "2.1.10"
 kotlinxDatetime = "0.6.2"
 lifecycleViewmodel = "2.8.4"
-kotlinx-serialization = "2.0.0"
-# compatible with Kotlin 2.0.
-kotlinx-json = "1.7.0"
+# compatible with Kotlin 2.1
+kotlinx-json = "1.8.0"
 ktor = "2.3.12"
 media3 = "1.5.0"
 accompanist = "0.34.0"
-navigationCompose = "2.8.0-alpha10"
+navigationCompose = "2.9.0-beta01"
 sqldelight = "2.0.2"
 about = "11.2.2"
 
@@ -72,7 +71,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
 
