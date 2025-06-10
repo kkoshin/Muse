@@ -56,8 +56,10 @@ internal val baseModule = module {
     single<ToastManager> {
         val context = get<Context>()
         object : ToastManager {
-            override fun show(message: String) {
-                context.toast(message)
+            override fun show(message: String?) {
+                if (message != null) {
+                    context.toast(message)
+                }
             }
         }
     }

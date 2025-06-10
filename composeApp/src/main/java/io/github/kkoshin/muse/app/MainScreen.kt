@@ -173,7 +173,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 onPickVoice = {
                     navController.navigate(VoicePickerArgs(emptyList()))
                 },
-                viewModel = koinViewModel(),
             )
         }
 

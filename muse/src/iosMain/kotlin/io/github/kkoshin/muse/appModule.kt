@@ -9,6 +9,7 @@ import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
+import io.github.kkoshin.muse.feature.editor.EditorViewModel
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
@@ -20,6 +21,7 @@ import kotlinx.coroutines.MainScope
 import okio.Path.Companion.toPath
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -38,6 +40,7 @@ val appModule = module {
     viewModel {
         DashboardViewModel(get())
     }
+    viewModelOf(::EditorViewModel)
     single<MuseRepo> {
         MuseRepo(
             AppDatabase(DriverFactory().createDriver()),
@@ -49,9 +52,11 @@ val appModule = module {
     }
     single<ToastManager> {
         object : ToastManager {
-            override fun show(message: String) {
-                // TODO: Implement this
-                println(message)
+            override fun show(message: String?) {
+                if (message != null) {
+                    // TODO: Implement this
+                    println(message)
+                }
             }
         }
     }

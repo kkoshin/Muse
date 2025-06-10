@@ -15,6 +15,9 @@ import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
+import io.github.kkoshin.muse.feature.editor.EditorArgs
+import io.github.kkoshin.muse.feature.editor.EditorScreen
+import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
 import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
@@ -35,15 +38,15 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
             navController = navController,
             startDestination = DashboardArgs,
         ) {
-            composable<DashboardArgs> { entry ->
+            composable<DashboardArgs> { _ ->
                 DashboardScreen(
                     initScriptId = null,
                     onLaunchEditor = { script ->
-//                    navController.navigate(
-//                        EditorArgs(
-//                            scriptId = script.id.toString(),
-//                        ),
-//                    )
+                        navController.navigate(
+                            EditorArgs(
+                                scriptId = script.id.toString(),
+                            ),
+                        )
                     },
                     onCreateScriptRequest = {
                         navController.navigate(ScriptCreatorArgs)
@@ -62,6 +65,27 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                     },
                     onLaunchWhiteNoise = {
 //                    navController.navigate(WhiteNoiseConfigScreenArgs)
+                    },
+                )
+            }
+
+            composable<EditorArgs> { entry ->
+                val args = entry.toRoute<EditorArgs>()
+                EditorScreen(
+                    args = args,
+                    onExportRequest = { voices ->
+                        navController.navigate(
+                            voices.associate { it.voiceId to it.name }.let {
+                                ExportConfigSheetArgs(
+                                    voiceIds = it.keys.toList(),
+                                    voiceNames = it.values.toList(),
+                                    scriptId = args.scriptId,
+                                )
+                            },
+                        )
+                    },
+                    onPickVoice = {
+                        navController.navigate(VoicePickerArgs(emptyList()))
                     },
                 )
             }
