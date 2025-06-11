@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.feature.export
 
-import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
@@ -25,11 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.foodiestudio.sugar.notification.toast
-import io.github.kkoshin.muse.platformbridge.toUri
+import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.openFile
+import io.github.kkoshin.muse.platformbridge.shareAudioFile
 import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.open_with_other_app
 import muse.feature.generated.resources.retry
@@ -46,7 +45,7 @@ fun AudioProcessingView(
     successLabel: String,
     onRetry: (() -> Unit)? = null
 ) {
-    val context = LocalContext.current
+    val localToaster = LocalToaster.current
 
     Box(
         modifier.fillMaxSize(),
@@ -125,10 +124,7 @@ fun AudioProcessingView(
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                Intent(Intent.ACTION_VIEW).let {
-                                    it.data = progress.path.toUri()
-                                    context.startActivity(it)
-                                }
+                                openFile(progress.path)
                             },
                         ) {
                             Text(text = stringResource(Res.string.open_with_other_app))
@@ -137,16 +133,8 @@ fun AudioProcessingView(
                         OutlinedButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                runCatching {
-                                    Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        type = "audio/mpeg"
-                                        putExtra(Intent.EXTRA_STREAM, progress.path.toUri())
-                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                        context.startActivity(this)
-                                    }
-                                }.onFailure { err ->
-                                    context.toast(err.message)
+                                shareAudioFile(progress.path).onFailure { err ->
+                                    localToaster.show(err.message)
                                     err.printStackTrace()
                                 }
                             },

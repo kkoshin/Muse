@@ -1,13 +1,18 @@
 package io.github.kkoshin.muse
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.uikit.LocalUIViewController
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
@@ -17,7 +22,10 @@ import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
+import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.feature.export.ExportArgs
+import io.github.kkoshin.muse.feature.export.ExportScreen
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
 import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
@@ -88,6 +96,47 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                         navController.navigate(VoicePickerArgs(emptyList()))
                     },
                 )
+            }
+
+            // TODO: 待 navigation 支持 bottom sheet 后调整
+            dialog<ExportConfigSheetArgs> { entry ->
+                val args: ExportConfigSheetArgs = entry.toRoute()
+                ExportConfigSheet(
+                    Modifier.background(
+                        MaterialTheme.colors.background,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                    voiceIds = args.voiceIds,
+                    voiceNames = args.voiceNames,
+                    onExport = {
+                            voiceId,
+                            fixedDurationEnabled,
+                            fixedSilence,
+                            silencePerChar,
+                            minDynamicDuration,
+                        ->
+                        navController.navigate(
+                            ExportArgs(
+                                voiceId,
+                                args.scriptId,
+                                fixedDurationEnabled,
+                                fixedSilence,
+                                silencePerChar,
+                                minDynamicDuration,
+                            ),
+                        )
+                    },
+                )
+            }
+
+            composable<ExportArgs> { entry ->
+                ExportScreen(args = entry.toRoute(), onExit = { isSuccess ->
+                    if (isSuccess) {
+                        navController.popBackStack(DashboardArgs, false)
+                    } else {
+                        navController.popBackStack()
+                    }
+                })
             }
 
             composable<ScriptCreatorArgs> {

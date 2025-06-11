@@ -28,10 +28,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.documentfile.provider.DocumentFile
 import com.github.foodiestudio.sugar.notification.toast
-import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.feature.export.AudioExportPipeline
 import io.github.kkoshin.muse.feature.export.ExportPipeline
 import kotlinx.coroutines.launch
+import okio.buffer
+import okio.sink
 
 @Composable
 internal fun ExportButton(
@@ -64,14 +65,19 @@ internal fun ExportButton(
 
     fun doExport() {
         scope.launch {
-            exportPipeline.start(targetDocument!!.uri.toOkioPath())
-                .onFailure {
-                    it.printStackTrace()
-                    context.toast(it.message)
-                }
-                .onSuccess {
-                    targetDocument = null
-                    context.toast("Export Success.")
+            context.contentResolver
+                .openOutputStream(targetDocument!!.uri)!!
+                .sink()
+                .buffer().use { target ->
+                    exportPipeline.start(target)
+                        .onFailure {
+                            it.printStackTrace()
+                            context.toast(it.message)
+                        }
+                        .onSuccess {
+                            targetDocument = null
+                            context.toast("Export Success.")
+                        }
                 }
         }
     }

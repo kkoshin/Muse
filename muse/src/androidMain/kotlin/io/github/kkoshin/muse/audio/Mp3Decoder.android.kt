@@ -5,26 +5,30 @@ import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.net.Uri
+import io.github.kkoshin.muse.platformbridge.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import logcat.logcat
 import okio.BufferedSink
+import okio.Path
+import org.koin.java.KoinJavaComponent.inject
 import java.io.IOException
 import kotlin.math.roundToInt
 
 /**
  * 将 MP3 文件编码为 PCM
  */
-class Mp3Decoder {
+actual class Mp3Decoder {
     private val tag = this.javaClass.simpleName
 
-    suspend fun decodeMp3ToPCM(
-        appContext: Context,
+    private val appContext by inject<Context>(Context::class.java)
+
+    actual suspend fun decodeMp3ToPCM(
         pcmSink: BufferedSink,
-        mp3Uri: Uri,
-        volumeBoost: Float = 1.0f,
+        mp3Path: Path,
+        volumeBoost: Float
     ) {
-        decodeAudio(appContext, mp3Uri) { pcmData ->
+        decodeAudio(appContext, mp3Path.toUri()) { pcmData ->
             if (volumeBoost == 1.0f) {
                 pcmSink.write(pcmData)
             } else {

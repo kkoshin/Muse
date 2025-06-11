@@ -30,4 +30,17 @@ actual class MediaStoreHelper(val appContext: Context) {
                 it.mediaUri.toOkioPath()
             }
     }
+
+    @OptIn(ExperimentalSugarApi::class)
+    actual fun exportFileToDownload(fileName: String, relativePath: String?): Path {
+        val targetUri = MediaFile
+            .create(
+                appContext,
+                MediaStoreType.Downloads,
+                fileName,
+                relativePath,
+                enablePending = false,
+            ).mediaUri
+        return targetUri.toOkioPath()
+    }
 }

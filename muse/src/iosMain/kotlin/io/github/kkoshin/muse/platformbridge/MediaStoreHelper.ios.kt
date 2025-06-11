@@ -33,4 +33,8 @@ actual class MediaStoreHelper {
         }
         return target.toOkioPath()!!
     }
+
+    actual fun exportFileToDownload(fileName: String, relativePath: String?): Path {
+        TODO("Not yet implemented")
+    }
 }

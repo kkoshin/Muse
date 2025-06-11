@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.about)
+    alias(libs.plugins.kotlin.cocoapods)
 }
 
 aboutLibraries {
@@ -22,6 +23,15 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
+    }
+
+    cocoapods {
+        version = "2.0"
+        summary = "muse feature"
+        homepage = "https://github.com/kkoshin/muse"
+        ios.deploymentTarget = "16.0"
+
+        pod("lame")
     }
 
     listOf(

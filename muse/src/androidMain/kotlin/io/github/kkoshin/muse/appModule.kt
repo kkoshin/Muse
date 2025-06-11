@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.notification.toast
+import com.github.foodiestudio.sugar.storage.AppFileHelper
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
@@ -33,6 +35,7 @@ import org.koin.dsl.module
 
 private val Context.accountDataStore: DataStore<Preferences> by preferencesDataStore(name = "account")
 
+@OptIn(ExperimentalSugarApi::class)
 internal val baseModule = module {
     single<MuseRepo> {
         MuseRepo(
@@ -41,13 +44,14 @@ internal val baseModule = module {
         )
     }
     viewModelOf(::EditorViewModel)
-    viewModel { ExportViewModel(get(), get(), get()) }
+    viewModelOf(::ExportViewModel)
     viewModel { DashboardViewModel(get()) }
     viewModel { AudioIsolationViewModel(get()) }
     viewModel { SttViewModel(get()) }
     viewModel { WhiteNoiseViewModel(get()) }
     singleOf(::SpeechProcessorManager)
     singleOf(::MediaStoreHelper)
+    singleOf(::AppFileHelper)
     single<AccountManager> {
         val context = get<Context>()
         AccountManager(context.accountDataStore)

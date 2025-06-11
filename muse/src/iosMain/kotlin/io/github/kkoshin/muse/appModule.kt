@@ -4,12 +4,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import io.github.kkoshin.muse.core.manager.AccountManager
-import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
+import io.github.kkoshin.muse.feature.FakeProcessor
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.feature.editor.EditorViewModel
+import io.github.kkoshin.muse.feature.export.ExportViewModel
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
@@ -31,7 +32,9 @@ import platform.Foundation.NSUserDomainMask
 val appModule = module {
     single<CoroutineScope> { MainScope() }
     single<TTSProvider> {
-        ElevenLabProcessor(get(), get())
+        // TODO: 暂使用本地的数据来测试流程
+        FakeProcessor()
+//        ElevenLabProcessor(get(), get())
     }
     single {
         SpeechProcessorManager(get(), get(), preferencesDataStore("voices"))
@@ -41,6 +44,7 @@ val appModule = module {
         DashboardViewModel(get())
     }
     viewModelOf(::EditorViewModel)
+    viewModelOf(::ExportViewModel)
     single<MuseRepo> {
         MuseRepo(
             AppDatabase(DriverFactory().createDriver()),

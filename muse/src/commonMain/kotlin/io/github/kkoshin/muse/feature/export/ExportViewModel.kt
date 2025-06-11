@@ -1,24 +1,21 @@
-@file:OptIn(ExperimentalUuidApi::class)
 
 package io.github.kkoshin.muse.feature.export
 
-import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.foodiestudio.sugar.ExperimentalSugarApi
-import com.github.foodiestudio.sugar.storage.filesystem.media.MediaFile
-import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
-import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
 import io.github.kkoshin.muse.audio.Mp3Decoder
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
-import io.github.kkoshin.muse.platformbridge.toUri
+import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
+import io.github.kkoshin.muse.platformbridge.SystemFileSystem
+import io.github.kkoshin.muse.platformbridge.logcat
+import io.github.kkoshin.muse.platformbridge.toSink
 import io.github.kkoshin.muse.repo.MusePathManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,24 +26,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import logcat.asLog
-import logcat.logcat
+import kotlinx.datetime.Clock
 import okio.Path
 import okio.buffer
-import okio.sink
-import org.koin.java.KoinJavaComponent.inject
-import java.io.File
-import java.time.Instant
+import okio.use
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class ExportViewModel(
     private val speechProcessorManager: SpeechProcessorManager,
     accountManager: AccountManager,
+    private val mediaStoreHelper: MediaStoreHelper,
     private val repo: MuseRepo,
 ) : ViewModel() {
-    private val appContext: Context by inject(Context::class.java)
-    private val tag = this.javaClass.simpleName
+    private val tag = this::class.simpleName!!
 
     private val _progress: MutableStateFlow<ProgressStatus> = MutableStateFlow(ProgressStatus.Idle)
     val progress: StateFlow<ProgressStatus> = _progress.asStateFlow()
@@ -58,6 +51,7 @@ class ExportViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, 4)
 
+    @OptIn(ExperimentalUuidApi::class)
     suspend fun queryPhrases(scriptId: String): List<String>? =
         repo.queryPhrases(Uuid.parse(scriptId))
 
@@ -85,13 +79,13 @@ class ExportViewModel(
                                 .mapCatching {
                                     saveAsPcm(
                                         phrase,
-                                        it.toUri(),
-                                        repo.getPcmCache(voiceId, phrase).toFile(),
+                                        it,
+                                        repo.getPcmCache(voiceId, phrase),
                                     )
                                 }
                         }.onFailure {
                             logcat(tag) {
-                                it.asLog()
+                                it.stackTraceToString()
                             }
                             _progress.value =
                                 TTSFailed(throwable = it)
@@ -114,59 +108,54 @@ class ExportViewModel(
 
     private suspend fun saveAsPcm(
         text: String,
-        mp3Uri: Uri,
-        target: File,
+        mp3Path: Path,
+        target: Path,
     ) {
         val mp3Decoder = Mp3Decoder()
-        if (target.exists() && target.length() > 0) {
+        if (SystemFileSystem.exists(target)) {
             logcat(tag) {
                 "$text.pcm already exists."
             }
         }
-        val output = target.sink().buffer()
+        val output = target.toSink().buffer()
         runCatching {
             output.use {
                 // 11 labs 生成的音量偏小，这里需要增大音量
-                mp3Decoder.decodeMp3ToPCM(appContext, output, mp3Uri, volumeBoost = 3.0f)
+                mp3Decoder.decodeMp3ToPCM(output, mp3Path, volumeBoost = 3.0f)
             }
         }.onFailure {
-            target.delete()
+            SystemFileSystem.delete(target)
         }.getOrThrow()
     }
 
     /**
      * 将音频混合为 MP3 文件
      */
-    @OptIn(ExperimentalSugarApi::class)
     fun mixAudioAsMp3(
         silence: SilenceDuration,
         phrases: List<String>,
         pcmList: List<Path>,
     ) {
         val exportPipeline = AudioExportPipeline(
-            appContext,
             pcmList,
             phrases,
             silence,
         )
-        val targetUri = MediaFile
-            .create(
-                appContext,
-                MediaStoreType.Downloads,
-                "Audio_${Instant.now().epochSecond}.mp3",
-                MusePathManager.getExportRelativePath(),
-                enablePending = false,
-            ).mediaUri
-
         viewModelScope.launch {
             _progress.value = MixProcessing()
-            exportPipeline
-                .start(targetUri.toOkioPath())
-                .onSuccess {
-                    _progress.value = ProgressStatus.Success(targetUri.toOkioPath())
-                }.onFailure { e ->
-                    _progress.value = MixFailed(pcmList, e)
-                }
+            val path = mediaStoreHelper.exportFileToDownload(
+                fileName = "Audio_${Clock.System.now().epochSeconds}.mp3",
+                relativePath = MusePathManager.getExportRelativePath(),
+            )
+            path.toSink().buffer().use { outputSink ->
+                exportPipeline
+                    .start(outputSink)
+                    .onSuccess {
+                        _progress.value = ProgressStatus.Success(path)
+                    }.onFailure { e ->
+                        _progress.value = MixFailed(pcmList, e)
+                    }
+            }
         }
     }
 }

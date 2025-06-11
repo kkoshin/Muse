@@ -26,8 +26,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okio.Path
-import okio.Path.Companion.toPath
+import okio.BufferedSink
+import okio.source
 import java.io.File
 import java.io.IOException
 import kotlin.coroutines.resume
@@ -104,8 +104,7 @@ class VideoExportPipeline(
         } while (transformState != Transformer.PROGRESS_STATE_NOT_STARTED)
     }
 
-    @OptIn(ExperimentalSugarApi::class)
-    override suspend fun start(target: Path): Result<ExportResult> =
+    override suspend fun start(outputSink: BufferedSink): Result<ExportResult> =
         coroutineScope {
             launch {
                 updateProgress()
@@ -113,10 +112,7 @@ class VideoExportPipeline(
             startExport().onSuccess {
                 ensureActive()
                 withContext(Dispatchers.IO) {
-                    appFileHelper.fileSystem.copy(
-                        exportingCache.absolutePath.toPath(),
-                        target,
-                    )
+                    outputSink.writeAll(exportingCache.source())
                 }
             }
         }
