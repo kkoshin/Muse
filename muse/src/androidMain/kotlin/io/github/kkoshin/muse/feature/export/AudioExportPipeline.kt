@@ -12,7 +12,7 @@ import io.github.kkoshin.muse.audio.MonoAudioSampleMetadata
 import io.github.kkoshin.muse.audio.Mp3Encoder
 import io.github.kkoshin.muse.audio.WavParser
 import io.github.kkoshin.muse.audio.WaveHeaderWriter
-import io.github.kkoshin.toUri
+import io.github.kkoshin.muse.platformbridge.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

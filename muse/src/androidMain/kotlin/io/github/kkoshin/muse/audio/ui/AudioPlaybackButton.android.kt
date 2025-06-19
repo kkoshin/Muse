@@ -26,17 +26,10 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import io.github.kkoshin.toUri
+import io.github.kkoshin.muse.platformbridge.toUri
 import kotlinx.coroutines.delay
 import okio.Path
 import kotlin.time.Duration.Companion.milliseconds
-
-enum class PlaybackState {
-    Idle,
-    Ready,
-    Buffering,
-    Finished,
-}
 
 @Composable
 actual fun AudioPlaybackButton(

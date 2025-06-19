@@ -9,7 +9,6 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.http.ContentType
-import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -22,7 +21,7 @@ actual val ktorClient: HttpClient
             level = LogLevel.ALL
             logger = object : Logger {
                 override fun log(message: String) {
-                    NSLog("Network", message)
+                    NSLog("Network/Ktor: $message")
                 }
             }
         }
@@ -38,9 +37,6 @@ actual val ktorClient: HttpClient
         install(Resources)
         defaultRequest {
             contentType(ContentType.Application.Json)
-            url {
-                protocol = URLProtocol.HTTPS
-                host = BASE_HOST
-            }
+            url(BASE_URL)
         }
     }

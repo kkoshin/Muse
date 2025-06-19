@@ -10,7 +10,7 @@ import com.github.foodiestudio.sugar.storage.filesystem.media.MediaStoreType
 import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.feature.export.ProgressStatus
-import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +42,7 @@ class AudioIsolationViewModel(
                             appContext,
                             MediaStoreType.Downloads,
                             "Denoise_${Instant.now().epochSecond}.mp3",
-                            MuseRepo.getExportRelativePath(),
+                            MusePathManager.getExportRelativePath(),
                             enablePending = false,
                         ).mediaUri
                     appContext.contentResolver.openOutputStream(targetUri)?.use { outputStream ->

@@ -3,8 +3,10 @@ package io.github.kkoshin.muse.app
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp
@@ -13,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import io.github.kkoshin.muse.feature.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     /**
@@ -27,7 +30,19 @@ class MainActivity : ComponentActivity() {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberNavController(bottomSheetNavigator)
 
-            AppTheme(this) {
+            val darkTheme = isSystemInDarkTheme()
+
+            DisposableEffect(darkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT,
+                    ) { darkTheme },
+                )
+                onDispose {}
+            }
+
+            AppTheme {
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
                     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

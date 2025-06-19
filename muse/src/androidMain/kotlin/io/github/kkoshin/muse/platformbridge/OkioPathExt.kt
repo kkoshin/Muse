@@ -1,4 +1,4 @@
-package io.github.kkoshin
+package io.github.kkoshin.muse.platformbridge
 
 import android.net.Uri
 import okio.Path

@@ -1,16 +1,24 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.app
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.OpenableColumns
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,11 +26,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
+import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
+import io.github.kkoshin.muse.feature.dashboard.ImportConfirmDialog
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
+import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.getScriptId
+import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
+import io.github.kkoshin.muse.feature.dashboard.readTextContent
 import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
@@ -45,9 +57,18 @@ import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
 import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
 import io.github.kkoshin.muse.feature.stt.SttArgs
 import io.github.kkoshin.muse.feature.stt.SttScreen
+import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.toUri
+import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
+import io.github.kkoshin.muse.repo.MusePathManager
 import io.github.kkoshin.muse.workaround.bottomSheet
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okio.Path.Companion.toOkioPath
+import okio.use
 import org.koin.androidx.compose.koinViewModel
-import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
 
 private fun Bundle.getDeepLinkUri(): Uri? =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -76,13 +97,36 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             var deeplinkUri: Uri? by rememberSaveable(entry) {
                 mutableStateOf(entry.arguments?.getDeepLinkUri())
             }
-            val initScriptId = entry.savedStateHandle.get<UUID?>(ScriptCreatorArgs.RESULT_KEY)
+            val initScriptId = entry.savedStateHandle.getScriptId()
+            val viewModel: DashboardViewModel = koinViewModel()
+
+            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
+            val toaster = LocalToaster.current
+
+            deeplinkUri?.let {
+                val displayName = getFileNameFromContentResolver(context, deeplinkUri!!)!!
+
+                ImportConfirmDialog(fileName = displayName, onConfirm = { formatEnabled ->
+                    scope.launch(Dispatchers.IO) {
+                        val content = readTextContent(context, deeplinkUri!!, formatEnabled)
+                        if (content.length > MAX_TEXT_LENGTH) {
+                            withContext(Dispatchers.Main) {
+                                toaster.show("Text is too long, import failed.")
+                            }
+                        } else {
+                            viewModel.importScript(content)
+                        }
+                        deeplinkUri = null
+                    }
+                }, onCancel = {
+                    deeplinkUri = null
+                })
+            }
+
             DashboardScreen(
-                contentUri = deeplinkUri?.toOkioPath(),
                 initScriptId = initScriptId,
-                onCreateScriptRequest = {
-                    navController.navigate(ScriptCreatorArgs)
-                },
+                viewModel = viewModel,
                 onLaunchEditor = { script ->
                     navController.navigate(
                         EditorArgs(
@@ -90,25 +134,24 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         ),
                     )
                 },
+                onCreateScriptRequest = {
+                    navController.navigate(ScriptCreatorArgs)
+                },
                 onLaunchSettingsPage = {
                     navController.navigate(SettingArgs) {
                         launchSingleTop = true
                     }
                 },
-                onDeepLinkHandled = {
-                    deeplinkUri = null
-                },
-                onLaunchAudioIsolation = { uri ->
+                onLaunchAudioIsolation = { path ->
                     navController.navigate(
                         AudioIsolationPreviewArgs(
-                            audioUri = uri,
+                            audioUri = path.toUri().toString(),
                         ),
                     )
                 },
                 onLaunchWhiteNoise = {
                     navController.navigate(WhiteNoiseConfigScreenArgs)
                 },
-                viewModel = koinViewModel(),
             )
         }
 
@@ -138,20 +181,34 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             ScriptCreatorScreen(onResult = { scriptId ->
                 navController.popBackStack()
                 navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.set(ScriptCreatorArgs.RESULT_KEY, scriptId)
+                    ?.savedStateHandle?.setScriptId(scriptId)
             })
         }
 
         composable<SettingArgs> {
+            val context = LocalContext.current
             SettingScreen(
                 versionName = BuildConfig.VERSION_NAME,
                 versionCode = BuildConfig.VERSION_CODE,
+                folderPath = Environment
+                    .getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS,
+                    ).toOkioPath()
+                    .resolve("../${MusePathManager.getExportRelativePath()}", true)
+                    .toString(),
                 onLaunchVoiceScreen = {
                     navController.navigate(VoicePickerArgs(it.toList()))
-                }, onLaunchOpenSourceScreen = {
+                },
+                onLaunchOpenSourceScreen = {
                     navController.navigate(OpenSourceArgs)
-                })
+                },
+                onOpenURL = { url ->
+                    val intent = CustomTabsIntent
+                        .Builder()
+                        .build()
+                    intent.launchUrl(context, Uri.parse(url))
+                },
+            )
         }
 
         composable<VoicePickerArgs> { entry ->
@@ -215,7 +272,13 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
         }
 
         composable<OpenSourceArgs> {
-            OpenSourceScreen()
+            val context = LocalContext.current
+            OpenSourceScreen(onOpenURL = { url ->
+                val intent = CustomTabsIntent
+                    .Builder()
+                    .build()
+                intent.launchUrl(context, Uri.parse(url))
+            })
         }
 
         composable<WhiteNoiseConfigScreenArgs> {
@@ -243,4 +306,33 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             SttScreen(args = entry.toRoute())
         }
     }
+}
+
+
+/**
+ * workaround: AppFileHelper 处理对非 document uri 时有问题
+ * ```Kotlin
+ * AppFileHelper(context.applicationContext)
+ *    .fileSystem
+ *    .metadata(
+ *         contentUri.toPath(),
+ *    ).displayName
+ * ```
+ */
+private fun getFileNameFromContentResolver(
+    context: Context,
+    uri: Uri,
+): String? {
+    if (uri.scheme == "content") {
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    return it.getString(nameIndex)
+                }
+            }
+        }
+    }
+    return null
 }

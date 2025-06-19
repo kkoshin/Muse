@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.feature.export
 
 import android.content.Context
@@ -12,9 +14,10 @@ import io.github.kkoshin.elevenlabs.model.SubscriptionStatus
 import io.github.kkoshin.muse.audio.Mp3Decoder
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
+import io.github.kkoshin.muse.platformbridge.toUri
+import io.github.kkoshin.muse.repo.MusePathManager
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.queryPhrases
-import io.github.kkoshin.toUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -34,7 +37,8 @@ import okio.sink
 import org.koin.java.KoinJavaComponent.inject
 import java.io.File
 import java.time.Instant
-import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class ExportViewModel(
     private val speechProcessorManager: SpeechProcessorManager,
@@ -55,7 +59,7 @@ class ExportViewModel(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, 4)
 
     suspend fun queryPhrases(scriptId: String): List<String>? =
-        repo.queryPhrases(UUID.fromString(scriptId))
+        repo.queryPhrases(Uuid.parse(scriptId))
 
     /**
      * 相同的 phrase 仅需要生成一次，最终返回的时候要按照
@@ -150,7 +154,7 @@ class ExportViewModel(
                 appContext,
                 MediaStoreType.Downloads,
                 "Audio_${Instant.now().epochSecond}.mp3",
-                MuseRepo.getExportRelativePath(),
+                MusePathManager.getExportRelativePath(),
                 enablePending = false,
             ).mediaUri
 

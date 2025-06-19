@@ -38,7 +38,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-//            implementation(libs.navigation)
             implementation(sharedLibs.logcat)
             implementation(libs.sugar)
             implementation(sharedLibs.bundles.jetpack)
@@ -49,12 +48,12 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
-            implementation(libs.browser)
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
             implementation(libs.accompanist.navigation.material)
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.koin.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -67,13 +66,17 @@ kotlin {
             implementation(libs.bytesize)
             implementation(sharedLibs.okio)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.uuid)
             implementation(libs.navigation.compose)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
+        }
+        iosMain.dependencies {
+            implementation(libs.sql.ios)
         }
     }
 
@@ -84,10 +87,6 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-    implementation(platform(sharedLibs.koin.bom))
 }
 
 android {

@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.foodiestudio.sugar.notification.toast
-import io.github.kkoshin.toUri
+import io.github.kkoshin.muse.platformbridge.toUri
 import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.open_with_other_app
 import muse.feature.generated.resources.retry
