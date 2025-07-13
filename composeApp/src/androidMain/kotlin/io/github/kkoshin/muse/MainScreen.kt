@@ -26,6 +26,7 @@ import io.github.kkoshin.muse.editor.EditorArgs
 import io.github.kkoshin.muse.editor.EditorScreen
 import io.github.kkoshin.muse.editor.ExportConfigSheet
 import io.github.kkoshin.muse.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.editor.ExportMode
 import io.github.kkoshin.muse.export.ExportArgs
 import io.github.kkoshin.muse.export.ExportScreen
 import io.github.kkoshin.muse.isolation.AudioIsolationArgs
@@ -111,7 +112,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                                 voiceIds = it.keys.toList(),
                                 voiceNames = it.values.toList(),
                                 scriptId = args.scriptId,
-                                mode = mode
+                                exportMode = mode.name
                             )
                         },
                     )
@@ -153,7 +154,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 Modifier,
                 voiceIds = args.voiceIds,
                 voiceNames = args.voiceNames,
-                mode = args.mode,
+                mode = ExportMode.fromName(args.exportMode)!!,
                 onExport = {
                         voiceId,
                         fixedDurationEnabled,
@@ -165,7 +166,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         ExportArgs(
                             voiceId,
                             args.scriptId,
-                            args.mode,
+                            args.exportMode,
                             fixedDurationEnabled,
                             fixedSilence,
                             silencePerChar,

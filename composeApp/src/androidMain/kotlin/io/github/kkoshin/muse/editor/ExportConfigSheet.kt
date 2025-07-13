@@ -42,7 +42,7 @@ class ExportConfigSheetArgs(
     val scriptId: String,
     val voiceIds: List<String>,
     val voiceNames: List<String>,
-    val mode: ExportMode
+    val exportMode: String
 ) {
     init {
         check(voiceNames.size == voiceIds.size)

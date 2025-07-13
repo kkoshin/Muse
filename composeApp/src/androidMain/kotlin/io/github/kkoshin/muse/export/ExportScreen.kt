@@ -53,7 +53,7 @@ import kotlin.time.Duration.Companion.seconds
 class ExportArgs(
     val voiceId: String,
     val scriptId: String,
-    val mode: ExportMode,
+    val exportMode: String,
     val fixedDurationEnabled: Boolean,
     val fixedSilenceSeconds: Float,
     val silencePerCharSeconds: Float,
@@ -119,7 +119,7 @@ fun ExportScreen(
                     silence = silenceDuration,
                     progress,
                     viewModel = viewModel,
-                    mode = args.mode
+                    mode = ExportMode.fromName(args.exportMode)!!
                 )
             }
         },
