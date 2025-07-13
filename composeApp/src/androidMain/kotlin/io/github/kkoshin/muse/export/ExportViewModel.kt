@@ -53,10 +53,30 @@ class ExportViewModel(
     suspend fun queryPhrases(scriptId: String): List<String>? =
         repo.queryPhrases(UUID.fromString(scriptId))
 
+    fun startTTSForReadingMode(
+        voiceId: String,
+        text: String
+    ) {
+        viewModelScope.launch {
+            ttsManager
+                .getOrGenerateForLongText(voiceId, text)
+                .onSuccess {
+                    _progress.value = ProgressStatus.Success(it)
+                }
+                .onFailure {
+                    logcat(tag) {
+                        it.asLog()
+                    }
+                    _progress.value =
+                        TTSFailed(throwable = it)
+                }
+        }
+    }
+
     /**
      * 相同的 phrase 仅需要生成一次，最终返回的时候要按照
      */
-    fun startTTS(
+    fun startTTSForDictationMode(
         voiceId: String,
         phrases: List<String>,
         onSuccess: (pcmList: List<Uri>) -> Unit,

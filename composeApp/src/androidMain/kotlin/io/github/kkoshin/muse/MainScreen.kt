@@ -104,13 +104,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             val args = entry.toRoute<EditorArgs>()
             EditorScreen(
                 args = args,
-                onExportRequest = { voices ->
+                onExportRequest = { voices, mode ->
                     navController.navigate(
                         voices.associate { it.voiceId to it.name }.let {
                             ExportConfigSheetArgs(
                                 voiceIds = it.keys.toList(),
                                 voiceNames = it.values.toList(),
                                 scriptId = args.scriptId,
+                                mode = mode
                             )
                         },
                     )
@@ -145,12 +146,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             }
         }
 
+
         bottomSheet<ExportConfigSheetArgs> { entry ->
             val args: ExportConfigSheetArgs = entry.toRoute()
             ExportConfigSheet(
                 Modifier,
                 voiceIds = args.voiceIds,
                 voiceNames = args.voiceNames,
+                mode = args.mode,
                 onExport = {
                         voiceId,
                         fixedDurationEnabled,
@@ -162,6 +165,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         ExportArgs(
                             voiceId,
                             args.scriptId,
+                            args.mode,
                             fixedDurationEnabled,
                             fixedSilence,
                             silencePerChar,

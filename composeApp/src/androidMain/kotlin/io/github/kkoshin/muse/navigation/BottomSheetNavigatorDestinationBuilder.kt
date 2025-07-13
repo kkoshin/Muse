@@ -22,9 +22,11 @@ inline fun <reified T : Any> NavGraphBuilder.bottomSheet(
     deepLinks: List<NavDeepLink> = emptyList(),
     noinline content: @Composable ColumnScope.(backstackEntry: NavBackStackEntry) -> Unit,
 ) {
+    val navigator = provider[BottomSheetNavigator::class]
+    navigator.navigatorSheetState
     destination(
         BottomSheetNavigatorDestinationBuilder(
-            provider[BottomSheetNavigator::class],
+            navigator,
             T::class,
             typeMap,
             content,

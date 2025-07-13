@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.foodiestudio.sugar.notification.toast
+import io.github.kkoshin.muse.editor.ExportMode
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.seconds
@@ -52,6 +53,7 @@ import kotlin.time.Duration.Companion.seconds
 class ExportArgs(
     val voiceId: String,
     val scriptId: String,
+    val mode: ExportMode,
     val fixedDurationEnabled: Boolean,
     val fixedSilenceSeconds: Float,
     val silencePerCharSeconds: Float,
@@ -117,11 +119,13 @@ fun ExportScreen(
                     silence = silenceDuration,
                     progress,
                     viewModel = viewModel,
+                    mode = args.mode
                 )
             }
         },
     )
 }
+
 
 @Composable
 private fun Content(
@@ -131,13 +135,21 @@ private fun Content(
     silence: SilenceDuration,
     progress: ProgressStatus,
     viewModel: ExportViewModel,
+    mode: ExportMode,
 ) {
     val context = LocalContext.current
 
     LaunchedEffect(voiceId, phrases) {
         if (phrases.isNotEmpty()) {
-            viewModel.startTTS(voiceId, phrases) {
-                viewModel.mixAudioAsMp3(silence, phrases, it)
+            when (mode) {
+                ExportMode.Reading -> viewModel.startTTSForReadingMode(
+                    voiceId,
+                    phrases.joinToString(" ")
+                )
+
+                ExportMode.Dictation -> viewModel.startTTSForDictationMode(voiceId, phrases) {
+                    viewModel.mixAudioAsMp3(silence, phrases, it)
+                }
             }
         }
     }
@@ -266,7 +278,11 @@ private fun Content(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(text = progress.errorMsg, style = MaterialTheme.typography.h6)
-                        Text(text = progress.throwable?.message ?: "", maxLines = 6, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            text = progress.throwable?.message ?: "",
+                            maxLines = 6,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                     Button(
                         modifier = Modifier
@@ -274,8 +290,18 @@ private fun Content(
                             .padding(horizontal = 60.dp),
                         onClick = {
                             when (progress) {
-                                is TTSFailed -> viewModel.startTTS(voiceId, phrases) {
-                                    viewModel.mixAudioAsMp3(silence, phrases, it)
+                                is TTSFailed -> when (mode) {
+                                    ExportMode.Reading -> viewModel.startTTSForReadingMode(
+                                        voiceId,
+                                        phrases.joinToString(" ")
+                                    )
+
+                                    ExportMode.Dictation -> viewModel.startTTSForDictationMode(
+                                        voiceId,
+                                        phrases
+                                    ) {
+                                        viewModel.mixAudioAsMp3(silence, phrases, it)
+                                    }
                                 }
 
                                 is MixFailed -> viewModel.mixAudioAsMp3(
