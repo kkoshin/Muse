@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import io.github.kkoshin.muse.core.manager.AccountManager
+import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
@@ -32,9 +33,7 @@ import platform.Foundation.NSUserDomainMask
 val appModule = module {
     single<CoroutineScope> { MainScope() }
     single<TTSProvider> {
-        // TODO: 暂使用本地的数据来测试流程
-        FakeProcessor()
-//        ElevenLabProcessor(get(), get())
+        ElevenLabProcessor(get(), get())
     }
     single {
         SpeechProcessorManager(get(), get(), preferencesDataStore("voices"))
