@@ -12,14 +12,14 @@
     - [x] Subtask: Implement Feature (Implement expect/actual for file storage path and IO operations)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Architecture & Data Layer (iOS)' (Protocol in workflow.md) d96fc24
 
-## Phase 2: ElevenLabs Integration (iOS)
+## Phase 2: ElevenLabs Integration (iOS) [checkpoint: 17e3cad]
 - [x] Task: Implement Audio Playback for iOS aa17ef1
     - [x] Subtask: Write Tests (Mock AudioPlayer interface and verify interaction)
     - [x] Subtask: Implement Feature (Implement `AudioPlayer` expect/actual using `AVPlayer` for iOS)
 - [x] Task: Verify ElevenLabs Repository on iOS 6225e2e
     - [x] Subtask: Write Tests (Integration test with mocked Ktor engine to verify API handling on iOS target)
     - [x] Subtask: Implement Feature (Ensure shared repository logic functions correctly with iOS dependencies)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: ElevenLabs Integration (iOS)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: ElevenLabs Integration (iOS)' (Protocol in workflow.md) 17e3cad
 
 ## Phase 3: UI Integration - Core & Input
 - [ ] Task: Connect Shared UI to iOS MainViewController
