@@ -1,6 +1,6 @@
 # Track Plan: iOS Parity & ElevenLabs Integration
 
-## Phase 1: Architecture & Data Layer (iOS)
+## Phase 1: Architecture & Data Layer (iOS) [checkpoint: d96fc24]
 - [x] Task: Configure SQLDelight Native Driver for iOS 48d29fe
     - [x] Subtask: Write Tests (Verify database creation and table access on iOS)
     - [x] Subtask: Implement Feature (Add/Configure `NativeSqliteDriver` in `iosMain`)
@@ -10,7 +10,7 @@
 - [x] Task: Implement File System Access for iOS 4fa084c
     - [x] Subtask: Write Tests (Verify file writing and reading in `iosTest`)
     - [x] Subtask: Implement Feature (Implement expect/actual for file storage path and IO operations)
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Architecture & Data Layer (iOS)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Architecture & Data Layer (iOS)' (Protocol in workflow.md) d96fc24
 
 ## Phase 2: ElevenLabs Integration (iOS)
 - [ ] Task: Implement Audio Playback for iOS
