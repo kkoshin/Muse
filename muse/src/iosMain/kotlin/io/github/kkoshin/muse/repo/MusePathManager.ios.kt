@@ -68,9 +68,9 @@ actual class MusePathManager {
     }
 
     actual companion object {
-        actual fun getExportRelativePath(): String = "TODO"
+        actual fun getExportRelativePath(): String = "Exports"
 
-        actual fun getMusicRelativePath(): String = "TODO"
+        actual fun getMusicRelativePath(): String = "Music"
     }
 
 }
