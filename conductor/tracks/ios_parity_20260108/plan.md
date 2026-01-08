@@ -1,9 +1,9 @@
 # Track Plan: iOS Parity & ElevenLabs Integration
 
 ## Phase 1: Architecture & Data Layer (iOS)
-- [ ] Task: Configure SQLDelight Native Driver for iOS
-    - [ ] Subtask: Write Tests (Verify database creation and table access on iOS)
-    - [ ] Subtask: Implement Feature (Add/Configure `NativeSqliteDriver` in `iosMain`)
+- [x] Task: Configure SQLDelight Native Driver for iOS 48d29fe
+    - [x] Subtask: Write Tests (Verify database creation and table access on iOS)
+    - [x] Subtask: Implement Feature (Add/Configure `NativeSqliteDriver` in `iosMain`)
 - [ ] Task: Configure Ktor Client for iOS
     - [ ] Subtask: Write Tests (Verify HTTP client instantiation and basic connectivity in `iosTest`)
     - [ ] Subtask: Implement Feature (Add/Configure `Darwin` engine in `iosMain`)
