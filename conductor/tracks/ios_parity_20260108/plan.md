@@ -7,9 +7,9 @@
 - [x] Task: Configure Ktor Client for iOS 01488ec
     - [x] Subtask: Write Tests (Verify HTTP client instantiation and basic connectivity in `iosTest`)
     - [x] Subtask: Implement Feature (Add/Configure `Darwin` engine in `iosMain`)
-- [ ] Task: Implement File System Access for iOS
-    - [ ] Subtask: Write Tests (Verify file writing and reading in `iosTest`)
-    - [ ] Subtask: Implement Feature (Implement expect/actual for file storage path and IO operations)
+- [x] Task: Implement File System Access for iOS 4fa084c
+    - [x] Subtask: Write Tests (Verify file writing and reading in `iosTest`)
+    - [x] Subtask: Implement Feature (Implement expect/actual for file storage path and IO operations)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Architecture & Data Layer (iOS)' (Protocol in workflow.md)
 
 ## Phase 2: ElevenLabs Integration (iOS)
