@@ -16,6 +16,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import io.github.kkoshin.muse.feature.theme.AppTheme
+import io.github.kkoshin.muse.MainScreen
 
 class MainActivity : ComponentActivity() {
     /**

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse
 
 import androidx.compose.foundation.background
@@ -7,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.uikit.LocalUIViewController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,18 +27,23 @@ import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
 import io.github.kkoshin.muse.feature.export.ExportArgs
 import io.github.kkoshin.muse.feature.export.ExportScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreenArgs
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreen
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreenArgs
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
 import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
 import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
-import platform.Foundation.NSBundle
-import platform.Foundation.NSURL
-import platform.SafariServices.SFSafariViewController
+import io.github.kkoshin.muse.platformbridge.PlatformSpecificInfo
+import io.github.kkoshin.muse.platformbridge.rememberPlatformSpecificInfo
+import androidx.navigation.NavGraphBuilder
 import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
 @Composable
-internal fun MainScreen(navController: NavHostController = rememberNavController()) {
+fun MainScreen(navController: NavHostController = rememberNavController()) {
+    val platformInfo = rememberPlatformSpecificInfo()
+    
     CompositionLocalProvider(
         LocalNavigationController provides LocalNavControllerImpl(navController)
     ) {
@@ -65,14 +71,10 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
                         }
                     },
                     onLaunchAudioIsolation = { uri ->
-//                    navController.navigate(
-//                        AudioIsolationPreviewArgs(
-//                            audioUri = uri,
-//                        ),
-//                    )
+                        onLaunchAudioIsolation(navController, uri)
                     },
                     onLaunchWhiteNoise = {
-//                    navController.navigate(WhiteNoiseConfigScreenArgs)
+                        navController.navigate(WhiteNoiseConfigScreenArgs)
                     },
                 )
             }
@@ -155,30 +157,52 @@ internal fun MainScreen(navController: NavHostController = rememberNavController
             }
 
             composable<SettingArgs> {
-                val viewController = LocalUIViewController.current
-
                 SettingScreen(
-                    versionName = NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString")
-                        ?.toString() ?: "Unknown",
-                    versionCode = NSBundle.mainBundle.infoDictionary?.get("CFBundleVersion")
-                        ?.toString()?.toInt()
-                        ?: 0,
-                    folderPath = "TODO", // TODO: Implement SettingScreen
+                    versionName = platformInfo.versionName,
+                    versionCode = platformInfo.versionCode,
+                    folderPath = platformInfo.exportFolderPath,
                     onLaunchVoiceScreen = {
                         navController.navigate(VoicePickerArgs(it.toList()))
                     },
                     onLaunchOpenSourceScreen = {
-//                        navController.navigate(OpenSourceArgs)
+                        onLaunchOpenSource(navController)
                     },
                     onOpenURL = { url ->
-                        viewController.presentViewController(
-                            SFSafariViewController(NSURL.URLWithString(url)!!),
-                            animated = true,
-                            null
-                        )
+                        platformInfo.onOpenURL(url)
                     }
                 )
             }
+
+            composable<WhiteNoiseConfigScreenArgs> {
+                WhiteNoiseConfigScreen { prompt, config ->
+                    navController.navigate(
+                        WhiteNoiseScreenArgs(
+                            prompt,
+                            config.duration?.inWholeMilliseconds,
+                            config.promptInfluence
+                        )
+                    )
+                }
+            }
+
+            composable<WhiteNoiseScreenArgs> { entry ->
+                WhiteNoiseScreen(args = entry.toRoute()) { isSuccess ->
+                    if (isSuccess) {
+                        navController.popBackStack(DashboardArgs, false)
+                    } else {
+                        navController.popBackStack()
+                    }
+                }
+            }
+            
+            addPlatformSpecificRoutes(navController)
         }
     }
 }
+
+expect fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostController)
+
+expect fun onLaunchAudioIsolation(navController: NavHostController, path: okio.Path)
+
+expect fun onLaunchOpenSource(navController: NavHostController)
+
