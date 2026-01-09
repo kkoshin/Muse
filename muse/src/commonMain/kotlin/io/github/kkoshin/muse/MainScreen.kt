@@ -38,6 +38,7 @@ import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
 import io.github.kkoshin.muse.platformbridge.PlatformSpecificInfo
 import io.github.kkoshin.muse.platformbridge.rememberPlatformSpecificInfo
 import androidx.navigation.NavGraphBuilder
+import androidx.compose.material.Surface
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
@@ -47,11 +48,15 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
     CompositionLocalProvider(
         LocalNavigationController provides LocalNavControllerImpl(navController)
     ) {
-        NavHost(
+        Surface(
             modifier = Modifier.fillMaxSize(),
-            navController = navController,
-            startDestination = DashboardArgs,
+            color = MaterialTheme.colors.background
         ) {
+            NavHost(
+                modifier = Modifier.fillMaxSize(),
+                navController = navController,
+                startDestination = DashboardArgs,
+            ) {
             composable<DashboardArgs> { _ ->
                 DashboardScreen(
                     initScriptId = null,
@@ -198,6 +203,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             addPlatformSpecificRoutes(navController)
         }
     }
+}
 }
 
 expect fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostController)
