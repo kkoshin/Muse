@@ -31,9 +31,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: UI Integration - Core & Input' (Protocol in workflow.md) f20edf7
 
 ## Phase 4: UI Integration - History & Settings
-- [ ] Task: Verify and Polish History Screen (iOS)
-    - [ ] Subtask: Write Tests (Verify HistoryViewModel list loading on iOS)
-    - [ ] Subtask: Implement Feature (Fix lazy list scrolling, item clicks, and playback controls on iOS)
+- [x] Task: Verify and Polish History Screen (iOS) c6d0c4c
+    - [x] Subtask: Write Tests (Verify HistoryViewModel list loading on iOS)
+    - [x] Subtask: Implement Feature (Fix lazy list scrolling, item clicks, and playback controls on iOS)
 - [ ] Task: Verify and Polish Settings Screen (iOS)
     - [ ] Subtask: Write Tests (Verify SettingsViewModel preference updates on iOS)
     - [ ] Subtask: Implement Feature (Ensure toggles/dropdowns work and save to DataStore correctly on iOS)
