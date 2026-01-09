@@ -37,7 +37,7 @@
 - [x] Task: Verify and Polish Settings Screen (iOS) 97d5bbc
     - [x] Subtask: Write Tests (Verify SettingsViewModel preference updates on iOS)
     - [x] Subtask: Implement Feature (Ensure toggles/dropdowns work and save to DataStore correctly on iOS)
-- [ ] Task: Handle Safe Areas and Global Platform Specifics
-    - [ ] Subtask: Write Tests (Visual inspection required)
-    - [ ] Subtask: Implement Feature (Apply `WindowInsets` and platform adjustments in Compose)
+- [x] Task: Handle Safe Areas and Global Platform Specifics d7ef9bb
+    - [x] Subtask: Write Tests (Visual inspection required)
+    - [x] Subtask: Implement Feature (Apply `WindowInsets` and platform adjustments in Compose)
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: UI Integration - History & Settings' (Protocol in workflow.md)
