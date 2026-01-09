@@ -34,9 +34,9 @@
 - [x] Task: Verify and Polish History Screen (iOS) c6d0c4c
     - [x] Subtask: Write Tests (Verify HistoryViewModel list loading on iOS)
     - [x] Subtask: Implement Feature (Fix lazy list scrolling, item clicks, and playback controls on iOS)
-- [ ] Task: Verify and Polish Settings Screen (iOS)
-    - [ ] Subtask: Write Tests (Verify SettingsViewModel preference updates on iOS)
-    - [ ] Subtask: Implement Feature (Ensure toggles/dropdowns work and save to DataStore correctly on iOS)
+- [x] Task: Verify and Polish Settings Screen (iOS) 97d5bbc
+    - [x] Subtask: Write Tests (Verify SettingsViewModel preference updates on iOS)
+    - [x] Subtask: Implement Feature (Ensure toggles/dropdowns work and save to DataStore correctly on iOS)
 - [ ] Task: Handle Safe Areas and Global Platform Specifics
     - [ ] Subtask: Write Tests (Visual inspection required)
     - [ ] Subtask: Implement Feature (Apply `WindowInsets` and platform adjustments in Compose)
