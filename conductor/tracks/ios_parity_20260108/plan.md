@@ -25,9 +25,9 @@
 - [x] Task: Connect Shared UI to iOS MainViewController 7a0c879
     - [x] Subtask: Write Tests (UI Tests for iOS target are limited, focus on common UI logic tests)
     - [x] Subtask: Implement Feature (Setup `ComposeUIViewController` in `iosMain` and wire to `RootContent`)
-- [ ] Task: Verify and Polish Input Screen (iOS)
-    - [ ] Subtask: Write Tests (Verify InputViewModel state transitions on iOS target)
-    - [ ] Subtask: Implement Feature (Fix text field interactions, focus handling, and generation triggers on iOS)
+- [x] Task: Verify and Polish Input Screen (iOS) f3542d1
+    - [x] Subtask: Write Tests (Verify InputViewModel state transitions on iOS target)
+    - [x] Subtask: Implement Feature (Fix text field interactions, focus handling, and generation triggers on iOS)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Integration - Core & Input' (Protocol in workflow.md)
 
 ## Phase 4: UI Integration - History & Settings
