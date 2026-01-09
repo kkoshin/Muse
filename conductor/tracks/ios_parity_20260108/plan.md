@@ -21,14 +21,14 @@
     - [x] Subtask: Implement Feature (Ensure shared repository logic functions correctly with iOS dependencies)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: ElevenLabs Integration (iOS)' (Protocol in workflow.md) 17e3cad
 
-## Phase 3: UI Integration - Core & Input
+## Phase 3: UI Integration - Core & Input [checkpoint: f20edf7]
 - [x] Task: Connect Shared UI to iOS MainViewController 7a0c879
     - [x] Subtask: Write Tests (UI Tests for iOS target are limited, focus on common UI logic tests)
     - [x] Subtask: Implement Feature (Setup `ComposeUIViewController` in `iosMain` and wire to `RootContent`)
 - [x] Task: Verify and Polish Input Screen (iOS) f3542d1
     - [x] Subtask: Write Tests (Verify InputViewModel state transitions on iOS target)
     - [x] Subtask: Implement Feature (Fix text field interactions, focus handling, and generation triggers on iOS)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Integration - Core & Input' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Integration - Core & Input' (Protocol in workflow.md) f20edf7
 
 ## Phase 4: UI Integration - History & Settings
 - [ ] Task: Verify and Polish History Screen (iOS)
