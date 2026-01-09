@@ -30,7 +30,7 @@
     - [x] Subtask: Implement Feature (Fix text field interactions, focus handling, and generation triggers on iOS)
 - [x] Task: Conductor - User Manual Verification 'Phase 3: UI Integration - Core & Input' (Protocol in workflow.md) f20edf7
 
-## Phase 4: UI Integration - History & Settings
+## Phase 4: UI Integration - History & Settings [checkpoint: 7e80000]
 - [x] Task: Verify and Polish History Screen (iOS) c6d0c4c
     - [x] Subtask: Write Tests (Verify HistoryViewModel list loading on iOS)
     - [x] Subtask: Implement Feature (Fix lazy list scrolling, item clicks, and playback controls on iOS)
@@ -40,4 +40,4 @@
 - [x] Task: Handle Safe Areas and Global Platform Specifics d7ef9bb
     - [x] Subtask: Write Tests (Visual inspection required)
     - [x] Subtask: Implement Feature (Apply `WindowInsets` and platform adjustments in Compose)
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: UI Integration - History & Settings' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: UI Integration - History & Settings' (Protocol in workflow.md) 7e80000
