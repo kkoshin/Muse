@@ -1,7 +1,5 @@
 package io.github.kkoshin.muse.feature.isolation
 
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -20,13 +18,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
+import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
 import muse.feature.generated.resources.Res
 import muse.feature.generated.resources.denoise_done
+import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 class AudioIsolationArgs(
@@ -40,7 +39,6 @@ fun AudioIsolationScreen(
     viewModel: AudioIsolationViewModel = koinViewModel(),
     onExit: () -> Unit,
 ) {
-    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val progress by viewModel.progress.collectAsState()
 
     BackHandler {
@@ -55,7 +53,7 @@ fun AudioIsolationScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = {
-                        backPressedDispatcher?.onBackPressed()
+                        onExit()
                     }) {
                         Icon(Icons.Filled.Close, contentDescription = null)
                     }
@@ -68,14 +66,14 @@ fun AudioIsolationScreen(
         content = { contentPadding ->
             Box(Modifier.padding(contentPadding)) {
                 LaunchedEffect(key1 = Unit) {
-                    viewModel.removeBackgroundNoise(args.audioUri.toUri())
+                    viewModel.removeBackgroundNoise(args.audioUri.toPath())
                 }
 
                 AudioProcessingView(
                     modifier,
                     progress = progress,
                     successLabel = stringResource(Res.string.denoise_done),
-                    onRetry = { viewModel.removeBackgroundNoise(args.audioUri.toUri()) })
+                    onRetry = { viewModel.removeBackgroundNoise(args.audioUri.toPath()) })
             }
         },
     )
