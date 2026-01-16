@@ -8,10 +8,10 @@ Establish the necessary iOS-specific configurations and implement the missing MP
 - [x] Task: Update iOS `Info.plist` for Files app integration (152092c)
     - [x] Add `UIFileSharingEnabled` (Application supports iTunes file sharing) set to `YES`.
     - [x] Add `LSSupportsOpeningDocumentsInPlace` (Supports opening documents in place) set to `YES`.
-- [ ] Task: Implement `Mp3Encoder` for iOS
-    - [ ] Implement `Mp3Encoder.ios.kt` using the `lame` CocoaPods dependency.
-    - [ ] Implement `writeMonoAudio` and `writeStereoAudio` logic similar to Android.
-    - [ ] Ensure proper resource management (closing LAME handle).
+- [x] Task: Implement `Mp3Encoder` for iOS (7a5abd9)
+    - [x] Implement `Mp3Encoder.ios.kt` using the `lame` CocoaPods dependency.
+    - [x] Implement `writeMonoAudio` and `writeStereoAudio` logic similar to Android.
+    - [x] Ensure proper resource management (closing LAME handle).
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Platform Bridge Implementation
