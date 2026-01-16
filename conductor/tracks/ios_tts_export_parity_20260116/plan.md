@@ -14,18 +14,18 @@ Establish the necessary iOS-specific configurations and implement the missing MP
     - [x] Ensure proper resource management (closing LAME handle).
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md) (b85cde5)
 
-## Phase 2: Platform Bridge Implementation
+## Phase 2: Platform Bridge Implementation [checkpoint: b32d1a0]
 Implement the platform-specific logic for saving files to the Documents directory on iOS.
 
 - [x] Task: Implement `MediaStoreHelper.exportFileToDownload` for iOS (ac6b467)
     - [x] Resolve the `Documents` directory path using `NSFileManager`.
     - [x] Create the `Exports` sub-directory if it doesn't exist.
     - [x] Return the `okio.Path` for the target file.
-- [ ] Task: Add Share Sheet Trigger in `PlatformInfo` or new bridge
-    - [ ] Define an `expect` function or interface in `commonMain` for sharing a file.
-    - [ ] Implement the `actual` function for iOS using `UIActivityViewController`.
-    - [ ] Implement the `actual` function for Android (as a placeholder if not already existing, or use existing `Intent` logic).
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Platform Bridge Implementation' (Protocol in workflow.md)
+- [x] Task: Add Share Sheet Trigger in `PlatformInfo` or new bridge (Already implemented in `FileUtils.kt`)
+    - [x] Define an `expect` function or interface in `commonMain` for sharing a file.
+    - [x] Implement the `actual` function for iOS using `UIActivityViewController`.
+    - [x] Implement the `actual` function for Android (as a placeholder if not already existing, or use existing `Intent` logic).
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Platform Bridge Implementation' (Protocol in workflow.md) (b32d1a0)
 
 ## Phase 3: UI Integration and Testing
 Connect the platform-specific logic to the shared UI and verify the end-to-end flow.
