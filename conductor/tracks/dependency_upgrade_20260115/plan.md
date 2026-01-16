@@ -11,9 +11,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Build Tools Upgrade' (Protocol in workflow.md) 4b16abb
 
 ## Phase 3: Kotlin Multiplatform & Compose Libraries Upgrade [checkpoint: ]
-- [ ] Task: Update Kotlin Multiplatform core library versions (stdlib, coroutines, etc. if explicitly versioned).
-- [ ] Task: Update Compose Multiplatform UI library versions.
-- [ ] Task: Run Android build and fix any compilation errors/breaking changes.
+- [x] Task: Update Kotlin Multiplatform core library versions (stdlib, coroutines, etc. if explicitly versioned). 830fd4b
+- [x] Task: Update Compose Multiplatform UI library versions. 830fd4b
+- [x] Task: Run Android build and fix any compilation errors/breaking changes. 830fd4b
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Kotlin Multiplatform & Compose Libraries Upgrade' (Protocol in workflow.md)
 
 ## Phase 4: iOS Build and Launch Verification [checkpoint: ]
