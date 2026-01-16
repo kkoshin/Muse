@@ -105,37 +105,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 )
             }
 
-            // TODO: 待 navigation 支持 bottom sheet 后调整
-            dialog<ExportConfigSheetArgs> { entry ->
-                val args: ExportConfigSheetArgs = entry.toRoute()
-                ExportConfigSheet(
-                    Modifier.background(
-                        MaterialTheme.colors.background,
-                        shape = RoundedCornerShape(16.dp)
-                    ),
-                    voiceIds = args.voiceIds,
-                    voiceNames = args.voiceNames,
-                    onExport = {
-                            voiceId,
-                            fixedDurationEnabled,
-                            fixedSilence,
-                            silencePerChar,
-                            minDynamicDuration,
-                        ->
-                        navController.navigate(
-                            ExportArgs(
-                                voiceId,
-                                args.scriptId,
-                                fixedDurationEnabled,
-                                fixedSilence,
-                                silencePerChar,
-                                minDynamicDuration,
-                            ),
-                        )
-                    },
-                )
-            }
-
             composable<ExportArgs> { entry ->
                 ExportScreen(args = entry.toRoute(), onExit = { isSuccess ->
                     if (isSuccess) {
