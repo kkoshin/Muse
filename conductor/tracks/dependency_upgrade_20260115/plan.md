@@ -1,8 +1,8 @@
 # Plan: Dependency Upgrade (Core & Build Tools)
 
-## Phase 1: Preparation and Baseline [checkpoint: ]
+## Phase 1: Preparation and Baseline [checkpoint: 7a7a4c5]
 - [x] Task: Document current dependency versions and verify baseline build status. f5fb393
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation and Baseline' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation and Baseline' (Protocol in workflow.md) 7a7a4c5
 
 ## Phase 2: Core Build Tools Upgrade [checkpoint: ]
 - [ ] Task: Update Android Gradle Plugin (AGP) and Kotlin Gradle Plugin (KGP) in `gradle/libs.versions.toml`.
