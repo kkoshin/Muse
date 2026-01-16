@@ -24,6 +24,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 4: iOS Build and Launch Verification' (Protocol in workflow.md) f23ea8e
 
 ## Phase 5: Finalization and Cleanup [checkpoint: ]
-- [ ] Task: Perform a final clean build of both Android and iOS applications.
-- [ ] Task: Verify that `gradle/libs.versions.toml` only contains stable versions.
+- [x] Task: Perform a final clean build of both Android and iOS applications.
+- [x] Task: Verify that `gradle/libs.versions.toml` only contains stable versions.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Finalization and Cleanup' (Protocol in workflow.md)
