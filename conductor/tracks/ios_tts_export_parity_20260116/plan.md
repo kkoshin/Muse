@@ -2,7 +2,7 @@
 
 This plan outlines the steps to complete the iOS implementation for TTS audio export, achieving parity with the Android implementation.
 
-## Phase 1: Infrastructure and Configuration
+## Phase 1: Infrastructure and Configuration [checkpoint: b85cde5]
 Establish the necessary iOS-specific configurations and implement the missing MP3 encoding logic.
 
 - [x] Task: Update iOS `Info.plist` for Files app integration (152092c)
@@ -12,7 +12,7 @@ Establish the necessary iOS-specific configurations and implement the missing MP
     - [x] Implement `Mp3Encoder.ios.kt` using the `lame` CocoaPods dependency.
     - [x] Implement `writeMonoAudio` and `writeStereoAudio` logic similar to Android.
     - [x] Ensure proper resource management (closing LAME handle).
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md) (b85cde5)
 
 ## Phase 2: Platform Bridge Implementation
 Implement the platform-specific logic for saving files to the Documents directory on iOS.
