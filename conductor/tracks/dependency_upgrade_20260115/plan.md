@@ -16,12 +16,12 @@
 - [x] Task: Run Android build and fix any compilation errors/breaking changes. 830fd4b
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Kotlin Multiplatform & Compose Libraries Upgrade' (Protocol in workflow.md) 3d509b3
 
-## Phase 4: iOS Build and Launch Verification [checkpoint: ]
+## Phase 4: iOS Build and Launch Verification [checkpoint: f23ea8e]
 - [x] Task: Verify shared module build for iOS target (`./gradlew :muse:assembleXCFramework`). 331100a
 - [x] Task: Open `swiftApp` in Xcode or use CLI to build the iOS application. 331100a
 - [x] Task: Resolve any iOS-specific build errors (e.g., CocoaPods issues, Linker errors). 331100a
 - [x] Task: Launch the iOS application in a simulator and verify basic functionality (one-tap TTS). 331100a
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: iOS Build and Launch Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: iOS Build and Launch Verification' (Protocol in workflow.md) f23ea8e
 
 ## Phase 5: Finalization and Cleanup [checkpoint: ]
 - [ ] Task: Perform a final clean build of both Android and iOS applications.
