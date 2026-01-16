@@ -3,7 +3,6 @@ package io.github.kkoshin.muse.audio
 import io.github.kkoshin.muse.platformbridge.toNsUrl
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +15,9 @@ import platform.AVFoundation.AVAsset
 import platform.AVFoundation.AVAssetReader
 import platform.AVFoundation.AVAssetReaderTrackOutput
 import platform.AVFoundation.AVMediaTypeAudio
-import platform.AVFoundation.assetReaderWithAsset
-import platform.AudioToolbox.kAudioFormatLinearPCM
-import platform.CoreAudio.kAudioFormatFlagIsSignedInteger
 import platform.CoreMedia.CMSampleBufferGetDataBuffer
-import platform.CoreMedia.CMSampleBufferGetNumSamples
 import platform.CoreMedia.CMBlockBufferCopyDataBytes
 import platform.CoreMedia.CMBlockBufferGetDataLength
-import platform.Foundation.NSNumber
 import kotlin.math.roundToInt
 
 actual class Mp3Decoder {
@@ -37,21 +31,27 @@ actual class Mp3Decoder {
         val url = mp3Path.toNsUrl() ?: return@withContext
         val asset = AVAsset.assetWithURL(url)
         
-        val reader = AVAssetReader.assetReaderWithAsset(asset, null)
-        val audioTrack = asset.tracksWithMediaType(AVMediaTypeAudio).firstOrNull() as? platform.AVFoundation.AVAssetTrack
+        val reader = AVAssetReader(asset = asset, error = null)
+        val audioTracks = asset.tracks.filter { 
+            (it as? platform.AVFoundation.AVAssetTrack)?.mediaType == AVMediaTypeAudio 
+        }
+        val audioTrack = audioTracks.firstOrNull() as? platform.AVFoundation.AVAssetTrack
             ?: return@withContext
 
+        // 1819304813 is 'lpcm'
+        val kAudioFormatLinearPCM = 1819304813UL
+
         val settings = mapOf<Any?, Any?>(
-            platform.AVFoundation.AVFormatIDKey to kAudioFormatLinearPCM,
-            platform.AVFoundation.AVLinearPCMBitDepthKey to 16,
-            platform.AVFoundation.AVLinearPCMIsBigEndianKey to false,
-            platform.AVFoundation.AVLinearPCMIsFloatKey to false,
-            platform.AVFoundation.AVLinearPCMIsNonInterleaved to false,
-            platform.AVFoundation.AVNumberOfChannelsKey to 1,
-            platform.AVFoundation.AVSampleRateKey to 44100.0
+            "AVFormatIDKey" to kAudioFormatLinearPCM,
+            "AVLinearPCMBitDepthKey" to 16,
+            "AVLinearPCMIsBigEndianKey" to false,
+            "AVLinearPCMIsFloatKey" to false,
+            "AVLinearPCMIsNonInterleaved" to false,
+            "AVNumberOfChannelsKey" to 1,
+            "AVSampleRateKey" to 44100.0
         )
 
-        val output = AVAssetReaderTrackOutput(audioTrack, settings)
+        val output = AVAssetReaderTrackOutput(track = audioTrack, outputSettings = settings)
         reader.addOutput(output)
         reader.startReading()
 
@@ -63,7 +63,12 @@ actual class Mp3Decoder {
             
             val byteArray = ByteArray(length.toInt())
             byteArray.usePinned { pinned ->
-                CMBlockBufferCopyDataBytes(blockBuffer, 0, length, pinned.addressOf(0))
+                CMBlockBufferCopyDataBytes(
+                    blockBuffer,
+                    0.toULong(),
+                    length.toULong(),
+                    pinned.addressOf(0)
+                )
             }
 
             if (volumeBoost == 1.0f) {
@@ -87,8 +92,8 @@ actual class Mp3Decoder {
             if (i + 1 >= byteArray.size) break
             // Combine two bytes to form a short and apply the volume boost
             val low = byteArray[i].toInt() and 0xff
-            val high = byteArray[i + 1].toInt() shl 8
-            temp = ((low or high) * volumeBoost).roundToInt()
+            val high = (byteArray[i + 1].toInt() and 0xff) shl 8
+            temp = ((low or high).toShort().toInt() * volumeBoost).roundToInt()
             
             // Clipping to ensure we don't exceed the 16-bit limit
             temp = temp.coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
