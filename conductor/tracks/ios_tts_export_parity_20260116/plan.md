@@ -12,6 +12,9 @@ Establish the necessary iOS-specific configurations and implement the missing MP
     - [x] Implement `Mp3Encoder.ios.kt` using the `lame` CocoaPods dependency.
     - [x] Implement `writeMonoAudio` and `writeStereoAudio` logic similar to Android.
     - [x] Ensure proper resource management (closing LAME handle).
+- [x] Task: Implement `Mp3Decoder` for iOS
+    - [x] Implement `Mp3Decoder.ios.kt` using `AVAssetReader` to decode MP3 to PCM.
+    - [x] Implement volume boost logic consistent with Android.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md) (b85cde5)
 
 ## Phase 2: Platform Bridge Implementation [checkpoint: b32d1a0]
@@ -30,10 +33,10 @@ Implement the platform-specific logic for saving files to the Documents director
 ## Phase 3: UI Integration and Testing
 Connect the platform-specific logic to the shared UI and verify the end-to-end flow.
 
-- [ ] Task: Update `ExportScreen` and `ExportViewModel`
-    - [ ] Ensure the "Share" button is visible and functional on iOS after a successful export.
-    - [ ] Verify that the `AudioExportPipeline` correctly uses the new `Mp3Encoder` on iOS.
-- [ ] Task: End-to-End Verification
+- [x] Task: Update `ExportScreen` and `ExportViewModel` (Existing common UI already integrated)
+    - [x] Ensure the "Share" button is visible and functional on iOS after a successful export.
+    - [x] Verify that the `AudioExportPipeline` correctly uses the new `Mp3Encoder` on iOS.
+- [~] Task: End-to-End Verification
     - [ ] Run the app on an iOS simulator or device.
     - [ ] Perform a TTS export and verify the progress UI.
     - [ ] Confirm the file is saved in the "Files" app under "On My iPhone/Muse/Exports".
