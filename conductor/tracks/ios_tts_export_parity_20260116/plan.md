@@ -17,10 +17,10 @@ Establish the necessary iOS-specific configurations and implement the missing MP
 ## Phase 2: Platform Bridge Implementation
 Implement the platform-specific logic for saving files to the Documents directory on iOS.
 
-- [ ] Task: Implement `MediaStoreHelper.exportFileToDownload` for iOS
-    - [ ] Resolve the `Documents` directory path using `NSFileManager`.
-    - [ ] Create the `Exports` sub-directory if it doesn't exist.
-    - [ ] Return the `okio.Path` for the target file.
+- [x] Task: Implement `MediaStoreHelper.exportFileToDownload` for iOS (ac6b467)
+    - [x] Resolve the `Documents` directory path using `NSFileManager`.
+    - [x] Create the `Exports` sub-directory if it doesn't exist.
+    - [x] Return the `okio.Path` for the target file.
 - [ ] Task: Add Share Sheet Trigger in `PlatformInfo` or new bridge
     - [ ] Define an `expect` function or interface in `commonMain` for sharing a file.
     - [ ] Implement the `actual` function for iOS using `UIActivityViewController`.
