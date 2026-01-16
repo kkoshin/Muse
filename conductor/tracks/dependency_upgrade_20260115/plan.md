@@ -5,9 +5,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation and Baseline' (Protocol in workflow.md) 7a7a4c5
 
 ## Phase 2: Core Build Tools Upgrade [checkpoint: ]
-- [ ] Task: Update Android Gradle Plugin (AGP) and Kotlin Gradle Plugin (KGP) in `gradle/libs.versions.toml`.
-- [ ] Task: Update Compose Multiplatform compiler and plugin versions.
-- [ ] Task: Sync Gradle and resolve any build script errors.
+- [x] Task: Update Android Gradle Plugin (AGP) and Kotlin Gradle Plugin (KGP) in `gradle/libs.versions.toml`.
+- [x] Task: Update Compose Multiplatform compiler and plugin versions.
+- [x] Task: Sync Gradle and resolve any build script errors.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Build Tools Upgrade' (Protocol in workflow.md)
 
 ## Phase 3: Kotlin Multiplatform & Compose Libraries Upgrade [checkpoint: ]
