@@ -23,7 +23,7 @@
 - [x] Task: Launch the iOS application in a simulator and verify basic functionality (one-tap TTS). 331100a
 - [x] Task: Conductor - User Manual Verification 'Phase 4: iOS Build and Launch Verification' (Protocol in workflow.md) f23ea8e
 
-## Phase 5: Finalization and Cleanup [checkpoint: ]
+## Phase 5: Finalization and Cleanup [checkpoint: 14c74b3]
 - [x] Task: Perform a final clean build of both Android and iOS applications.
 - [x] Task: Verify that `gradle/libs.versions.toml` only contains stable versions.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Finalization and Cleanup' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Finalization and Cleanup' (Protocol in workflow.md) 14c74b3
