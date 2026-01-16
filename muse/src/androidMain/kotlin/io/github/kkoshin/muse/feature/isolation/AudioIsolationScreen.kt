@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
@@ -66,14 +67,14 @@ fun AudioIsolationScreen(
         content = { contentPadding ->
             Box(Modifier.padding(contentPadding)) {
                 LaunchedEffect(key1 = Unit) {
-                    viewModel.removeBackgroundNoise(args.audioUri.toPath())
+                    viewModel.removeBackgroundNoise(args.audioUri.toUri())
                 }
 
                 AudioProcessingView(
                     modifier,
                     progress = progress,
                     successLabel = stringResource(Res.string.denoise_done),
-                    onRetry = { viewModel.removeBackgroundNoise(args.audioUri.toPath()) })
+                    onRetry = { viewModel.removeBackgroundNoise(args.audioUri.toUri()) })
             }
         },
     )

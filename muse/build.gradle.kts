@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -61,6 +62,7 @@ kotlin {
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
             implementation(libs.accompanist.navigation.material)
+            implementation(libs.browser)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))

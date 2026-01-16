@@ -6,7 +6,6 @@ import android.os.Environment
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import io.github.kkoshin.muse.feature.generated.resources.Res
 import io.github.kkoshin.muse.repo.MusePathManager
 import okio.Path.Companion.toOkioPath
 

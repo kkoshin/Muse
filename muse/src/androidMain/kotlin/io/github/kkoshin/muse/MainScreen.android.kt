@@ -3,6 +3,7 @@ package io.github.kkoshin.muse
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewArgs
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewScreen
