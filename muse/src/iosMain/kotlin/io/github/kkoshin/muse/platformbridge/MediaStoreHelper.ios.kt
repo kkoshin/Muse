@@ -34,7 +34,31 @@ actual class MediaStoreHelper {
         return target.toOkioPath()!!
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     actual fun exportFileToDownload(fileName: String, relativePath: String?): Path {
-        TODO("Not yet implemented")
+        val fileManager = NSFileManager.defaultManager
+        val documentsDirectory = fileManager.URLForDirectory(
+            directory = platform.Foundation.NSDocumentDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = true,
+            error = null,
+        )
+        
+        var targetDirectory = documentsDirectory!!
+        if (relativePath != null) {
+            targetDirectory = targetDirectory.URLByAppendingPathComponent(relativePath, isDirectory = true)!!
+            if (!fileManager.fileExistsAtPath(targetDirectory.path!!)) {
+                fileManager.createDirectoryAtURL(
+                    url = targetDirectory,
+                    withIntermediateDirectories = true,
+                    attributes = null,
+                    error = null
+                )
+            }
+        }
+        
+        val targetFile = targetDirectory.URLByAppendingPathComponent(fileName, isDirectory = false)!!
+        return targetFile.toOkioPath()!!
     }
 }
