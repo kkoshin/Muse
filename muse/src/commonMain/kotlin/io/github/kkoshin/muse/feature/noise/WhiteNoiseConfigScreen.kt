@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.feature.editor.formatDecimal
+import io.github.kkoshin.muse.platformbridge.AppBackButton
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.sound_effect
@@ -100,11 +101,7 @@ fun WhiteNoiseConfigScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        // TODO: handle back
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
+                    AppBackButton()
                 },
                 windowInsets = WindowInsets.statusBars,
                 backgroundColor = MaterialTheme.colors.surface,
