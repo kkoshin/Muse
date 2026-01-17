@@ -18,6 +18,13 @@ import platform.UIKit.UIUserInterfaceIdiomPad
 import platform.UIKit.popoverPresentationController
 import platform.Foundation.NSLibraryDirectory
 import platform.Foundation.NSCachesDirectory
+import platform.UIKit.UIDocumentInteractionController
+import platform.UIKit.UIDocumentInteractionControllerDelegateProtocol
+import platform.darwin.NSObject
+import platform.UIKit.UIViewController
+import platform.UIKit.UIWindow
+
+private var activeDocumentInteractionController: UIDocumentInteractionController? = null
 
 /**
  * 分享音频文件
@@ -27,7 +34,7 @@ actual fun shareAudioFile(path: Path): Result<Unit> = runCatching {
     autoreleasepool {
         val fileUrl = path.toNsUrl()
 
-        val windows = UIApplication.sharedApplication.windows as List<platform.UIKit.UIWindow>
+        val windows = UIApplication.sharedApplication.windows as List<UIWindow>
 
         // 获取当前活动的视图控制器
         val rootViewController = windows.firstOrNull {
@@ -68,9 +75,36 @@ actual fun shareAudioFile(path: Path): Result<Unit> = runCatching {
     }
 }
 
+@OptIn(ExperimentalForeignApi::class)
 actual fun openFile(path: Path): Result<Unit> = runCatching {
     val fileUrl = path.toNsUrl() ?: throw IllegalArgumentException("Invalid path")
-    UIApplication.sharedApplication.openURL(fileUrl, options = emptyMap<Any?, Any?>(), completionHandler = null)
+
+    val controller = UIDocumentInteractionController.interactionControllerWithURL(fileUrl)
+    activeDocumentInteractionController = controller // Retain the controller
+
+    val windows = UIApplication.sharedApplication.windows as List<UIWindow>
+    val rootViewController = windows.firstOrNull { it.isKeyWindow() }?.rootViewController
+
+    if (rootViewController != null) {
+        controller.delegate = object : NSObject(), UIDocumentInteractionControllerDelegateProtocol {
+            override fun documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController): UIViewController {
+                return rootViewController
+            }
+        }
+
+        val success = controller.presentOpenInMenuFromRect(
+            rect = rootViewController.view.bounds,
+            inView = rootViewController.view,
+            animated = true
+        )
+
+        if (!success) {
+            // If no app is available to open the file, try previewing it
+            controller.presentPreviewAnimated(true)
+        }
+    } else {
+        throw IllegalStateException("No root view controller found")
+    }
 }
 
 @OptIn(ExperimentalForeignApi::class)
