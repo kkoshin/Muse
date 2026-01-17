@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toPath
 import okio.buffer
 import okio.use
 import platform.Foundation.NSURL
@@ -73,7 +74,18 @@ actual class SpeechProcessorManager(
         return runCatching {
             check(text.isNotBlank())
             voicePreference.data.first()[key]?.let {
-                NSURL.URLWithString(it)?.toOkioPath()
+                logcat { "getOrGenerate from cache: $it" }
+                val path = if (it.startsWith("/")) {
+                    it.toPath()
+                } else {
+                    NSURL.URLWithString(it)?.toOkioPath()
+                }
+                if (path != null && FileSystem.SYSTEM.exists(path)) {
+                    path
+                } else {
+                    logcat { "Cached file does not exist or invalid: $it" }
+                    null
+                }
             } ?: run {
                 logcat { "start generate audio for $text" }
                 val audio = provider.generate(voiceId, text).getOrThrow()

@@ -1,5 +1,6 @@
 package io.github.kkoshin.muse.audio
 
+import io.github.kkoshin.muse.platformbridge.logcat
 import io.github.kkoshin.muse.platformbridge.toNsUrl
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
@@ -27,13 +28,20 @@ actual class Mp3Decoder {
         val url = mp3Path.toNsUrl() ?: return@withContext
         val asset = AVURLAsset.URLAssetWithURL(url, options = null)
         
-        val reader = AVAssetReader(asset = asset, error = null)
-        val tracks = asset.tracks as List<*>
-        val audioTracks = tracks.filter { 
-            (it as? AVAssetTrack)?.mediaType == AVMediaTypeAudio 
+        val reader = try {
+            AVAssetReader.assetReaderWithAsset(asset, null)
+        } catch (e: Throwable) {
+            logcat { "Failed to create AVAssetReader for $url: $e" }
+            null
+        } ?: return@withContext
+        
+        val tracks = asset.tracks
+        val audioTrack = tracks.filterIsInstance<AVAssetTrack>().firstOrNull { 
+            it.mediaType == AVMediaTypeAudio 
+        } ?: run {
+            logcat { "No audio track found in asset: $url" }
+            return@withContext
         }
-        val audioTrack = audioTracks.firstOrNull() as? AVAssetTrack
-            ?: return@withContext
 
         // 1819304813 is 'lpcm'
         val kAudioFormatLinearPCM = 1819304813UL
@@ -49,8 +57,17 @@ actual class Mp3Decoder {
         )
 
         val output = AVAssetReaderTrackOutput(track = audioTrack, outputSettings = settings)
-        reader.addOutput(output)
-        reader.startReading()
+        if (reader.canAddOutput(output)) {
+            reader.addOutput(output)
+        } else {
+            logcat { "Cannot add output to reader for $url" }
+            return@withContext
+        }
+        
+        if (!reader.startReading()) {
+            logcat { "Failed to start reading asset: $url, error: ${reader.error?.localizedDescription}" }
+            return@withContext
+        }
 
         while (reader.status == platform.AVFoundation.AVAssetReaderStatusReading) {
             yield()
