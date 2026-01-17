@@ -3,42 +3,30 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19C93F445E06B9E5FC5D09C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 667E06A4CAECF5DCA96A946D /* Preview Assets.xcassets */; };
+		3136E27F67B3DACEE1A1F731 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6872C44069C13018758C847F /* ContentView.swift */; };
+		6ECD4E32142564B8BF068AA5 /* swiftAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D69A0354CC116198E2BA4 /* swiftAppApp.swift */; };
 		71829D8B2D93B1F400449D74 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 71829D8A2D93B1C500449D74 /* libsqlite3.tbd */; };
 		AAFE2B43D17AC475226356B3 /* Pods_swiftApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */; };
+		B86F1C338909DDC57ECED841 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E94C616E98F0E7A61B14F7A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		144082556ADE24EFB48DFE0F /* Pods-swiftApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-swiftApp.release.xcconfig"; path = "Target Support Files/Pods-swiftApp/Pods-swiftApp.release.xcconfig"; sourceTree = "<group>"; };
+		42FF10593BB6F9EBFEE4F4F0 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4E94C616E98F0E7A61B14F7A /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		606D69A0354CC116198E2BA4 /* swiftAppApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = swiftAppApp.swift; sourceTree = "<group>"; };
+		667E06A4CAECF5DCA96A946D /* Preview Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6872C44069C13018758C847F /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		712294522D8AA1C300A0DBF8 /* swiftApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swiftApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71829D8A2D93B1C500449D74 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_swiftApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0FD42B5692DD6B9B0E8C313 /* Pods-swiftApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-swiftApp.debug.xcconfig"; path = "Target Support Files/Pods-swiftApp/Pods-swiftApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		719733072D8AC9CC00B50BF3 /* Exceptions for "swiftApp" folder in "swiftApp" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 712294512D8AA1C300A0DBF8 /* swiftApp */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		712294542D8AA1C300A0DBF8 /* swiftApp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				719733072D8AC9CC00B50BF3 /* Exceptions for "swiftApp" folder in "swiftApp" target */,
-			);
-			path = swiftApp;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		7122944F2D8AA1C300A0DBF8 /* Frameworks */ = {
@@ -56,10 +44,10 @@
 		712294492D8AA1C300A0DBF8 = {
 			isa = PBXGroup;
 			children = (
-				712294542D8AA1C300A0DBF8 /* swiftApp */,
 				71829D892D93B1C500449D74 /* Frameworks */,
 				712294532D8AA1C300A0DBF8 /* Products */,
 				E2A61D684A8C6A6A84697FC2 /* Pods */,
+				AF9E982F83628539224FEEA9 /* swiftApp */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,6 +66,28 @@
 				B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		94282C123861402144CB220F /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				667E06A4CAECF5DCA96A946D /* Preview Assets.xcassets */,
+			);
+			name = "Preview Content";
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AF9E982F83628539224FEEA9 /* swiftApp */ = {
+			isa = PBXGroup;
+			children = (
+				606D69A0354CC116198E2BA4 /* swiftAppApp.swift */,
+				4E94C616E98F0E7A61B14F7A /* Assets.xcassets */,
+				94282C123861402144CB220F /* Preview Content */,
+				6872C44069C13018758C847F /* ContentView.swift */,
+				42FF10593BB6F9EBFEE4F4F0 /* Info.plist */,
+			);
+			name = swiftApp;
+			path = swiftApp;
 			sourceTree = "<group>";
 		};
 		E2A61D684A8C6A6A84697FC2 /* Pods */ = {
@@ -107,9 +117,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				712294542D8AA1C300A0DBF8 /* swiftApp */,
 			);
 			name = swiftApp;
 			productName = swiftApp;
@@ -155,6 +162,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B86F1C338909DDC57ECED841 /* Assets.xcassets in Resources */,
+				19C93F445E06B9E5FC5D09C8 /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +233,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ECD4E32142564B8BF068AA5 /* swiftAppApp.swift in Sources */,
+				3136E27F67B3DACEE1A1F731 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +293,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -339,7 +350,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

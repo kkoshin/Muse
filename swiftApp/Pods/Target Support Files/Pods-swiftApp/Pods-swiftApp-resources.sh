@@ -97,12 +97,12 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/../../muse/build/compose/cocoapods/compose-resources"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/lame/apple_privacy.bundle"
+  install_resource "${PODS_ROOT}/../../muse/build/compose/cocoapods/compose-resources"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/../../muse/build/compose/cocoapods/compose-resources"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/lame/apple_privacy.bundle"
+  install_resource "${PODS_ROOT}/../../muse/build/compose/cocoapods/compose-resources"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

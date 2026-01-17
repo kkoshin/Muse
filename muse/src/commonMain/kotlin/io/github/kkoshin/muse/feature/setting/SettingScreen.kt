@@ -38,8 +38,8 @@ import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
 import io.github.kkoshin.muse.platformbridge.Platform
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.setting
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.setting
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 

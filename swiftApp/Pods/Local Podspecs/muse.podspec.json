@@ -1,5 +1,5 @@
 {
-  "name": "feature",
+  "name": "muse",
   "version": "2.0",
   "homepage": "https://github.com/kkoshin/muse",
   "source": {
@@ -8,24 +8,26 @@
   "authors": "",
   "license": "",
   "summary": "muse feature",
-  "vendored_frameworks": "build/cocoapods/framework/feature.framework",
+  "vendored_frameworks": "build/cocoapods/framework/muse.framework",
   "libraries": "c++",
   "platforms": {
     "ios": "16.0"
   },
   "dependencies": {
-    "lame": []
+    "lame": [
+
+    ]
   },
   "xcconfig": {
     "ENABLE_USER_SCRIPT_SANDBOXING": "NO"
   },
   "pod_target_xcconfig": {
-    "KOTLIN_PROJECT_PATH": ":feature",
-    "PRODUCT_MODULE_NAME": "feature"
+    "KOTLIN_PROJECT_PATH": ":muse",
+    "PRODUCT_MODULE_NAME": "muse"
   },
   "script_phases": [
     {
-      "name": "Build feature",
+      "name": "Build muse",
       "execution_position": "before_compile",
       "shell_path": "/bin/sh",
       "script": "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n"

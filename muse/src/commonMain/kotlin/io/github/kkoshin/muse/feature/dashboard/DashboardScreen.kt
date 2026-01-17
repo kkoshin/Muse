@@ -63,8 +63,8 @@ import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.projects
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.projects
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

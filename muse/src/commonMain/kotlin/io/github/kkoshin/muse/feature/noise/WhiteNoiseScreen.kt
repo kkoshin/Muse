@@ -24,9 +24,9 @@ import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.feature.export.ProgressStatus
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.generate_done
-import muse.feature.generated.resources.sound_effect
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.generate_done
+import museroot.muse.generated.resources.sound_effect
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds

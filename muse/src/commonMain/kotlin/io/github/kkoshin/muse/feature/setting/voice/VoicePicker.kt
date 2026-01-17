@@ -57,8 +57,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.voices
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.voices
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject

@@ -18,9 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.format_replace_newlines_with_spaces
-import muse.feature.generated.resources.import_file_content_with_file_name
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.format_replace_newlines_with_spaces
+import museroot.muse.generated.resources.import_file_content_with_file_name
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

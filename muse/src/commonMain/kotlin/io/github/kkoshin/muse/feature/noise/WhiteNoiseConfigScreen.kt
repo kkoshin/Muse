@@ -54,9 +54,9 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.feature.editor.formatDecimal
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.sound_effect
-import muse.feature.generated.resources.white_noise_start
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.sound_effect
+import museroot.muse.generated.resources.white_noise_start
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

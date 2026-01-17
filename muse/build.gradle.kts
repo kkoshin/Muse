@@ -27,6 +27,7 @@ kotlin {
     }
 
     cocoapods {
+        name = "muse"
         version = "2.0"
         summary = "muse feature"
         homepage = "https://github.com/kkoshin/muse"

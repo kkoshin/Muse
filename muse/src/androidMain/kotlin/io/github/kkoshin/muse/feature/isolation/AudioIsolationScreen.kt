@@ -22,8 +22,8 @@ import androidx.core.net.toUri
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.denoise_done
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.denoise_done
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

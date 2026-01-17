@@ -3,7 +3,7 @@
 # Configuration
 WORKSPACE="swiftApp/swiftApp.xcworkspace"
 SCHEME="swiftApp"
-SIM_NAME="iPhone 17" # Default fallback
+SIM_NAME="iPhone 15 Pro" # Default fallback
 
 # 1. Find a booted simulator or boot one
 DEVICE_ID=$(xcrun simctl list devices available | grep "(Booted)" | head -n 1 | grep -oE "[A-F0-9-]{36}")
