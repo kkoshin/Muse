@@ -16,6 +16,7 @@
 
 ## Media and Processing
 - **Audio Playback/Processing:** Media3 (ExoPlayer/Transformer) on Android, Native Darwin APIs on iOS.
+- **Audio Encoding/Decoding:** LAME library for MP3 encoding on both Android and iOS.
 
 ## Testing and Quality
 - **Unit Testing:** Kotlin Test, JUnit.
