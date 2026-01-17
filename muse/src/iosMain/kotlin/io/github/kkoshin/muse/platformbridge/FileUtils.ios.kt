@@ -7,12 +7,17 @@ import kotlinx.cinterop.useContents
 import okio.Path
 import okio.Sink
 import platform.CoreGraphics.CGRectMake
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.NSURL
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
 import platform.UIKit.UIUserInterfaceIdiomPad
 import platform.UIKit.popoverPresentationController
+import platform.Foundation.NSLibraryDirectory
+import platform.Foundation.NSCachesDirectory
 
 /**
  * 分享音频文件
@@ -68,6 +73,7 @@ actual fun openFile(path: Path): Result<Unit> = runCatching {
     UIApplication.sharedApplication.openURL(fileUrl, options = emptyMap<Any?, Any?>(), completionHandler = null)
 }
 
+@OptIn(ExperimentalForeignApi::class)
 actual fun createCacheFile(fileName: String, sensitive: Boolean): Path {
     val fileManager = NSFileManager.defaultManager
     val directory = if (sensitive) {

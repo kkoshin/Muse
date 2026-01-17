@@ -13,8 +13,9 @@ import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.Foundation.create
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.BetaInteropApi
 
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 actual fun writeWaveHeader(
     filePath: Path,
     audioMetadata: AudioSampleMetadata
