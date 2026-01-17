@@ -295,7 +295,7 @@ private fun ScriptItem(
     }
 }
 
-private fun Long.formatTimeDisplay(): String {
+fun Long.formatTimeDisplay(): String {
     val instant = Instant.fromEpochMilliseconds(this)
     val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
