@@ -29,6 +29,9 @@ import platform.Foundation.NSURL
 
 actual class SpeechProcessorManager(
     private val provider: TTSProvider,
+    private val isolationProvider: AudioIsolationProvider,
+    private val soundEffectProvider: SoundEffectProvider,
+    private val sttProvider: STTProvider,
     private val mediaStoreHelper: MediaStoreHelper,
     private val voicePreference: DataStore<Preferences>
 ) {
@@ -96,7 +99,7 @@ actual class SpeechProcessorManager(
     actual suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray> {
         return withContext(Dispatchers.IO) {
             val name = audioUri.name
-            (provider as AudioIsolationProvider).removeBackgroundNoise(
+            isolationProvider.removeBackgroundNoise(
                 FileSystem.SYSTEM.source(audioUri).buffer(),
                 name
             )
@@ -114,7 +117,7 @@ actual class SpeechProcessorManager(
                 relativePath = MusePathManager.getExportRelativePath(),
             )
             FileSystem.SYSTEM.sink(path).buffer().use { sink ->
-                (provider as SoundEffectProvider).makeSoundEffects(
+                soundEffectProvider.makeSoundEffects(
                     prompt,
                     config,
                     sink,
@@ -127,11 +130,10 @@ actual class SpeechProcessorManager(
     actual suspend fun transcribeAudio(audioUri: Path): Result<SpeechToTextChunkResponseModel> {
         return withContext(Dispatchers.IO) {
             val name = audioUri.name
-            (provider as STTProvider).transcribeAudio(
+            sttProvider.transcribeAudio(
                 FileSystem.SYSTEM.source(audioUri).buffer(),
                 name
             )
         }
     }
-
 }

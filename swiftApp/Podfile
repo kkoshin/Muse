@@ -4,4 +4,5 @@ target 'swiftApp' do
   use_frameworks!
 
   pod 'feature', :path => '../muse'
+  pod 'lame'
 end

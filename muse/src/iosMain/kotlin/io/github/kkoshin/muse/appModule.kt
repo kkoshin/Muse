@@ -6,6 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
+import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
+import io.github.kkoshin.muse.core.provider.STTProvider
+import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
 import io.github.kkoshin.muse.feature.FakeProcessor
@@ -35,9 +38,21 @@ val appModule = module {
     single<TTSProvider> {
         ElevenLabProcessor(get(), get())
     }
+    single<AudioIsolationProvider> {
+        ElevenLabProcessor(get(), get())
+    }
+    single<SoundEffectProvider> {
+        ElevenLabProcessor(get(), get())
+    }
+    single<STTProvider> {
+        ElevenLabProcessor(get(), get())
+    }
     single {
         SpeechProcessorManager(
             provider = get(),
+            isolationProvider = get(),
+            soundEffectProvider = get(),
+            sttProvider = get(),
             mediaStoreHelper = get(),
             voicePreference = preferencesDataStore("voices")
         )
