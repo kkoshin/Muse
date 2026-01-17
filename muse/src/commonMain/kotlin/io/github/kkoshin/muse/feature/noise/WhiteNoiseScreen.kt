@@ -1,7 +1,5 @@
 package io.github.kkoshin.muse.feature.noise
 
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -24,12 +22,13 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.feature.export.ProgressStatus
+import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.generate_done
-import muse.feature.generated.resources.sound_effect
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.generate_done
+import museroot.muse.generated.resources.sound_effect
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
@@ -46,7 +45,6 @@ fun WhiteNoiseScreen(
     args: WhiteNoiseScreenArgs,
     onExit: (isSuccess: Boolean) -> Unit,
 ) {
-    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val progress by viewModel.progress.collectAsState()
 
     BackHandler {
@@ -62,7 +60,7 @@ fun WhiteNoiseScreen(
                 backgroundColor = MaterialTheme.colors.surface,
                 navigationIcon = {
                     IconButton(onClick = {
-                        backPressedDispatcher?.onBackPressed()
+                        onExit(progress is ProgressStatus.Success)
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }

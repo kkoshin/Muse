@@ -4,13 +4,18 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import io.github.kkoshin.muse.core.manager.AccountManager
+import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
+import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
+import io.github.kkoshin.muse.core.provider.STTProvider
+import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
 import io.github.kkoshin.muse.feature.FakeProcessor
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.feature.editor.EditorViewModel
 import io.github.kkoshin.muse.feature.export.ExportViewModel
+import io.github.kkoshin.muse.platformbridge.IosToastManager
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
@@ -32,12 +37,26 @@ import platform.Foundation.NSUserDomainMask
 val appModule = module {
     single<CoroutineScope> { MainScope() }
     single<TTSProvider> {
-        // TODO: 暂使用本地的数据来测试流程
-        FakeProcessor()
-//        ElevenLabProcessor(get(), get())
+        ElevenLabProcessor(get(), get())
+    }
+    single<AudioIsolationProvider> {
+        ElevenLabProcessor(get(), get())
+    }
+    single<SoundEffectProvider> {
+        ElevenLabProcessor(get(), get())
+    }
+    single<STTProvider> {
+        ElevenLabProcessor(get(), get())
     }
     single {
-        SpeechProcessorManager(get(), get(), preferencesDataStore("voices"))
+        SpeechProcessorManager(
+            provider = get(),
+            isolationProvider = get(),
+            soundEffectProvider = get(),
+            sttProvider = get(),
+            mediaStoreHelper = get(),
+            voicePreference = preferencesDataStore("voices")
+        )
     }
     singleOf(::MediaStoreHelper)
     viewModel {
@@ -55,14 +74,7 @@ val appModule = module {
         AccountManager(preferencesDataStore("account"))
     }
     single<ToastManager> {
-        object : ToastManager {
-            override fun show(message: String?) {
-                if (message != null) {
-                    // TODO: Implement this
-                    println(message)
-                }
-            }
-        }
+        IosToastManager()
     }
 }
 

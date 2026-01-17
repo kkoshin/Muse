@@ -1,0 +1,24 @@
+PODS:
+  - lame (1.2.2)
+  - muse (2.0):
+    - lame
+
+DEPENDENCIES:
+  - lame
+  - muse (from `../muse`)
+
+SPEC REPOS:
+  trunk:
+    - lame
+
+EXTERNAL SOURCES:
+  muse:
+    :path: "../muse"
+
+SPEC CHECKSUMS:
+  lame: 40ead9ec43927bcf3700457d96ccc183096c65cc
+  muse: 7bd7438afe0a8e16be8e1213f58a1496f8b81bbb
+
+PODFILE CHECKSUM: b1522f5a4790c85f191b90b69ac6f287833135ff
+
+COCOAPODS: 1.16.2

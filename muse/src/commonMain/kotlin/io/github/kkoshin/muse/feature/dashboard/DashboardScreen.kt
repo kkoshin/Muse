@@ -57,14 +57,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.kkoshin.muse.platformbridge.MimeType
-import io.github.kkoshin.muse.platformbridge.formatTimeDisplay
 import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
 import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.projects
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.projects
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -291,4 +293,16 @@ private fun ScriptItem(
             }
         }
     }
+}
+
+private fun Long.formatTimeDisplay(): String {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    return "${localDateTime.year}-" +
+            "${localDateTime.monthNumber.toString().padStart(2, '0')}-" +
+            "${localDateTime.dayOfMonth.toString().padStart(2, '0')} " +
+            "${localDateTime.hour.toString().padStart(2, '0')}:" +
+            "${localDateTime.minute.toString().padStart(2, '0')}:" +
+            localDateTime.second.toString().padStart(2, '0')
 }

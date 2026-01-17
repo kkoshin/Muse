@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.platformbridge.LocalToaster
 import io.github.kkoshin.muse.platformbridge.openFile
 import io.github.kkoshin.muse.platformbridge.shareAudioFile
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.open_with_other_app
-import muse.feature.generated.resources.retry
-import muse.feature.generated.resources.share_to_other_app
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.open_with_other_app
+import museroot.muse.generated.resources.retry
+import museroot.muse.generated.resources.share_to_other_app
 import org.jetbrains.compose.resources.stringResource
 
 /**

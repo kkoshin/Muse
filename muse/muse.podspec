@@ -1,23 +1,23 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'feature'
+    spec.name                     = 'muse'
     spec.version                  = '2.0'
     spec.homepage                 = 'https://github.com/kkoshin/muse'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'muse feature'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/feature.framework'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/muse.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '16.0'
     spec.dependency 'lame'
                 
-    if !Dir.exist?('build/cocoapods/framework/feature.framework') || Dir.empty?('build/cocoapods/framework/feature.framework')
+    if !Dir.exist?('build/cocoapods/framework/muse.framework') || Dir.empty?('build/cocoapods/framework/muse.framework')
         raise "
 
-        Kotlin framework 'feature' doesn't exist yet, so a proper Xcode project can't be generated.
+        Kotlin framework 'muse' doesn't exist yet, so a proper Xcode project can't be generated.
         'pod install' should be executed after running ':generateDummyFramework' Gradle task:
 
-            ./gradlew :feature:generateDummyFramework
+            ./gradlew :muse:generateDummyFramework
 
         Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
     end
@@ -27,13 +27,13 @@ Pod::Spec.new do |spec|
     }
                 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':feature',
-        'PRODUCT_MODULE_NAME' => 'feature',
+        'KOTLIN_PROJECT_PATH' => ':muse',
+        'PRODUCT_MODULE_NAME' => 'muse',
     }
                 
     spec.script_phases = [
         {
-            :name => 'Build feature',
+            :name => 'Build muse',
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT

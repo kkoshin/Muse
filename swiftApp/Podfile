@@ -1,0 +1,8 @@
+platform :ios, '16.0'
+
+target 'swiftApp' do
+  use_frameworks!
+
+  pod 'muse', :path => '../muse'
+  pod 'lame'
+end

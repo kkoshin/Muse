@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -26,6 +27,7 @@ kotlin {
     }
 
     cocoapods {
+        name = "muse"
         version = "2.0"
         summary = "muse feature"
         homepage = "https://github.com/kkoshin/muse"
@@ -61,6 +63,7 @@ kotlin {
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
             implementation(libs.accompanist.navigation.material)
+            implementation(libs.browser)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -84,6 +87,11 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.koin.test)
         }
         iosMain.dependencies {
             implementation(libs.sql.ios)

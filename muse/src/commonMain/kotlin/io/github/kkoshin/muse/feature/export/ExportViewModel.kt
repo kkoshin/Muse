@@ -84,7 +84,7 @@ class ExportViewModel(
                                     )
                                 }
                         }.onFailure {
-                            logcat(tag) {
+                            logcat {
                                 it.stackTraceToString()
                             }
                             _progress.value =
@@ -153,6 +153,9 @@ class ExportViewModel(
                     .onSuccess {
                         _progress.value = ProgressStatus.Success(path)
                     }.onFailure { e ->
+                        logcat {
+                            e.stackTraceToString()
+                        }
                         _progress.value = MixFailed(pcmList, e)
                     }
             }

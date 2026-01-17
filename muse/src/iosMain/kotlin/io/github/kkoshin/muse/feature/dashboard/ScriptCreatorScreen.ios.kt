@@ -21,7 +21,6 @@ import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.stringWithContentsOfURL
 import kotlin.uuid.ExperimentalUuidApi
 
-// TODO: not working
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker {
@@ -29,28 +28,31 @@ actual fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker {
     val toaster = LocalToaster.current
     return rememberDocumentPicker(MimeType.Text) { path ->
         logcat { "rememberPicker path: $path" }
-        val didPickDocumentAtURL = path.toNsUrl()
-        didPickDocumentAtURL?.let {
-            try {
-                it.startAccessingSecurityScopedResource()
-                scope.launch(Dispatchers.IO) {
+        val url = path?.toNsUrl()
+        url?.let {
+            val isAccessing = it.startAccessingSecurityScopedResource()
+            scope.launch(Dispatchers.IO) {
+                try {
                     val text = NSString.stringWithContentsOfURL(
                         it,
                         encoding = NSUTF8StringEncoding,
                         error = null
                     ) ?: ""
-                    if (text.length > MAX_TEXT_LENGTH) {
-                        withContext(Dispatchers.Main) {
+                    
+                    withContext(Dispatchers.Main) {
+                        if (text.length > MAX_TEXT_LENGTH) {
                             toaster.show("Text is too long, import failed.")
+                        } else {
+                            onResult(text)
                         }
-                    } else {
-                        onResult(text)
+                    }
+                } catch (e: Exception) {
+                    logcat { "Failed to read text from $it: $e" }
+                } finally {
+                    if (isAccessing) {
+                        it.stopAccessingSecurityScopedResource()
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                it.stopAccessingSecurityScopedResource()
             }
         }
     }

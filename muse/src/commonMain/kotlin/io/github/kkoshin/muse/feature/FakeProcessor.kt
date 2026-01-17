@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import muse.feature.generated.resources.Res
+import museroot.muse.generated.resources.Res
 import okio.Buffer
 import okio.IOException
 import okio.Source

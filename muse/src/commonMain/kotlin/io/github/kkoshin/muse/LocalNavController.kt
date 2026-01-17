@@ -3,7 +3,7 @@ package io.github.kkoshin.muse
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 
-// 仅限 iOS 平台
+
 interface LocalNavController {
     fun navigateUp()
 }

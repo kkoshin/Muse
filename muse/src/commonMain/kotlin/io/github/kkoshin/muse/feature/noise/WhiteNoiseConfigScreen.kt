@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.feature.noise
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -53,12 +52,13 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
+import io.github.kkoshin.muse.feature.editor.formatDecimal
+import io.github.kkoshin.muse.platformbridge.AppBackButton
 import kotlinx.serialization.Serializable
-import muse.feature.generated.resources.Res
-import muse.feature.generated.resources.sound_effect
-import muse.feature.generated.resources.white_noise_start
+import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.sound_effect
+import museroot.muse.generated.resources.white_noise_start
 import org.jetbrains.compose.resources.stringResource
-import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -88,7 +88,6 @@ fun WhiteNoiseConfigScreen(
         mutableStateOf(ConfigView.None)
     }
 
-    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val clipboardManager = LocalClipboardManager.current
 
     Scaffold(
@@ -102,11 +101,7 @@ fun WhiteNoiseConfigScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        backPressedDispatcher?.onBackPressed()
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
+                    AppBackButton()
                 },
                 windowInsets = WindowInsets.statusBars,
                 backgroundColor = MaterialTheme.colors.surface,
@@ -220,7 +215,7 @@ fun WhiteNoiseConfigScreen(
                         ConfigMenuButton(
                             selected = configView == ConfigView.PromptInfluence,
                             Icons.Default.Lightbulb,
-                            String.format(Locale.getDefault(), "%.2f", config.promptInfluence),
+                            formatDecimal(config.promptInfluence, 2),
                             onClick = {
                                 configView = if (configView == ConfigView.PromptInfluence) {
                                     ConfigView.None
@@ -257,7 +252,7 @@ fun WhiteNoiseConfigScreen(
 
 private fun Duration?.format(): String {
     if (this == null) return "Auto"
-    return String.format(Locale.getDefault(), "%.2fs", this.inWholeMilliseconds / 1000.0)
+    return "${formatDecimal((this.inWholeMilliseconds / 1000.0).toFloat(), 2)}s"
 }
 
 @Composable

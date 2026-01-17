@@ -30,7 +30,9 @@ actual fun openFile(path: Path): Result<Unit> {
     val context: Context = KoinJavaComponent.get(Context::class.java)
     return runCatching {
         Intent(Intent.ACTION_VIEW).let {
-            it.data = path.toUri()
+            it.setDataAndType(path.toUri(), "audio/*")
+            it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(it)
         }
     }
