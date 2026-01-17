@@ -14,6 +14,7 @@ import io.github.kkoshin.muse.core.provider.SupportedAudioType
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
+import io.github.kkoshin.muse.platformbridge.logcat
 import io.github.kkoshin.muse.platformbridge.toNsUrl
 import io.github.kkoshin.muse.platformbridge.toOkioPath
 import io.github.kkoshin.muse.repo.MusePathManager
@@ -68,11 +69,13 @@ actual class SpeechProcessorManager(
         text: String
     ): Result<Path> {
         val key = stringPreferencesKey("${voiceId}_${text.lowercase()}")
+        logcat { "getOrGenerate invoked. $text" }
         return runCatching {
             check(text.isNotBlank())
             voicePreference.data.first()[key]?.let {
                 NSURL.URLWithString(it)?.toOkioPath()
             } ?: run {
+                logcat { "start generate audio for $text" }
                 val audio = provider.generate(voiceId, text).getOrThrow()
                 val fileExtName = when (audio.mimeType) {
                     SupportedAudioType.MP3 -> ".mp3"
@@ -80,6 +83,7 @@ actual class SpeechProcessorManager(
                     SupportedAudioType.WAV -> ".wav"
                 }
                 withContext(Dispatchers.IO) {
+                    logcat { "start saveAudio $text" }
                     mediaStoreHelper.saveAudio(
                         relativePath = "${MusePathManager.getMusicRelativePath()}/$voiceId",
                         fileName = "${text.lowercase()}$fileExtName",
@@ -93,6 +97,8 @@ actual class SpeechProcessorManager(
                     }
                 }
             }
+        }.onFailure {
+            logcat { "getOrGenerate for $voiceId failed: $it" }
         }
     }
 

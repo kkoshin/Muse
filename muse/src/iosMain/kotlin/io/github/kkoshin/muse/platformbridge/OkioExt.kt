@@ -5,16 +5,23 @@ import okio.Path.Companion.toPath
 import platform.Foundation.NSURL
 
 internal fun NSURL.toOkioPath(): Path? {
-    return this.absoluteString?.toPath()
+    return this.path?.toPath()
 }
 
 internal fun Path?.toNsUrl(): NSURL? {
     return this?.let {
         val str = it.toString()
-        if (str.startsWith("https:/") && !str.startsWith("https://")) {
-            NSURL.URLWithString(str.replace("https:/", "https://"))
+        if (str.startsWith("/")) {
+            NSURL.fileURLWithPath(str)
         } else {
-            NSURL.URLWithString(str)
+            // Check for URL schemes and ensure they are followed by ://
+            val schemeMatch = Regex("^([a-z]+):/(?![/])").find(str)
+            if (schemeMatch != null) {
+                val scheme = schemeMatch.groupValues[1]
+                NSURL.URLWithString(str.replace("$scheme:/", "$scheme://"))
+            } else {
+                NSURL.URLWithString(str)
+            }
         }
     }
 }
