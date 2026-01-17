@@ -71,6 +71,7 @@ echo "Bundle ID: $BUNDLE_ID"
 
 # 5. Install and Launch
 echo "Installing..."
+xcrun simctl terminate "$DEVICE_ID" "$BUNDLE_ID" 2>/dev/null
 xcrun simctl install "$DEVICE_ID" "$APP_PATH"
 
 echo "Launching..."
