@@ -1,8 +1,0 @@
-{
-  "track_id": "ios_tts_export_parity_20260116",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-16T10:00:00Z",
-  "updated_at": "2026-01-16T10:00:00Z",
-  "description": "Currently, the TTS process on the Android side can completely export audio, but this process is still incomplete on the iOS side. Please refer to the Android implementation to complete the iOS implementation."
-}
