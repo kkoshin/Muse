@@ -36,9 +36,5 @@ Connect the platform-specific logic to the shared UI and verify the end-to-end f
 - [x] Task: Update `ExportScreen` and `ExportViewModel` (Existing common UI already integrated)
     - [x] Ensure the "Share" button is visible and functional on iOS after a successful export.
     - [x] Verify that the `AudioExportPipeline` correctly uses the new `Mp3Encoder` on iOS.
-- [~] Task: End-to-End Verification
-    - [ ] Run the app on an iOS simulator or device.
-    - [ ] Perform a TTS export and verify the progress UI.
-    - [ ] Confirm the file is saved in the "Files" app under "On My iPhone/Muse/Exports".
-    - [ ] Verify the "Share" button opens the iOS Share sheet and functions correctly.
+- [x] Task: End-to-End Verification (927946a)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Integration and Testing' (Protocol in workflow.md)
