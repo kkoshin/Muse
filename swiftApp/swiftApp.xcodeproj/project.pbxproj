@@ -8,15 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		71829D8B2D93B1F400449D74 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 71829D8A2D93B1C500449D74 /* libsqlite3.tbd */; };
+		AAFE2B43D17AC475226356B3 /* Pods_swiftApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		144082556ADE24EFB48DFE0F /* Pods-swiftApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-swiftApp.release.xcconfig"; path = "Target Support Files/Pods-swiftApp/Pods-swiftApp.release.xcconfig"; sourceTree = "<group>"; };
 		712294522D8AA1C300A0DBF8 /* swiftApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swiftApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71829D8A2D93B1C500449D74 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_swiftApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0FD42B5692DD6B9B0E8C313 /* Pods-swiftApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-swiftApp.debug.xcconfig"; path = "Target Support Files/Pods-swiftApp/Pods-swiftApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		719733072D8AC9CC00B50BF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		719733072D8AC9CC00B50BF3 /* Exceptions for "swiftApp" folder in "swiftApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +33,7 @@
 		712294542D8AA1C300A0DBF8 /* swiftApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				719733072D8AC9CC00B50BF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				719733072D8AC9CC00B50BF3 /* Exceptions for "swiftApp" folder in "swiftApp" target */,
 			);
 			path = swiftApp;
 			sourceTree = "<group>";
@@ -42,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71829D8B2D93B1F400449D74 /* libsqlite3.tbd in Frameworks */,
+				AAFE2B43D17AC475226356B3 /* Pods_swiftApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,6 +59,7 @@
 				712294542D8AA1C300A0DBF8 /* swiftApp */,
 				71829D892D93B1C500449D74 /* Frameworks */,
 				712294532D8AA1C300A0DBF8 /* Products */,
+				E2A61D684A8C6A6A84697FC2 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,8 +75,19 @@
 			isa = PBXGroup;
 			children = (
 				71829D8A2D93B1C500449D74 /* libsqlite3.tbd */,
+				B8D9DF32D391546A7CC6F529 /* Pods_swiftApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E2A61D684A8C6A6A84697FC2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F0FD42B5692DD6B9B0E8C313 /* Pods-swiftApp.debug.xcconfig */,
+				144082556ADE24EFB48DFE0F /* Pods-swiftApp.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -80,10 +97,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 712294602D8AA1C500A0DBF8 /* Build configuration list for PBXNativeTarget "swiftApp" */;
 			buildPhases = (
+				1CCDF015CEF62594D6CE5741 /* [CP] Check Pods Manifest.lock */,
 				71D807DD2D8AC05E00A7E427 /* ShellScript */,
 				7122944E2D8AA1C300A0DBF8 /* Sources */,
 				7122944F2D8AA1C300A0DBF8 /* Frameworks */,
 				712294502D8AA1C300A0DBF8 /* Resources */,
+				78DF04C6BBC7C72B371B4C25 /* [CP] Embed Pods Frameworks */,
+				3CDCC98F62B395DBBCED6060 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -93,8 +113,6 @@
 				712294542D8AA1C300A0DBF8 /* swiftApp */,
 			);
 			name = swiftApp;
-			packageProductDependencies = (
-			);
 			productName = swiftApp;
 			productReference = 712294522D8AA1C300A0DBF8 /* swiftApp.app */;
 			productType = "com.apple.product-type.application";
@@ -144,6 +162,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1CCDF015CEF62594D6CE5741 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-swiftApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3CDCC98F62B395DBBCED6060 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		71D807DD2D8AC05E00A7E427 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -160,6 +217,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\n# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\n./gradlew :feature:embedAndSignAppleFrameworkForXcode";
+		};
+		78DF04C6BBC7C72B371B4C25 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-swiftApp/Pods-swiftApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -295,6 +369,7 @@
 		};
 		712294612D8AA1C500A0DBF8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0FD42B5692DD6B9B0E8C313 /* Pods-swiftApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -329,6 +404,7 @@
 		};
 		712294622D8AA1C500A0DBF8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 144082556ADE24EFB48DFE0F /* Pods-swiftApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

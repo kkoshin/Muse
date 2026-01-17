@@ -11,13 +11,9 @@ import kotlinx.coroutines.yield
 import kotlinx.coroutines.withContext
 import okio.BufferedSink
 import okio.Path
-import platform.AVFoundation.AVAsset
-import platform.AVFoundation.AVAssetReader
-import platform.AVFoundation.AVAssetReaderTrackOutput
-import platform.AVFoundation.AVMediaTypeAudio
-import platform.CoreMedia.CMSampleBufferGetDataBuffer
-import platform.CoreMedia.CMBlockBufferCopyDataBytes
-import platform.CoreMedia.CMBlockBufferGetDataLength
+import platform.AVFoundation.*
+import platform.CoreMedia.*
+import platform.Foundation.NSURL
 import kotlin.math.roundToInt
 
 actual class Mp3Decoder {
@@ -29,13 +25,14 @@ actual class Mp3Decoder {
         volumeBoost: Float
     ) = withContext(Dispatchers.IO) {
         val url = mp3Path.toNsUrl() ?: return@withContext
-        val asset = AVAsset.assetWithURL(url)
+        val asset = AVURLAsset.URLAssetWithURL(url, options = null)
         
         val reader = AVAssetReader(asset = asset, error = null)
-        val audioTracks = asset.tracks.filter { 
-            (it as? platform.AVFoundation.AVAssetTrack)?.mediaType == AVMediaTypeAudio 
+        val tracks = asset.tracks as List<*>
+        val audioTracks = tracks.filter { 
+            (it as? AVAssetTrack)?.mediaType == AVMediaTypeAudio 
         }
-        val audioTrack = audioTracks.firstOrNull() as? platform.AVFoundation.AVAssetTrack
+        val audioTrack = audioTracks.firstOrNull() as? AVAssetTrack
             ?: return@withContext
 
         // 1819304813 is 'lpcm'

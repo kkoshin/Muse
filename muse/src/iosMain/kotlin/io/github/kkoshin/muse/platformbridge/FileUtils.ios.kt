@@ -63,12 +63,31 @@ actual fun shareAudioFile(path: Path): Result<Unit> = runCatching {
     }
 }
 
-actual fun openFile(path: Path): Result<Unit> {
-    TODO("Not yet implemented")
+actual fun openFile(path: Path): Result<Unit> = runCatching {
+    val fileUrl = path.toNsUrl() ?: throw IllegalArgumentException("Invalid path")
+    UIApplication.sharedApplication.openURL(fileUrl, options = emptyMap<Any?, Any?>(), completionHandler = null)
 }
 
 actual fun createCacheFile(fileName: String, sensitive: Boolean): Path {
-    TODO("Not yet implemented")
+    val fileManager = NSFileManager.defaultManager
+    val directory = if (sensitive) {
+        fileManager.URLForDirectory(
+            directory = platform.Foundation.NSLibraryDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = true,
+            error = null
+        )
+    } else {
+        fileManager.URLForDirectory(
+            directory = platform.Foundation.NSCachesDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = true,
+            error = null
+        )
+    }
+    return directory!!.URLByAppendingPathComponent(fileName, isDirectory = false)!!.toOkioPath()!!
 }
 
 actual fun Path.toSink(): Sink = SystemFileSystem.sink(this)

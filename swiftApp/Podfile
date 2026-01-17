@@ -1,0 +1,7 @@
+platform :ios, '16.0'
+
+target 'swiftApp' do
+  use_frameworks!
+
+  pod 'feature', :path => '../muse'
+end
