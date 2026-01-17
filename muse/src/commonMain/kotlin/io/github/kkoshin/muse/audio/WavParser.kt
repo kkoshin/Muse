@@ -1,17 +1,17 @@
 package io.github.kkoshin.muse.audio
 
 import okio.BufferedSource
-import okio.ByteString.Companion.decodeHex
+import okio.ByteString.Companion.encodeUtf8
 import okio.IOException
 
 class WavParser(
     private val source: BufferedSource
 ) : AutoCloseable {
     // 使用字符串直接量提高可读性
-    private val RIFF_HEADER = "RIFF".decodeHex()
-    private val WAVE_FORMAT = "WAVE".decodeHex()
-    private val FMT_CHUNK = "fmt ".decodeHex()
-    private val DATA_CHUNK = "data".decodeHex()
+    private val RIFF_HEADER = "RIFF".encodeUtf8()
+    private val WAVE_FORMAT = "WAVE".encodeUtf8()
+    private val FMT_CHUNK = "fmt ".encodeUtf8()
+    private val DATA_CHUNK = "data".encodeUtf8()
 
     var sampleRate = 0
         private set
