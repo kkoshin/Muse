@@ -12,7 +12,7 @@ Establish the necessary iOS-specific configurations and implement the missing MP
     - [x] Implement `Mp3Encoder.ios.kt` using the `lame` CocoaPods dependency.
     - [x] Implement `writeMonoAudio` and `writeStereoAudio` logic similar to Android.
     - [x] Ensure proper resource management (closing LAME handle).
-- [x] Task: Implement `Mp3Decoder` for iOS
+- [x] Task: Implement `Mp3Decoder` for iOS (9002017)
     - [x] Implement `Mp3Decoder.ios.kt` using `AVAssetReader` to decode MP3 to PCM.
     - [x] Implement volume boost logic consistent with Android.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Configuration' (Protocol in workflow.md) (b85cde5)
