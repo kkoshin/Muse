@@ -15,6 +15,7 @@ import io.github.kkoshin.muse.feature.FakeProcessor
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.feature.editor.EditorViewModel
 import io.github.kkoshin.muse.feature.export.ExportViewModel
+import io.github.kkoshin.muse.platformbridge.IosToastManager
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
 import io.github.kkoshin.muse.repo.DriverFactory
@@ -73,14 +74,7 @@ val appModule = module {
         AccountManager(preferencesDataStore("account"))
     }
     single<ToastManager> {
-        object : ToastManager {
-            override fun show(message: String?) {
-                if (message != null) {
-                    // TODO: Implement this
-                    println(message)
-                }
-            }
-        }
+        IosToastManager()
     }
 }
 
