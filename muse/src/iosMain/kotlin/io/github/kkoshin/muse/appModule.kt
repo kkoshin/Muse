@@ -36,7 +36,11 @@ val appModule = module {
         ElevenLabProcessor(get(), get())
     }
     single {
-        SpeechProcessorManager(get(), get(), preferencesDataStore("voices"))
+        SpeechProcessorManager(
+            provider = get(),
+            mediaStoreHelper = get(),
+            voicePreference = preferencesDataStore("voices")
+        )
     }
     singleOf(::MediaStoreHelper)
     viewModel {
