@@ -1,11 +1,13 @@
 package io.github.kkoshin.elevenlabs.api
 
 import io.github.kkoshin.elevenlabs.ElevenLabsClient
+import io.github.kkoshin.elevenlabs.StreamingByteReadChannelSource
 import io.github.kkoshin.elevenlabs.model.OptimizeStreamingLatency
 import io.github.kkoshin.elevenlabs.model.OutputFormat
 import io.github.kkoshin.elevenlabs.model.TextToSpeechRequest
 import io.ktor.resources.Resource
-import java.io.InputStream
+import io.ktor.utils.io.ByteReadChannel
+import okio.Source
 
 suspend fun ElevenLabsClient.textToSpeech(
     voiceId: String,
@@ -13,8 +15,8 @@ suspend fun ElevenLabsClient.textToSpeech(
     optimizeStreamingLatency: OptimizeStreamingLatency?,
     outputFormat: OutputFormat,
     logToHistory: Boolean = false,
-): Result<InputStream> =
-    post(
+): Result<Source> =
+    post<TextToSpeechRequest, TextToSpeech.VoiceId, ByteReadChannel>(
         TextToSpeech.VoiceId(
             voiceId = voiceId,
             enable_logging = logToHistory,
@@ -22,7 +24,9 @@ suspend fun ElevenLabsClient.textToSpeech(
             output_format = outputFormat.value,
         ),
         data = textToSpeechRequest,
-    )
+    ).mapCatching {
+        StreamingByteReadChannelSource(it)
+    }
 
 @Resource("/text-to-speech")
 class TextToSpeech {

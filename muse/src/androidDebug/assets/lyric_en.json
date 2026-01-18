@@ -1,0 +1,1603 @@
+{
+  "language_code": "eng",
+  "language_probability": 0.9778608679771423,
+  "text": "(PIANO INTRO)(singing) Say it isn't so. I got a really long way to go. I thought it would be easier than this. Say it isn't true. That I'm really all alone and you. Thought it would be easier than this. 'Cause I know you're so through. And I know you get scared too. Even if you won't see it. Even if you won't see it. The world feels dark. And the ships they just move apart. I thought it would be easier than this. Thought I was all right. Now it's all moving in and I. Thought it would be easier than this. 'Cause I know you're so through. And I know you get scared too. Even if you won't see it. Even if you won't see it. Ooh. Ooh. Ooh. Ooh. Ooh. Ooh.",
+  "words": [
+    {
+      "text": "(PIANO INTRO)",
+      "start": 0.099,
+      "end": 0.239,
+      "type": "audio_event"
+    },
+    {
+      "text": "(singing)",
+      "start": 0.239,
+      "end": 30.34,
+      "type": "audio_event"
+    },
+    {
+      "text": " ",
+      "start": 30.34,
+      "end": 30.599,
+      "type": "spacing"
+    },
+    {
+      "text": "Say",
+      "start": 30.599,
+      "end": 30.899,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 30.899,
+      "end": 30.939,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 30.939,
+      "end": 31.119,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 31.119,
+      "end": 31.159,
+      "type": "spacing"
+    },
+    {
+      "text": "isn't",
+      "start": 31.159,
+      "end": 31.539,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 31.539,
+      "end": 31.599,
+      "type": "spacing"
+    },
+    {
+      "text": "so.",
+      "start": 31.599,
+      "end": 33.479,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 33.479,
+      "end": 33.5,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 33.5,
+      "end": 33.659,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 33.659,
+      "end": 33.779,
+      "type": "spacing"
+    },
+    {
+      "text": "got",
+      "start": 33.779,
+      "end": 34.02,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 34.02,
+      "end": 34.079,
+      "type": "spacing"
+    },
+    {
+      "text": "a",
+      "start": 34.079,
+      "end": 34.159,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 34.159,
+      "end": 34.299,
+      "type": "spacing"
+    },
+    {
+      "text": "really",
+      "start": 34.299,
+      "end": 34.619,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 34.619,
+      "end": 34.739,
+      "type": "spacing"
+    },
+    {
+      "text": "long",
+      "start": 34.739,
+      "end": 35.099,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 35.099,
+      "end": 35.159,
+      "type": "spacing"
+    },
+    {
+      "text": "way",
+      "start": 35.159,
+      "end": 35.54,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 35.54,
+      "end": 35.619,
+      "type": "spacing"
+    },
+    {
+      "text": "to",
+      "start": 35.619,
+      "end": 35.739,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 35.739,
+      "end": 35.819,
+      "type": "spacing"
+    },
+    {
+      "text": "go.",
+      "start": 35.819,
+      "end": 36.54,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 36.54,
+      "end": 37.52,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 37.52,
+      "end": 37.68,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 37.68,
+      "end": 37.779,
+      "type": "spacing"
+    },
+    {
+      "text": "thought",
+      "start": 37.779,
+      "end": 38.02,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 38.02,
+      "end": 38.099,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 38.099,
+      "end": 38.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 38.239,
+      "end": 38.279,
+      "type": "spacing"
+    },
+    {
+      "text": "would",
+      "start": 38.279,
+      "end": 38.459,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 38.459,
+      "end": 38.5,
+      "type": "spacing"
+    },
+    {
+      "text": "be",
+      "start": 38.5,
+      "end": 38.7,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 38.7,
+      "end": 38.799,
+      "type": "spacing"
+    },
+    {
+      "text": "easier",
+      "start": 38.799,
+      "end": 39.84,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 39.84,
+      "end": 39.919,
+      "type": "spacing"
+    },
+    {
+      "text": "than",
+      "start": 39.919,
+      "end": 40.219,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 40.219,
+      "end": 40.34,
+      "type": "spacing"
+    },
+    {
+      "text": "this.",
+      "start": 40.34,
+      "end": 42.739,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 42.739,
+      "end": 45.02,
+      "type": "spacing"
+    },
+    {
+      "text": "Say",
+      "start": 45.02,
+      "end": 45.279,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 45.279,
+      "end": 45.34,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 45.34,
+      "end": 45.5,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 45.5,
+      "end": 45.539,
+      "type": "spacing"
+    },
+    {
+      "text": "isn't",
+      "start": 45.539,
+      "end": 45.879,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 45.879,
+      "end": 45.939,
+      "type": "spacing"
+    },
+    {
+      "text": "true.",
+      "start": 45.939,
+      "end": 46.779,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 46.779,
+      "end": 47.919,
+      "type": "spacing"
+    },
+    {
+      "text": "That",
+      "start": 47.919,
+      "end": 48.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 48.319,
+      "end": 48.34,
+      "type": "spacing"
+    },
+    {
+      "text": "I'm",
+      "start": 48.34,
+      "end": 48.52,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 48.52,
+      "end": 48.599,
+      "type": "spacing"
+    },
+    {
+      "text": "really",
+      "start": 48.599,
+      "end": 48.939,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 48.939,
+      "end": 49.02,
+      "type": "spacing"
+    },
+    {
+      "text": "all",
+      "start": 49.02,
+      "end": 49.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 49.239,
+      "end": 49.279,
+      "type": "spacing"
+    },
+    {
+      "text": "alone",
+      "start": 49.279,
+      "end": 49.84,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 49.84,
+      "end": 49.86,
+      "type": "spacing"
+    },
+    {
+      "text": "and",
+      "start": 49.86,
+      "end": 50.059,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 50.059,
+      "end": 50.079,
+      "type": "spacing"
+    },
+    {
+      "text": "you.",
+      "start": 50.079,
+      "end": 51.399,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 51.399,
+      "end": 51.979,
+      "type": "spacing"
+    },
+    {
+      "text": "Thought",
+      "start": 51.979,
+      "end": 52.259,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 52.259,
+      "end": 52.319,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 52.319,
+      "end": 52.399,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 52.399,
+      "end": 52.5,
+      "type": "spacing"
+    },
+    {
+      "text": "would",
+      "start": 52.5,
+      "end": 52.68,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 52.68,
+      "end": 52.739,
+      "type": "spacing"
+    },
+    {
+      "text": "be",
+      "start": 52.739,
+      "end": 52.899,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 52.899,
+      "end": 53.039,
+      "type": "spacing"
+    },
+    {
+      "text": "easier",
+      "start": 53.039,
+      "end": 54,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 54,
+      "end": 54.079,
+      "type": "spacing"
+    },
+    {
+      "text": "than",
+      "start": 54.079,
+      "end": 54.419,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 54.419,
+      "end": 54.5,
+      "type": "spacing"
+    },
+    {
+      "text": "this.",
+      "start": 54.5,
+      "end": 55.559,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 55.559,
+      "end": 57.899,
+      "type": "spacing"
+    },
+    {
+      "text": "'Cause",
+      "start": 57.899,
+      "end": 58.199,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 58.199,
+      "end": 58.239,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 58.239,
+      "end": 58.979,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 58.979,
+      "end": 59.159,
+      "type": "spacing"
+    },
+    {
+      "text": "know",
+      "start": 59.159,
+      "end": 59.779,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 59.779,
+      "end": 59.939,
+      "type": "spacing"
+    },
+    {
+      "text": "you're",
+      "start": 59.939,
+      "end": 60.799,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 60.799,
+      "end": 60.84,
+      "type": "spacing"
+    },
+    {
+      "text": "so",
+      "start": 60.84,
+      "end": 61.819,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 61.819,
+      "end": 61.84,
+      "type": "spacing"
+    },
+    {
+      "text": "through.",
+      "start": 61.84,
+      "end": 63.419,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 63.419,
+      "end": 64.159,
+      "type": "spacing"
+    },
+    {
+      "text": "And",
+      "start": 64.159,
+      "end": 64.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 64.319,
+      "end": 64.519,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 64.519,
+      "end": 64.739,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 64.739,
+      "end": 64.9,
+      "type": "spacing"
+    },
+    {
+      "text": "know",
+      "start": 64.9,
+      "end": 65.599,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 65.599,
+      "end": 65.779,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 65.779,
+      "end": 66.279,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 66.279,
+      "end": 66.86,
+      "type": "spacing"
+    },
+    {
+      "text": "get",
+      "start": 66.86,
+      "end": 67.459,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 67.459,
+      "end": 67.639,
+      "type": "spacing"
+    },
+    {
+      "text": "scared",
+      "start": 67.639,
+      "end": 69.019,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 69.019,
+      "end": 69.119,
+      "type": "spacing"
+    },
+    {
+      "text": "too.",
+      "start": 69.119,
+      "end": 69.819,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 69.819,
+      "end": 70.559,
+      "type": "spacing"
+    },
+    {
+      "text": "Even",
+      "start": 70.559,
+      "end": 70.919,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 70.919,
+      "end": 71.04,
+      "type": "spacing"
+    },
+    {
+      "text": "if",
+      "start": 71.04,
+      "end": 71.279,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 71.279,
+      "end": 71.379,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 71.379,
+      "end": 71.68,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 71.68,
+      "end": 71.86,
+      "type": "spacing"
+    },
+    {
+      "text": "won't",
+      "start": 71.86,
+      "end": 72.4,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 72.4,
+      "end": 72.559,
+      "type": "spacing"
+    },
+    {
+      "text": "see",
+      "start": 72.559,
+      "end": 72.879,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 72.879,
+      "end": 72.919,
+      "type": "spacing"
+    },
+    {
+      "text": "it.",
+      "start": 72.919,
+      "end": 75.22,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 75.22,
+      "end": 77.4,
+      "type": "spacing"
+    },
+    {
+      "text": "Even",
+      "start": 77.4,
+      "end": 77.819,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 77.819,
+      "end": 77.919,
+      "type": "spacing"
+    },
+    {
+      "text": "if",
+      "start": 77.919,
+      "end": 78.159,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 78.159,
+      "end": 78.259,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 78.259,
+      "end": 78.58,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 78.58,
+      "end": 78.72,
+      "type": "spacing"
+    },
+    {
+      "text": "won't",
+      "start": 78.72,
+      "end": 79.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 79.319,
+      "end": 79.459,
+      "type": "spacing"
+    },
+    {
+      "text": "see",
+      "start": 79.459,
+      "end": 79.759,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 79.759,
+      "end": 79.799,
+      "type": "spacing"
+    },
+    {
+      "text": "it.",
+      "start": 79.799,
+      "end": 81.459,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 81.459,
+      "end": 86.419,
+      "type": "spacing"
+    },
+    {
+      "text": "The",
+      "start": 86.419,
+      "end": 86.979,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 86.979,
+      "end": 87.08,
+      "type": "spacing"
+    },
+    {
+      "text": "world",
+      "start": 87.08,
+      "end": 87.479,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 87.479,
+      "end": 87.599,
+      "type": "spacing"
+    },
+    {
+      "text": "feels",
+      "start": 87.599,
+      "end": 88.04,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 88.04,
+      "end": 88.08,
+      "type": "spacing"
+    },
+    {
+      "text": "dark.",
+      "start": 88.08,
+      "end": 89.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 89.239,
+      "end": 90.279,
+      "type": "spacing"
+    },
+    {
+      "text": "And",
+      "start": 90.279,
+      "end": 90.479,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 90.479,
+      "end": 90.54,
+      "type": "spacing"
+    },
+    {
+      "text": "the",
+      "start": 90.54,
+      "end": 90.639,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 90.639,
+      "end": 90.699,
+      "type": "spacing"
+    },
+    {
+      "text": "ships",
+      "start": 90.699,
+      "end": 91.04,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 91.04,
+      "end": 91.059,
+      "type": "spacing"
+    },
+    {
+      "text": "they",
+      "start": 91.059,
+      "end": 91.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 91.239,
+      "end": 91.319,
+      "type": "spacing"
+    },
+    {
+      "text": "just",
+      "start": 91.319,
+      "end": 91.559,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 91.559,
+      "end": 91.699,
+      "type": "spacing"
+    },
+    {
+      "text": "move",
+      "start": 91.699,
+      "end": 92.079,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 92.079,
+      "end": 92.119,
+      "type": "spacing"
+    },
+    {
+      "text": "apart.",
+      "start": 92.119,
+      "end": 93.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 93.239,
+      "end": 94.119,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 94.119,
+      "end": 94.22,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 94.22,
+      "end": 94.339,
+      "type": "spacing"
+    },
+    {
+      "text": "thought",
+      "start": 94.339,
+      "end": 94.579,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 94.579,
+      "end": 94.639,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 94.639,
+      "end": 94.72,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 94.72,
+      "end": 94.819,
+      "type": "spacing"
+    },
+    {
+      "text": "would",
+      "start": 94.819,
+      "end": 94.979,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 94.979,
+      "end": 95.04,
+      "type": "spacing"
+    },
+    {
+      "text": "be",
+      "start": 95.04,
+      "end": 95.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 95.239,
+      "end": 95.339,
+      "type": "spacing"
+    },
+    {
+      "text": "easier",
+      "start": 95.339,
+      "end": 96.36,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 96.36,
+      "end": 96.419,
+      "type": "spacing"
+    },
+    {
+      "text": "than",
+      "start": 96.419,
+      "end": 96.799,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 96.799,
+      "end": 96.86,
+      "type": "spacing"
+    },
+    {
+      "text": "this.",
+      "start": 96.86,
+      "end": 99.18,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 99.18,
+      "end": 101.419,
+      "type": "spacing"
+    },
+    {
+      "text": "Thought",
+      "start": 101.419,
+      "end": 101.919,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 101.919,
+      "end": 101.979,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 101.979,
+      "end": 102.04,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 102.04,
+      "end": 102.139,
+      "type": "spacing"
+    },
+    {
+      "text": "was",
+      "start": 102.139,
+      "end": 102.36,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 102.36,
+      "end": 102.419,
+      "type": "spacing"
+    },
+    {
+      "text": "all",
+      "start": 102.419,
+      "end": 102.639,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 102.639,
+      "end": 102.72,
+      "type": "spacing"
+    },
+    {
+      "text": "right.",
+      "start": 102.72,
+      "end": 103.519,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 103.519,
+      "end": 104.659,
+      "type": "spacing"
+    },
+    {
+      "text": "Now",
+      "start": 104.659,
+      "end": 104.86,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 104.86,
+      "end": 104.899,
+      "type": "spacing"
+    },
+    {
+      "text": "it's",
+      "start": 104.899,
+      "end": 105.099,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 105.099,
+      "end": 105.18,
+      "type": "spacing"
+    },
+    {
+      "text": "all",
+      "start": 105.18,
+      "end": 105.519,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 105.519,
+      "end": 105.619,
+      "type": "spacing"
+    },
+    {
+      "text": "moving",
+      "start": 105.619,
+      "end": 106.119,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 106.119,
+      "end": 106.179,
+      "type": "spacing"
+    },
+    {
+      "text": "in",
+      "start": 106.18,
+      "end": 106.479,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 106.479,
+      "end": 106.54,
+      "type": "spacing"
+    },
+    {
+      "text": "and",
+      "start": 106.54,
+      "end": 106.779,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 106.779,
+      "end": 106.879,
+      "type": "spacing"
+    },
+    {
+      "text": "I.",
+      "start": 106.879,
+      "end": 107.879,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 107.879,
+      "end": 108.599,
+      "type": "spacing"
+    },
+    {
+      "text": "Thought",
+      "start": 108.599,
+      "end": 108.879,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 108.879,
+      "end": 108.939,
+      "type": "spacing"
+    },
+    {
+      "text": "it",
+      "start": 108.939,
+      "end": 109.059,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 109.059,
+      "end": 109.099,
+      "type": "spacing"
+    },
+    {
+      "text": "would",
+      "start": 109.099,
+      "end": 109.299,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 109.299,
+      "end": 109.339,
+      "type": "spacing"
+    },
+    {
+      "text": "be",
+      "start": 109.339,
+      "end": 109.519,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 109.519,
+      "end": 109.659,
+      "type": "spacing"
+    },
+    {
+      "text": "easier",
+      "start": 109.659,
+      "end": 110.659,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 110.659,
+      "end": 110.739,
+      "type": "spacing"
+    },
+    {
+      "text": "than",
+      "start": 110.739,
+      "end": 111.099,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 111.099,
+      "end": 111.159,
+      "type": "spacing"
+    },
+    {
+      "text": "this.",
+      "start": 111.159,
+      "end": 112.119,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 112.119,
+      "end": 114.619,
+      "type": "spacing"
+    },
+    {
+      "text": "'Cause",
+      "start": 114.619,
+      "end": 114.919,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 114.919,
+      "end": 115.04,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 115.04,
+      "end": 115.68,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 115.68,
+      "end": 115.839,
+      "type": "spacing"
+    },
+    {
+      "text": "know",
+      "start": 115.839,
+      "end": 116.519,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 116.519,
+      "end": 116.699,
+      "type": "spacing"
+    },
+    {
+      "text": "you're",
+      "start": 116.699,
+      "end": 117.519,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 117.519,
+      "end": 117.639,
+      "type": "spacing"
+    },
+    {
+      "text": "so",
+      "start": 117.639,
+      "end": 118.579,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 118.579,
+      "end": 118.779,
+      "type": "spacing"
+    },
+    {
+      "text": "through.",
+      "start": 118.779,
+      "end": 119.759,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 119.759,
+      "end": 120.68,
+      "type": "spacing"
+    },
+    {
+      "text": "And",
+      "start": 120.68,
+      "end": 120.919,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 120.919,
+      "end": 121.099,
+      "type": "spacing"
+    },
+    {
+      "text": "I",
+      "start": 121.099,
+      "end": 121.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 121.319,
+      "end": 121.439,
+      "type": "spacing"
+    },
+    {
+      "text": "know",
+      "start": 121.439,
+      "end": 122.139,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 122.139,
+      "end": 122.259,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 122.259,
+      "end": 122.779,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 122.779,
+      "end": 123.36,
+      "type": "spacing"
+    },
+    {
+      "text": "get",
+      "start": 123.36,
+      "end": 123.959,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 123.959,
+      "end": 124.079,
+      "type": "spacing"
+    },
+    {
+      "text": "scared",
+      "start": 124.079,
+      "end": 125.419,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 125.419,
+      "end": 125.479,
+      "type": "spacing"
+    },
+    {
+      "text": "too.",
+      "start": 125.479,
+      "end": 126.299,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 126.299,
+      "end": 126.919,
+      "type": "spacing"
+    },
+    {
+      "text": "Even",
+      "start": 126.919,
+      "end": 127.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 127.319,
+      "end": 127.399,
+      "type": "spacing"
+    },
+    {
+      "text": "if",
+      "start": 127.399,
+      "end": 127.639,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 127.639,
+      "end": 127.759,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 127.759,
+      "end": 128.02,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 128.02,
+      "end": 128.22,
+      "type": "spacing"
+    },
+    {
+      "text": "won't",
+      "start": 128.22,
+      "end": 128.839,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 128.839,
+      "end": 128.979,
+      "type": "spacing"
+    },
+    {
+      "text": "see",
+      "start": 128.979,
+      "end": 129.279,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 129.279,
+      "end": 129.319,
+      "type": "spacing"
+    },
+    {
+      "text": "it.",
+      "start": 129.319,
+      "end": 131.36,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 131.36,
+      "end": 133.779,
+      "type": "spacing"
+    },
+    {
+      "text": "Even",
+      "start": 133.779,
+      "end": 134.239,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 134.239,
+      "end": 134.339,
+      "type": "spacing"
+    },
+    {
+      "text": "if",
+      "start": 134.339,
+      "end": 134.599,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 134.599,
+      "end": 134.699,
+      "type": "spacing"
+    },
+    {
+      "text": "you",
+      "start": 134.699,
+      "end": 135.059,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 135.059,
+      "end": 135.139,
+      "type": "spacing"
+    },
+    {
+      "text": "won't",
+      "start": 135.139,
+      "end": 135.559,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 135.559,
+      "end": 135.639,
+      "type": "spacing"
+    },
+    {
+      "text": "see",
+      "start": 135.639,
+      "end": 135.959,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 135.959,
+      "end": 135.999,
+      "type": "spacing"
+    },
+    {
+      "text": "it.",
+      "start": 136,
+      "end": 140.619,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 140.619,
+      "end": 141.36,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 141.36,
+      "end": 143.819,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 143.819,
+      "end": 146.819,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 146.819,
+      "end": 148.319,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 148.319,
+      "end": 148.979,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 148.979,
+      "end": 153.539,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 153.539,
+      "end": 155.059,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 155.059,
+      "end": 156.619,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 156.619,
+      "end": 158.379,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 158.379,
+      "end": 163.94,
+      "type": "word"
+    },
+    {
+      "text": " ",
+      "start": 163.94,
+      "end": 167.899,
+      "type": "spacing"
+    },
+    {
+      "text": "Ooh.",
+      "start": 167.899,
+      "end": 200.88,
+      "type": "word"
+    }
+  ]
+}

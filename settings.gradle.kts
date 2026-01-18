@@ -35,7 +35,8 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(":muse")
 include(":elevenlabs")
+include(":composeApp")
 
-rootProject.name = "Muse"
+rootProject.name = "MuseRoot"

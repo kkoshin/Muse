@@ -1,0 +1,19 @@
+<resources>
+    <string name="setting">Setting</string>
+    <string name="format_replace_newlines_with_spaces">Convert line breaks to spaces</string>
+    <string name="import_file_content_with_file_name">Are you sure you want to import %1$s?</string>
+    <string name="voices">Voices</string>
+    <string name="projects">Projects</string>
+    <string name="remove_noise">Remove noise</string>
+    <string name="audio_isolation">Audio Isolation</string>
+    <string name="sound_effect">Sound Effect</string>
+    <string name="retry">Retry</string>
+    <string name="share_to_other_app">Share to other app</string>
+    <string name="open_with_other_app">Open with other app</string>
+    <string name="export_done">Export done!</string>
+    <string name="denoise_done">Denoise done!</string>
+    <string name="generate_done">Generate done!</string>
+    <string name="audio_isolation_error_audio_file_too_large">Audio files must be under 500 MB or 1 hour in length. Files exceeding these limits cannot be processed.</string>
+    <string name="audio_isolation_error_audio_file_too_short">Please ensure your audio file is at least 4.6 seconds long. Shorter files cannot be processed.</string>
+    <string name="white_noise_start">Generate</string>
+</resources>
