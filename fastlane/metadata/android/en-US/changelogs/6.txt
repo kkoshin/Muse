@@ -1,0 +1,2 @@
+- Added iOS support via Kotlin Multiplatform migration. (Requires self-build.)
+- Introduced sound effect generation from text prompts.

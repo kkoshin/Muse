@@ -107,9 +107,9 @@ androidComponents {
     finalizeDsl { extension ->
         extension.defaultConfig.setUpStableVersion(
             major = 0, // breaking change
-            minor = 1, // feature
-            patch = 4, // bugfix
-            code = 5,
+            minor = 2, // feature
+            patch = 0, // bugfix
+            code = 6,
         )
         extension.buildTypes.getByName("debug").apply {
             applicationIdSuffix = ".debug"
