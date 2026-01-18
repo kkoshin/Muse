@@ -1,6 +1,7 @@
 package io.github.kkoshin.muse.feature.editor
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.kkoshin.muse.core.provider.Voice
+import io.github.kkoshin.muse.editor.ExportModeTabRow
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.LocalToaster
 import kotlinx.coroutines.launch
@@ -55,7 +59,7 @@ fun EditorScreen(
     args: EditorArgs,
     modifier: Modifier = Modifier,
     viewModel: EditorViewModel = koinViewModel(),
-    onExportRequest: (List<Voice>) -> Unit,
+    onExportRequest: (List<Voice>, ExportMode) -> Unit,
     onPickVoice: () -> Unit,
 ) {
     val localToaster = LocalToaster.current
@@ -65,6 +69,8 @@ fun EditorScreen(
     }
 
     val scope = rememberCoroutineScope()
+
+    var selectedMode by remember { mutableStateOf(ExportMode.Reading) }
 
     var phrases: List<String> by remember {
         mutableStateOf(emptyList())
@@ -89,28 +95,52 @@ fun EditorScreen(
         modifier = modifier,
         contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
-                navigationIcon = {
-                    AppBackButton()
-                },
-                backgroundColor = MaterialTheme.colors.surface,
-                title = { Text(text = "Editor") },
-            )
+            Surface(elevation = AppBarDefaults.TopAppBarElevation) {
+                Column {
+                    TopAppBar(
+                        windowInsets = WindowInsets.statusBars,
+                        navigationIcon = {
+                            AppBackButton()
+                        },
+                        backgroundColor = MaterialTheme.colors.surface,
+                        title = { Text(text = "Editor") },
+                    )
+                    ExportModeTabRow(
+                        modifier = Modifier,
+                        selectedMode = selectedMode
+                    ) {
+                        selectedMode = it
+                    }
+                }
+            }
         },
         content = { paddingValues ->
-            FlowRow(
-                Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                phrases.forEach {
-                    OutlinedButton(onClick = { /*TODO*/ }) {
-                        Text(text = it)
+            when (selectedMode) {
+                ExportMode.Reading -> {
+                    Text(
+                        phrases.joinToString(" "),
+                        Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    )
+                }
+
+                ExportMode.Dictation -> {
+                    FlowRow(
+                        Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        phrases.forEach {
+                            OutlinedButton(onClick = { /*TODO*/ }) {
+                                Text(text = it)
+                            }
+                        }
                     }
                 }
             }
@@ -129,7 +159,7 @@ fun EditorScreen(
                                     if (it.isEmpty()) {
                                         onPickVoice()
                                     } else {
-                                        onExportRequest(it)
+                                        onExportRequest(it, selectedMode)
                                     }
                                 }.onFailure { e ->
                                     localToaster.show(e.message)

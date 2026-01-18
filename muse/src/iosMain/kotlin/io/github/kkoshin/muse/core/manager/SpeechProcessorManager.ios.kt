@@ -114,6 +114,10 @@ actual class SpeechProcessorManager(
         }
     }
 
+    actual suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Path> {
+        TODO("Not yet implemented")
+    }
+
     actual suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray> {
         return withContext(Dispatchers.IO) {
             val name = audioUri.name

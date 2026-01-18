@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.feature.editor.ExportMode
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
@@ -28,6 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 class ExportArgs(
     val voiceId: String,
     val scriptId: String,
+    val exportMode: String,
     val fixedDurationEnabled: Boolean,
     val fixedSilenceSeconds: Float,
     val silencePerCharSeconds: Float,
@@ -92,6 +94,7 @@ fun ExportScreen(
                     silence = silenceDuration,
                     progress,
                     viewModel = viewModel,
+                    mode = ExportMode.fromName(args.exportMode)!!
                 )
             }
         },
@@ -106,11 +109,19 @@ private fun Content(
     silence: SilenceDuration,
     progress: ProgressStatus,
     viewModel: ExportViewModel,
+    mode: ExportMode,
 ) {
     LaunchedEffect(voiceId, phrases) {
         if (phrases.isNotEmpty()) {
-            viewModel.startTTS(voiceId, phrases) { pcmList ->
-                viewModel.mixAudioAsMp3(silence, phrases, pcmList)
+            when (mode) {
+                ExportMode.Reading -> viewModel.startTTSForReadingMode(
+                    voiceId,
+                    phrases.joinToString(" ")
+                )
+
+                ExportMode.Dictation -> viewModel.startTTSForDictationMode(voiceId, phrases) {
+                    viewModel.mixAudioAsMp3(silence, phrases, it)
+                }
             }
         }
     }
@@ -121,8 +132,18 @@ private fun Content(
         successLabel = "Export done!",
         onRetry = {
             when (progress) {
-                is TTSFailed -> viewModel.startTTS(voiceId, phrases) {
-                    viewModel.mixAudioAsMp3(silence, phrases, it)
+                is TTSFailed -> when (mode) {
+                    ExportMode.Reading -> viewModel.startTTSForReadingMode(
+                        voiceId,
+                        phrases.joinToString(" ")
+                    )
+
+                    ExportMode.Dictation -> viewModel.startTTSForDictationMode(
+                        voiceId,
+                        phrases
+                    ) {
+                        viewModel.mixAudioAsMp3(silence, phrases, it)
+                    }
                 }
 
                 is MixFailed -> viewModel.mixAudioAsMp3(

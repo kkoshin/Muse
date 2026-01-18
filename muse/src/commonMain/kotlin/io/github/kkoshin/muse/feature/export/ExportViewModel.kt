@@ -1,4 +1,3 @@
-
 package io.github.kkoshin.muse.feature.export
 
 import androidx.lifecycle.ViewModel
@@ -55,11 +54,30 @@ class ExportViewModel(
     suspend fun queryPhrases(scriptId: String): List<String>? =
         repo.queryPhrases(Uuid.parse(scriptId))
 
+    fun startTTSForReadingMode(
+        voiceId: String,
+        text: String
+    ) {
+        viewModelScope.launch {
+            speechProcessorManager
+                .getOrGenerateForLongText(voiceId, text)
+                .onSuccess {
+                    _progress.value = ProgressStatus.Success(it)
+                }
+                .onFailure {
+                    logcat {
+                        it.stackTraceToString()
+                    }
+                    _progress.value = TTSFailed(throwable = it)
+                }
+        }
+    }
+
     /**
      * 相同的 phrase 仅需要生成一次，最终返回的时候要按照
      * @param onSuccess 回调的时候会按照 phrases 的顺序返回，前面 tts 这一步是会去重的。对应 phrase 的 pcm 文件
      */
-    fun startTTS(
+    fun startTTSForDictationMode(
         voiceId: String,
         phrases: List<String>,
         onSuccess: (pcmList: List<Path>) -> Unit,
