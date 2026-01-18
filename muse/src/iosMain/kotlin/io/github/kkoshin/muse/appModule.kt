@@ -11,10 +11,10 @@ import io.github.kkoshin.muse.core.provider.STTProvider
 import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.database.AppDatabase
-import io.github.kkoshin.muse.feature.FakeProcessor
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.feature.editor.EditorViewModel
 import io.github.kkoshin.muse.feature.export.ExportViewModel
+import io.github.kkoshin.muse.feature.noise.WhiteNoiseViewModel
 import io.github.kkoshin.muse.platformbridge.IosToastManager
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.ToastManager
@@ -64,6 +64,7 @@ val appModule = module {
     }
     viewModelOf(::EditorViewModel)
     viewModelOf(::ExportViewModel)
+    viewModelOf(::WhiteNoiseViewModel)
     single<MuseRepo> {
         MuseRepo(
             AppDatabase(DriverFactory().createDriver()),
