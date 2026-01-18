@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -36,7 +37,7 @@ actual class SpeechProcessorManager(
     private val sttProvider: STTProvider,
     private val mediaStoreHelper: MediaStoreHelper,
     private val voicePreference: DataStore<Preferences>
-) {
+) : AudioIsolationProcessor {
     /**
      * 内存中缓存
      */
@@ -159,6 +160,21 @@ actual class SpeechProcessorManager(
                 FileSystem.SYSTEM.source(audioUri).buffer(),
                 name
             )
+        }
+    }
+
+    override actual suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path> {
+        return removeBackgroundNoise(audioUri).map { content ->
+            withContext(Dispatchers.IO) {
+                val path = mediaStoreHelper.exportFileToDownload(
+                    fileName = "Denoise_${Clock.System.now().epochSeconds}.mp3",
+                    relativePath = MusePathManager.getExportRelativePath(),
+                )
+                FileSystem.SYSTEM.sink(path).buffer().use { sink ->
+                    sink.write(content)
+                }
+                path
+            }
         }
     }
 

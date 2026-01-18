@@ -3,6 +3,8 @@ package io.github.kkoshin.muse
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.github.kkoshin.muse.audio.AudioMetadataRetriever
+import io.github.kkoshin.muse.audio.IosAudioMetadataRetriever
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
@@ -14,6 +16,7 @@ import io.github.kkoshin.muse.database.AppDatabase
 import io.github.kkoshin.muse.feature.dashboard.DashboardViewModel
 import io.github.kkoshin.muse.feature.editor.EditorViewModel
 import io.github.kkoshin.muse.feature.export.ExportViewModel
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationViewModel
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseViewModel
 import io.github.kkoshin.muse.platformbridge.IosToastManager
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
@@ -59,12 +62,14 @@ val appModule = module {
         )
     }
     singleOf(::MediaStoreHelper)
+    single<AudioMetadataRetriever> { IosAudioMetadataRetriever() }
     viewModel {
         DashboardViewModel(get())
     }
     viewModelOf(::EditorViewModel)
     viewModelOf(::ExportViewModel)
     viewModelOf(::WhiteNoiseViewModel)
+    viewModel { AudioIsolationViewModel(get()) }
     single<MuseRepo> {
         MuseRepo(
             AppDatabase(DriverFactory().createDriver()),

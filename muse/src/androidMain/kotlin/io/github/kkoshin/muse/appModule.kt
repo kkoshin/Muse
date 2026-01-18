@@ -7,6 +7,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.notification.toast
 import com.github.foodiestudio.sugar.storage.AppFileHelper
+import io.github.kkoshin.muse.audio.AndroidAudioMetadataRetriever
+import io.github.kkoshin.muse.audio.AudioMetadataRetriever
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
@@ -52,6 +54,7 @@ internal val baseModule = module {
     singleOf(::SpeechProcessorManager)
     singleOf(::MediaStoreHelper)
     singleOf(::AppFileHelper)
+    single<AudioMetadataRetriever> { AndroidAudioMetadataRetriever(get(), get()) }
     single<AccountManager> {
         val context = get<Context>()
         AccountManager(context.accountDataStore)

@@ -28,6 +28,7 @@ import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import okio.Path
 import okio.sink
 
@@ -39,7 +40,7 @@ actual class SpeechProcessorManager(
     private val soundEffectProvider: SoundEffectProvider,
     private val sttProvider: STTProvider,
     private val mediaStoreHelper: MediaStoreHelper,
-) {
+) : AudioIsolationProcessor {
     /**
      * 持久化 text:Uri
      */
@@ -163,6 +164,23 @@ actual class SpeechProcessorManager(
                 fileSystem.source(audioUri),
                 name
             )
+        }
+    }
+
+    override actual suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path> {
+        return removeBackgroundNoise(audioUri).map { content ->
+            val targetUri = MediaFile
+                .create(
+                    appContext,
+                    MediaStoreType.Downloads,
+                    "Denoise_${Clock.System.now().epochSeconds}.mp3",
+                    MusePathManager.getExportRelativePath(),
+                    enablePending = false,
+                ).mediaUri
+            appContext.contentResolver.openOutputStream(targetUri)?.use { outputStream ->
+                outputStream.write(content)
+            }
+            targetUri.toOkioPath()
         }
     }
 
