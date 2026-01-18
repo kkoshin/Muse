@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.feature.isolation
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,30 +28,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import com.github.foodiestudio.sugar.ExperimentalSugarApi
-import com.github.foodiestudio.sugar.storage.AppFileHelper
-import com.github.foodiestudio.sugar.storage.filesystem.displayName
-import com.github.foodiestudio.sugar.storage.filesystem.toOkioPath
-import io.github.kkoshin.muse.audio.MediaMetadataRetrieverHelper
+import io.github.kkoshin.muse.audio.AudioMetadata
+import io.github.kkoshin.muse.audio.AudioMetadataRetriever
 import io.github.kkoshin.muse.audio.ui.AudioPlaybackButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import me.saket.bytesize.DecimalByteSize
-import me.saket.bytesize.decimalBytes
 import me.saket.bytesize.megabytes
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.audio_isolation
 import museroot.muse.generated.resources.audio_isolation_error_audio_file_too_large
 import museroot.muse.generated.resources.audio_isolation_error_audio_file_too_short
 import museroot.muse.generated.resources.remove_noise
+import okio.Path
+import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Duration
+import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
@@ -61,45 +53,19 @@ class AudioIsolationPreviewArgs(
     val audioUri: String,
 )
 
-private data class AudioMetadata(
-    val duration: Duration,
-    val displayName: String,
-    val size: DecimalByteSize
-) {
-    val points: Long
-        get() {
-            return (duration.inWholeSeconds * 1000) / 60
-        }
-}
-
-@OptIn(ExperimentalSugarApi::class)
 @Composable
 fun AudioIsolationPreviewScreen(
     modifier: Modifier = Modifier,
     args: AudioIsolationPreviewArgs,
+    metadataRetriever: AudioMetadataRetriever = koinInject(),
     onRequest: () -> Unit,
 ) {
     var audioMetadata: AudioMetadata? by remember {
         mutableStateOf(null)
     }
 
-    val context = LocalContext.current
-
     LaunchedEffect(args.audioUri) {
-        withContext(Dispatchers.IO) {
-            audioMetadata =
-                MediaMetadataRetrieverHelper(context, args.audioUri.toUri()).use { helper ->
-                    AppFileHelper(context.applicationContext).fileSystem.metadata(
-                        args.audioUri.toUri().toOkioPath()
-                    ).let {
-                        AudioMetadata(
-                            duration = helper.duration,
-                            displayName = it.displayName,
-                            size = it.size!!.decimalBytes,
-                        )
-                    }
-                }
-        }
+        audioMetadata = metadataRetriever.getAudioMetadata(args.audioUri.toPath())
     }
 
     audioMetadata?.let {
@@ -114,7 +80,7 @@ fun AudioIsolationPreviewScreen(
             Content(
                 modifier = modifier,
                 audioMetadata = it,
-                audioUri = args.audioUri.toUri(),
+                audioPath = args.audioUri.toPath(),
                 onRequest = onRequest
             )
         }
@@ -133,7 +99,7 @@ fun AudioIsolationPreviewScreen(
 private fun Content(
     modifier: Modifier = Modifier,
     audioMetadata: AudioMetadata,
-    audioUri: Uri,
+    audioPath: Path,
     onRequest: () -> Unit
 ) {
     Column(
@@ -182,7 +148,7 @@ private fun Content(
                         )
                     )
                 }
-                AudioPlaybackButton(audioSource = audioUri.toOkioPath())
+                AudioPlaybackButton(audioSource = audioPath)
             }
         }
 

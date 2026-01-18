@@ -13,6 +13,8 @@ internal fun Path?.toNsUrl(): NSURL? {
         val str = it.toString()
         if (str.startsWith("/")) {
             NSURL.fileURLWithPath(str)
+        } else if (str.startsWith("http")) {
+            NSURL.URLWithString(str)
         } else {
             // Check for URL schemes and ensure they are followed by ://
             val schemeMatch = Regex("^([a-z]+):/(?![/])").find(str)

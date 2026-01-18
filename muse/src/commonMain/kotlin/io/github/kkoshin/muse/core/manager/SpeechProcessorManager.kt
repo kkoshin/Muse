@@ -13,7 +13,7 @@ import okio.Path
  */
 internal val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
 
-expect class SpeechProcessorManager {
+expect class SpeechProcessorManager : AudioIsolationProcessor {
 
     suspend fun queryQuota(): Result<CharacterQuota>
 
@@ -31,6 +31,8 @@ expect class SpeechProcessorManager {
     suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Path>
 
     suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray>
+
+    override suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path>
 
     suspend fun makeSoundEffects(
         prompt: String,

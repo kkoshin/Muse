@@ -7,15 +7,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.toRoute
+import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
 import io.github.kkoshin.muse.feature.editor.ExportMode
 import io.github.kkoshin.muse.feature.export.ExportArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewScreen
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationScreen
 import okio.Path
 
 actual fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostController) {
+    dialog<AudioIsolationPreviewArgs> { entry ->
+        val args: AudioIsolationPreviewArgs = entry.toRoute()
+        AudioIsolationPreviewScreen(
+            modifier = Modifier.background(
+                MaterialTheme.colors.background,
+                shape = RoundedCornerShape(16.dp)
+            ), args = args
+        ) {
+            navController.navigate(AudioIsolationArgs(args.audioUri)) {
+                popUpTo(DashboardArgs)
+            }
+        }
+    }
+
     dialog<ExportConfigSheetArgs> { entry ->
         val args: ExportConfigSheetArgs = entry.toRoute()
         ExportConfigSheet(
@@ -47,10 +67,21 @@ actual fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostContr
             },
         )
     }
+
+    composable<AudioIsolationArgs> { entry ->
+        val args: AudioIsolationArgs = entry.toRoute()
+        AudioIsolationScreen(args = args) {
+            navController.popBackStack()
+        }
+    }
 }
 
 actual fun onLaunchAudioIsolation(navController: NavHostController, path: Path) {
-    // TODO: Implement for iOS
+    navController.navigate(
+        AudioIsolationPreviewArgs(
+            audioUri = path.toString(),
+        ),
+    )
 }
 
 actual fun onLaunchOpenSource(navController: NavHostController) {
