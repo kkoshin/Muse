@@ -6,12 +6,12 @@ This plan outlines the steps to move the Audio Isolation feature to shared code 
 Refactor the ViewModel and supporting logic to be platform-agnostic in `commonMain`.
 
 - [x] Task: Refactor `AudioIsolationViewModel` (cdd1418) to use `okio.Path` instead of `android.net.Uri`
-    - [ ] Create unit tests in `commonTest` for `AudioIsolationViewModel` behavior.
-    - [ ] Remove `android.content.Context` and `android.net.Uri` dependencies.
-    - [ ] Move `AudioIsolationViewModel` from `androidMain` to `commonMain`.
-- [ ] Task: Move `AudioIsolation` UI components to `commonMain`
-    - [ ] Move `AudioIsolationScreen.kt` and `AudioIsolationPreviewScreen.kt` to `commonMain`.
-    - [ ] Update imports and resource references to use shared `Res`.
+    - [x] Create unit tests in `commonTest` for `AudioIsolationViewModel` behavior.
+    - [x] Remove `android.content.Context` and `android.net.Uri` dependencies.
+    - [x] Move `AudioIsolationViewModel` from `androidMain` to `commonMain`.
+- [x] Task: Move `AudioIsolation` UI components (cdd1418) to `commonMain`
+    - [x] Move `AudioIsolationScreen.kt` and `AudioIsolationPreviewScreen.kt` to `commonMain`.
+    - [x] Update imports and resource references to use shared `Res`.
 - [ ] Task: Conductor - User Manual Verification 'Shared Core Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Navigation and Platform Integration
