@@ -70,7 +70,6 @@ actual class SpeechProcessorManager(
         text: String
     ): Result<Path> {
         val key = stringPreferencesKey("${voiceId}_${text.lowercase()}")
-        logcat { "getOrGenerate invoked. $text" }
         return runCatching {
             check(text.isNotBlank())
             voicePreference.data.first()[key]?.let {
@@ -109,13 +108,48 @@ actual class SpeechProcessorManager(
                     }
                 }
             }
-        }.onFailure {
-            logcat { "getOrGenerate for $voiceId failed: $it" }
         }
     }
 
     actual suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Path> {
-        TODO("Not yet implemented")
+        val textHash = longText.hashCode()
+        val key = stringPreferencesKey("${voiceId}_$textHash")
+        return runCatching {
+            check(longText.isNotBlank())
+            voicePreference.data.first()[key]?.let {
+                val path = if (it.startsWith("/")) {
+                    it.toPath()
+                } else {
+                    NSURL.URLWithString(it)?.toOkioPath()
+                }
+                if (path != null && FileSystem.SYSTEM.exists(path)) {
+                    path
+                } else {
+                    logcat { "Cached file does not exist or invalid: $it" }
+                    null
+                }
+            } ?: run {
+                val audio = provider.generate(voiceId, longText).getOrThrow()
+                check(audio.mimeType == SupportedAudioType.MP3) {
+                    "only support Mp3 yet."
+                }
+                // 文本可能比较长，文件名只能取它的 hash 值
+                val fileName = "Audio_$textHash.mp3"
+                withContext(Dispatchers.IO) {
+                    mediaStoreHelper.saveAudio(
+                        relativePath = "${MusePathManager.getMusicRelativePath()}/$voiceId",
+                        fileName = fileName,
+                        action = {
+                            writeAll(audio.content)
+                        }
+                    ).also {
+                        voicePreference.edit { voices ->
+                            voices[key] = it.toNsUrl()?.absoluteString ?: it.toString()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     actual suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray> {
