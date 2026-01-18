@@ -24,7 +24,12 @@ import okio.Path
 actual fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostController) {
     dialog<AudioIsolationPreviewArgs> { entry ->
         val args: AudioIsolationPreviewArgs = entry.toRoute()
-        AudioIsolationPreviewScreen(args = args) {
+        AudioIsolationPreviewScreen(
+            modifier = Modifier.background(
+                MaterialTheme.colors.background,
+                shape = RoundedCornerShape(16.dp)
+            ), args = args
+        ) {
             navController.navigate(AudioIsolationArgs(args.audioUri)) {
                 popUpTo(DashboardArgs)
             }

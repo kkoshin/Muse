@@ -163,7 +163,7 @@ actual class SpeechProcessorManager(
         }
     }
 
-    override actual suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path> {
+    actual override suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path> {
         return removeBackgroundNoise(audioUri).map { content ->
             withContext(Dispatchers.IO) {
                 val path = mediaStoreHelper.exportFileToDownload(
