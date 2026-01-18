@@ -21,6 +21,7 @@ actual fun shareAudioFile(path: Path): Result<Unit> {
             type = "audio/mpeg"
             putExtra(Intent.EXTRA_STREAM, path.toUri())
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(this)
         }
     }

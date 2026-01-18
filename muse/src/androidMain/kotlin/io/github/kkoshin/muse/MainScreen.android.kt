@@ -1,24 +1,25 @@
 package io.github.kkoshin.muse
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
+import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
+import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.feature.editor.ExportMode
+import io.github.kkoshin.muse.feature.export.ExportArgs
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewArgs
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewScreen
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationScreen
 import io.github.kkoshin.muse.feature.setting.OpenSourceArgs
 import io.github.kkoshin.muse.feature.setting.OpenSourceScreen
-import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
-import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
-import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
-import io.github.kkoshin.muse.feature.export.ExportArgs
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.platformbridge.toUri
 import io.github.kkoshin.muse.workaround.bottomSheet
 import okio.Path
@@ -42,6 +43,7 @@ actual fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostContr
             ),
             voiceIds = args.voiceIds,
             voiceNames = args.voiceNames,
+            mode = ExportMode.fromName(args.exportMode)!!,
             onExport = {
                     voiceId,
                     fixedDurationEnabled,
@@ -53,6 +55,7 @@ actual fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostContr
                     ExportArgs(
                         voiceId,
                         args.scriptId,
+                        args.exportMode,
                         fixedDurationEnabled,
                         fixedSilence,
                         silencePerChar,

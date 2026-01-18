@@ -39,7 +39,9 @@ import io.github.kkoshin.muse.platformbridge.Platform
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
+import museroot.muse.generated.resources.ic_telegram_logo
 import museroot.muse.generated.resources.setting
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -227,10 +229,28 @@ fun SettingScreen(
                         Icon(Icons.Default.MailOutline, contentDescription = null)
                     },
                     summary = {
-                        SummaryText("bug report, feature request, etc.")
+                        SummaryText("Bug report, feature request, etc.")
                     },
                     onClick = {
                         onOpenURL("https://github.com/kkoshin/Muse/issues")
+                    },
+                )
+                preference(
+                    key = "telegram",
+                    icon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_telegram_logo),
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text("Discuss on Telegram")
+                    },
+                    summary = {
+                        SummaryText(text = "Primary timezone: UTC+8")
+                    },
+                    onClick = {
+                        onOpenURL("https://t.me/muse_app")
                     },
                 )
                 preference(

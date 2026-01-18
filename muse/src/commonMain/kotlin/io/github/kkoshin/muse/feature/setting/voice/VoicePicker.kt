@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +54,7 @@ import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.NavigationBarContrastEnforcedOnAndroid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,6 +100,8 @@ fun VoicePicker(
             onBack()
         }
     }
+
+    NavigationBarContrastEnforcedOnAndroid(!playbackBarVisible, false)
 
     LaunchedEffect(Unit) {
         speechProcessorManager
@@ -149,40 +153,38 @@ fun VoicePicker(
             )
         },
         content = { contentPadding ->
-            Column(modifier = modifier.padding(contentPadding)) {
-                LazyColumn {
-                    voices
-                        .groupBy { it.accent }
-//                        .toSortedMap()
-                        .forEach { (accent, voicesList) ->
-                            stickyHeader {
-                                Text(
-                                    accent.name,
-                                    style = MaterialTheme.typography.subtitle1,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            if (MaterialTheme.colors.isLight) Color(
-                                                0xFFEDEDED
-                                            ) else Color.DarkGray
-                                        )
-                                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                                )
-                            }
-                            items(voicesList) {
-                                VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
-                                    if (isChecked) {
-                                        selected.add(voice.voiceId)
-                                    } else {
-                                        selected.remove(voice.voiceId)
-                                    }
-                                }, onClick = { voice ->
-                                    previewVoice = voice
-                                    playbackBarVisible = true
-                                })
-                            }
+            LazyColumn(contentPadding = contentPadding) {
+                voices
+                    .groupBy { it.accent }
+//                    .toSortedMap()
+                    .forEach { (accent, voicesList) ->
+                        stickyHeader {
+                            Text(
+                                accent.name,
+                                style = MaterialTheme.typography.subtitle1,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        if (MaterialTheme.colors.isLight) Color(
+                                            0xFFEDEDED
+                                        ) else Color.DarkGray
+                                    )
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                            )
                         }
-                }
+                        items(voicesList) {
+                            VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
+                                if (isChecked) {
+                                    selected.add(voice.voiceId)
+                                } else {
+                                    selected.remove(voice.voiceId)
+                                }
+                            }, onClick = { voice ->
+                                previewVoice = voice
+                                playbackBarVisible = true
+                            })
+                        }
+                    }
             }
         },
         bottomBar = {
@@ -194,11 +196,11 @@ fun VoicePicker(
                 previewVoice?.let { voice ->
                     PlaybackBar(
                         modifier = Modifier
-                            .navigationBarsPadding()
                             .background(
                                 MaterialTheme.colors.secondary,
                                 RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                            ),
+                            )
+                            .navigationBarsPadding(),
                         voice = voice,
                         onClose = {
                             playbackBarVisible = false
@@ -260,7 +262,13 @@ internal fun getAccentFlag(accent: Voice.Accent): String =
 @Composable
 fun PlaybackBar(modifier: Modifier = Modifier, voice: Voice, onClose: () -> Unit) {
     Row(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier = modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = {}
+            )
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(16.dp))

@@ -28,6 +28,8 @@ expect class SpeechProcessorManager {
         text: String,
     ): Result<Path>
 
+    suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Path>
+
     suspend fun removeBackgroundNoise(audioUri: Path): Result<ByteArray>
 
     suspend fun makeSoundEffects(

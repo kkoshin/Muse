@@ -39,9 +39,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 class ExportConfigSheetArgs(
     val scriptId: String,
-//    val phrases: List<String>,
     val voiceIds: List<String>,
     val voiceNames: List<String>,
+    val exportMode: String
 ) {
     init {
         check(voiceNames.size == voiceIds.size)
@@ -54,6 +54,7 @@ fun ExportConfigSheet(
     modifier: Modifier = Modifier,
     voiceIds: List<String>,
     voiceNames: List<String>,
+    mode: ExportMode,
     onExport: (
         voiceId: String,
         fixedDurationEnabled: Boolean,
@@ -74,7 +75,7 @@ fun ExportConfigSheet(
     }
 
     var fixedDurationEnabled by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     var selectedVoiceId: String? by remember {
@@ -133,42 +134,44 @@ fun ExportConfigSheet(
                 }
             }
         }
-        item {
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        "Fixed silence duration",
-                        style = MaterialTheme.typography.subtitle1,
-                        modifier = Modifier.weight(1f),
-                    )
+        if (mode == ExportMode.Dictation) {
+            item {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "Fixed silence duration",
+                            style = MaterialTheme.typography.subtitle1,
+                            modifier = Modifier.weight(1f),
+                        )
 
-                    Switch(
-                        checked = fixedDurationEnabled,
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colors.primary,
-                        ),
-                        onCheckedChange = {
-                            fixedDurationEnabled = it
-                        },
-                    )
-                }
-                if (fixedDurationEnabled) {
-                    SliderBar(value = fixedSilence, valueRange = 0f..5.0f, onValueChange = {
-                        fixedSilence = it
-                    }, format = {
-                        it.toInt().toString()
-                    })
-                } else {
-                    Text("Duration per character:", style = MaterialTheme.typography.button)
-                    SliderBar(value = silencePerChar, valueRange = 0.1f..1f, onValueChange = {
-                        silencePerChar = it
-                    })
-                    Text("Min duration:", style = MaterialTheme.typography.button)
-                    SliderBar(value = minDynamicDuration, valueRange = 0f..5f, onValueChange = {
-                        minDynamicDuration = it
-                    }, format = {
-                        it.toInt().toString()
-                    })
+                        Switch(
+                            checked = fixedDurationEnabled,
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colors.primary,
+                            ),
+                            onCheckedChange = {
+                                fixedDurationEnabled = it
+                            },
+                        )
+                    }
+                    if (fixedDurationEnabled) {
+                        SliderBar(value = fixedSilence, valueRange = 0f..5.0f, onValueChange = {
+                            fixedSilence = it
+                        }, format = {
+                            it.toInt().toString()
+                        })
+                    } else {
+                        Text("Duration per character:", style = MaterialTheme.typography.button)
+                        SliderBar(value = silencePerChar, valueRange = 0.1f..1f, onValueChange = {
+                            silencePerChar = it
+                        })
+                        Text("Min duration:", style = MaterialTheme.typography.button)
+                        SliderBar(value = minDynamicDuration, valueRange = 0f..5f, onValueChange = {
+                            minDynamicDuration = it
+                        }, format = {
+                            it.toInt().toString()
+                        })
+                    }
                 }
             }
         }
