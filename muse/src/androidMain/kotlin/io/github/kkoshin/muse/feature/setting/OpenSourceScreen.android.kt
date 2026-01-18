@@ -16,16 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.util.withContext
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-actual fun OpenSourceScreen(modifier: Modifier) {
+actual fun OpenSourceScreen(modifier: Modifier, onOpenURL: (String) -> Unit) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val context = LocalContext.current
 
     Scaffold(
         modifier = modifier,
@@ -61,7 +59,7 @@ actual fun OpenSourceScreen(modifier: Modifier) {
                 },
                 onLibraryClick = { library ->
                     library.website?.let {
-                        context.openURL(it)
+                        onOpenURL(it)
                     }
                 },
             )

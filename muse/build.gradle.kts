@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.about)
+    alias(libs.plugins.kotlin.cocoapods)
 }
 
 aboutLibraries {
@@ -22,6 +24,16 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
+    }
+
+    cocoapods {
+        name = "muse"
+        version = "2.0"
+        summary = "muse feature"
+        homepage = "https://github.com/kkoshin/muse"
+        ios.deploymentTarget = "16.0"
+
+        pod("lame")
     }
 
     listOf(
@@ -38,7 +50,6 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-//            implementation(libs.navigation)
             implementation(sharedLibs.logcat)
             implementation(libs.sugar)
             implementation(sharedLibs.bundles.jetpack)
@@ -49,12 +60,13 @@ kotlin {
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
-            implementation(libs.browser)
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
             implementation(libs.accompanist.navigation.material)
+            implementation(libs.browser)
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.koin.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -67,13 +79,22 @@ kotlin {
             implementation(libs.bytesize)
             implementation(sharedLibs.okio)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.uuid)
             implementation(libs.navigation.compose)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.koin.test)
+        }
+        iosMain.dependencies {
+            implementation(libs.sql.ios)
         }
     }
 
@@ -84,10 +105,6 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-    implementation(platform(sharedLibs.koin.bom))
 }
 
 android {

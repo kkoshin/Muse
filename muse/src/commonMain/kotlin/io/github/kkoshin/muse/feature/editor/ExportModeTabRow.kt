@@ -6,6 +6,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.github.kkoshin.muse.feature.editor.ExportMode
 
 @Composable
 fun ExportModeTabRow(

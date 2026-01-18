@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.editor
+package io.github.kkoshin.muse.feature.editor
 
 enum class ExportMode {
     // 朗读模式

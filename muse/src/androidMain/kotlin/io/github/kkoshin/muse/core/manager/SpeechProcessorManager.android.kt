@@ -6,7 +6,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.foodiestudio.sugar.ExperimentalSugarApi
 import com.github.foodiestudio.sugar.storage.AppFileHelper
@@ -23,10 +22,13 @@ import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.SupportedAudioType
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
-import io.github.kkoshin.muse.repo.MuseRepo
+import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
+import io.github.kkoshin.muse.platformbridge.toUri
+import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import okio.Path
 import okio.sink
 
@@ -37,16 +39,12 @@ actual class SpeechProcessorManager(
     private val isolationProvider: AudioIsolationProvider,
     private val soundEffectProvider: SoundEffectProvider,
     private val sttProvider: STTProvider,
-) {
+    private val mediaStoreHelper: MediaStoreHelper,
+) : AudioIsolationProcessor {
     /**
      * 持久化 text:Uri
      */
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "voices")
-
-    /**
-     * 存储当前可用的 voice
-     */
-    private val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
 
     /**
      * 内存中缓存
@@ -79,14 +77,14 @@ actual class SpeechProcessorManager(
      * 生成长句子
      * 仅支持 mp3 格式
      */
-    suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Uri> {
+    actual suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Path> {
         val textHash = longText.hashCode()
         val key = stringPreferencesKey("${voiceId}_$textHash")
         return runCatching {
             check(longText.isNotBlank())
             appContext.dataStore.data
                 .first()[key]
-                ?.toUri() ?: run {
+                ?.toUri()?.toOkioPath() ?: run {
                 val audio = provider.generate(voiceId, longText).getOrThrow()
                 assert(audio.mimeType == SupportedAudioType.MP3) {
                     "only support Mp3 yet."
@@ -99,17 +97,17 @@ actual class SpeechProcessorManager(
                             appContext,
                             MediaStoreType.Audio,
                             fileName,
-                            "Music/${appContext.getString(R.string.app_name)}/$voiceId",
+                            "Music/${MusePathManager.getMusicRelativePath()}/$voiceId",
                             enablePending = true,
                         ).let {
                             it.write {
-                                writeAll(audio.content.source())
+                                writeAll(audio.content)
                             }
                             it.releasePendingStatus()
                             appContext.dataStore.edit { voices ->
                                 voices[key] = it.mediaUri.toString()
                             }
-                            it.mediaUri
+                            it.mediaUri.toOkioPath()
                         }
                 }
             }
@@ -138,23 +136,17 @@ actual class SpeechProcessorManager(
                     SupportedAudioType.WAV -> ".wav"
                 }
                 withContext(Dispatchers.IO) {
-                    MediaFile
-                        .create(
-                            appContext,
-                            MediaStoreType.Audio,
-                            "${text.lowercase()}$fileExtName",
-                            "${MuseRepo.getMusicRelativePath()}/$voiceId",
-                            enablePending = true,
-                        ).let {
-                            it.write {
-                                writeAll(audio.content)
-                            }
-                            it.releasePendingStatus()
-                            appContext.dataStore.edit { voices ->
-                                voices[key] = it.mediaUri.toString()
-                            }
-                            it.mediaUri.toOkioPath()
+                    mediaStoreHelper.saveAudio(
+                        relativePath = "${MusePathManager.getMusicRelativePath()}/$voiceId",
+                        fileName = "${text.lowercase()}$fileExtName",
+                        action = {
+                            writeAll(audio.content)
                         }
+                    ).also {
+                        appContext.dataStore.edit { voices ->
+                                voices[key] = it.toUri().toString()
+                            }
+                    }
                 }
             }
         }
@@ -175,6 +167,23 @@ actual class SpeechProcessorManager(
         }
     }
 
+    actual override suspend fun removeBackgroundNoiseAndSave(audioUri: Path): Result<Path> {
+        return removeBackgroundNoise(audioUri).map { content ->
+            val targetUri = MediaFile
+                .create(
+                    appContext,
+                    MediaStoreType.Downloads,
+                    "Denoise_${Clock.System.now().epochSeconds}.mp3",
+                    MusePathManager.getExportRelativePath(),
+                    enablePending = false,
+                ).mediaUri
+            appContext.contentResolver.openOutputStream(targetUri)?.use { outputStream ->
+                outputStream.write(content)
+            }
+            targetUri.toOkioPath()
+        }
+    }
+
     actual suspend fun makeSoundEffects(
         prompt: String,
         config: SoundEffectConfig,
@@ -185,7 +194,7 @@ actual class SpeechProcessorManager(
                 appContext,
                 MediaStoreType.Downloads,
                 "$fileNameWithoutExtension.mp3",
-                MuseRepo.getExportRelativePath(),
+                MusePathManager.getExportRelativePath(),
                 enablePending = false,
             ).mediaUri
         return withContext(Dispatchers.IO) {

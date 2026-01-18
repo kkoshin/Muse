@@ -1,0 +1,133 @@
+package io.github.kkoshin.muse.platformbridge
+
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.autoreleasepool
+import kotlinx.cinterop.useContents
+import okio.Path
+import okio.Sink
+import platform.CoreGraphics.CGRectMake
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.NSURL
+import platform.UIKit.UIActivityViewController
+import platform.UIKit.UIApplication
+import platform.UIKit.UIDevice
+import platform.UIKit.UIScreen
+import platform.UIKit.UIUserInterfaceIdiomPad
+import platform.UIKit.popoverPresentationController
+import platform.Foundation.NSLibraryDirectory
+import platform.Foundation.NSCachesDirectory
+import platform.UIKit.UIDocumentInteractionController
+import platform.UIKit.UIDocumentInteractionControllerDelegateProtocol
+import platform.darwin.NSObject
+import platform.UIKit.UIViewController
+import platform.UIKit.UIWindow
+
+private var activeDocumentInteractionController: UIDocumentInteractionController? = null
+
+/**
+ * 分享音频文件
+ */
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+actual fun shareAudioFile(path: Path): Result<Unit> = runCatching {
+    autoreleasepool {
+        val fileUrl = path.toNsUrl()
+
+        val windows = UIApplication.sharedApplication.windows as List<UIWindow>
+
+        // 获取当前活动的视图控制器
+        val rootViewController = windows.firstOrNull {
+            it.isKeyWindow()
+        }?.rootViewController
+
+        // 创建分享控制器
+        val activityViewController = UIActivityViewController(
+            activityItems = listOf(fileUrl),
+            applicationActivities = null
+        ).apply {
+            // iPad 设备需要设置弹出位置（避免崩溃）
+            if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+                popoverPresentationController?.apply {
+                    // 使用屏幕中心作为弹出位置
+                    sourceView = rootViewController?.view
+
+                    // 计算屏幕中心点
+                    val screenBounds = UIScreen.mainScreen.bounds
+                    val center = CGRectMake(
+                        screenBounds.useContents { origin.x } + screenBounds.useContents { size.width } / 2,
+                        screenBounds.useContents { origin.y } + screenBounds.useContents { size.height } / 2,
+                        1.0,  // 最小尺寸
+                        1.0
+                    )
+                    sourceRect = center
+                    permittedArrowDirections = 0UL // 不显示箭头
+                }
+            }
+        }
+
+        // 显示分享控制器
+        rootViewController?.presentViewController(
+            viewControllerToPresent = activityViewController,
+            animated = true,
+            completion = null
+        )
+    }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+actual fun openFile(path: Path): Result<Unit> = runCatching {
+    val fileUrl = path.toNsUrl() ?: throw IllegalArgumentException("Invalid path")
+
+    val controller = UIDocumentInteractionController.interactionControllerWithURL(fileUrl)
+    activeDocumentInteractionController = controller // Retain the controller
+
+    val windows = UIApplication.sharedApplication.windows as List<UIWindow>
+    val rootViewController = windows.firstOrNull { it.isKeyWindow() }?.rootViewController
+
+    if (rootViewController != null) {
+        controller.delegate = object : NSObject(), UIDocumentInteractionControllerDelegateProtocol {
+            override fun documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController): UIViewController {
+                return rootViewController
+            }
+        }
+
+        val success = controller.presentOpenInMenuFromRect(
+            rect = rootViewController.view.bounds,
+            inView = rootViewController.view,
+            animated = true
+        )
+
+        if (!success) {
+            // If no app is available to open the file, try previewing it
+            controller.presentPreviewAnimated(true)
+        }
+    } else {
+        throw IllegalStateException("No root view controller found")
+    }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+actual fun createCacheFile(fileName: String, sensitive: Boolean): Path {
+    val fileManager = NSFileManager.defaultManager
+    val directory = if (sensitive) {
+        fileManager.URLForDirectory(
+            directory = platform.Foundation.NSLibraryDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = true,
+            error = null
+        )
+    } else {
+        fileManager.URLForDirectory(
+            directory = platform.Foundation.NSCachesDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = true,
+            error = null
+        )
+    }
+    return directory!!.URLByAppendingPathComponent(fileName, isDirectory = false)!!.toOkioPath()!!
+}
+
+actual fun Path.toSink(): Sink = SystemFileSystem.sink(this)

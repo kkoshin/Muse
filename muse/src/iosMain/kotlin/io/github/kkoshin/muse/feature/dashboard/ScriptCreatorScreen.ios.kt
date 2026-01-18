@@ -1,15 +1,59 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.github.kkoshin.muse.feature.dashboard
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.benasher44.uuid.Uuid
-import io.github.kkoshin.muse.repo.model.Script
+import androidx.compose.runtime.rememberCoroutineScope
+import io.github.kkoshin.muse.platformbridge.DocumentPicker
+import io.github.kkoshin.muse.platformbridge.LocalToaster
+import io.github.kkoshin.muse.platformbridge.MimeType
+import io.github.kkoshin.muse.platformbridge.logcat
+import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
+import io.github.kkoshin.muse.platformbridge.toNsUrl
+import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import platform.Foundation.NSString
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.stringWithContentsOfURL
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
-actual fun ScriptCreatorScreen(
-    modifier: Modifier,
-    script: Script?,
-    onResult: (scriptId: Uuid?) -> Unit
-) {
-    // TODO implement ScriptCreatorScreen
+actual fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker {
+    val scope = rememberCoroutineScope()
+    val toaster = LocalToaster.current
+    return rememberDocumentPicker(MimeType.Text) { path ->
+        logcat { "rememberPicker path: $path" }
+        val url = path?.toNsUrl()
+        url?.let {
+            val isAccessing = it.startAccessingSecurityScopedResource()
+            scope.launch(Dispatchers.IO) {
+                try {
+                    val text = NSString.stringWithContentsOfURL(
+                        it,
+                        encoding = NSUTF8StringEncoding,
+                        error = null
+                    ) ?: ""
+                    
+                    withContext(Dispatchers.Main) {
+                        if (text.length > MAX_TEXT_LENGTH) {
+                            toaster.show("Text is too long, import failed.")
+                        } else {
+                            onResult(text)
+                        }
+                    }
+                } catch (e: Exception) {
+                    logcat { "Failed to read text from $it: $e" }
+                } finally {
+                    if (isAccessing) {
+                        it.stopAccessingSecurityScopedResource()
+                    }
+                }
+            }
+        }
+    }
 }

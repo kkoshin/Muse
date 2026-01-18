@@ -53,7 +53,6 @@ fun VideoExportScreen(
 
     val audioExportPipeline =
         rememberAudioExportPipeline(
-            context = context,
             input = args.pcmUriList.map { it.toPath() },
         )
 

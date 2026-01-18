@@ -70,7 +70,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature"))
+    implementation(project(":muse"))
     implementation(compose.runtime)
     implementation(compose.foundation)
     implementation(compose.material)
@@ -88,6 +88,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(sharedLibs.bundles.jetpack)
     implementation(libs.accompanist.navigation.material)
+    implementation(libs.browser)
+
     debugImplementation(libs.devtools)
 }
 

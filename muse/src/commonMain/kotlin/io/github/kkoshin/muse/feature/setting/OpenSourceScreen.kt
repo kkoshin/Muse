@@ -8,4 +8,4 @@ import kotlinx.serialization.Serializable
 object OpenSourceArgs
 
 @Composable
-expect fun OpenSourceScreen(modifier: Modifier = Modifier)
+expect fun OpenSourceScreen(modifier: Modifier = Modifier, onOpenURL: (String) -> Unit = {})
