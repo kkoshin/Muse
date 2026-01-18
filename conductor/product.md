@@ -14,6 +14,7 @@ Text to Speech
 
 ## Key Features
 - Direct integration with the ElevenLabs API for high-fidelity voice generation.
+- **Audio Isolation:** Remove background noise from audio files using ElevenLabs' advanced models.
 - **Audio Export and Sharing:** Export generated TTS audio to MP3 format and share it via system sheets.
 
 ## User Experience Priorities
