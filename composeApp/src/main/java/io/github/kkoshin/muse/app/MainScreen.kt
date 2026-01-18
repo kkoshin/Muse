@@ -27,6 +27,7 @@ import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.editor.ExportMode
 import io.github.kkoshin.muse.feature.export.ExportArgs
 import io.github.kkoshin.muse.feature.export.ExportScreen
 import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
@@ -116,13 +117,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             val args = entry.toRoute<EditorArgs>()
             EditorScreen(
                 args = args,
-                onExportRequest = { voices ->
+                onExportRequest = { voices, mode ->
                     navController.navigate(
                         voices.associate { it.voiceId to it.name }.let {
                             ExportConfigSheetArgs(
                                 voiceIds = it.keys.toList(),
                                 voiceNames = it.values.toList(),
                                 scriptId = args.scriptId,
+                                exportMode = mode.name
                             )
                         },
                     )
@@ -161,12 +163,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             }
         }
 
+
         bottomSheet<ExportConfigSheetArgs> { entry ->
             val args: ExportConfigSheetArgs = entry.toRoute()
             ExportConfigSheet(
                 Modifier,
                 voiceIds = args.voiceIds,
                 voiceNames = args.voiceNames,
+                mode = ExportMode.fromName(args.exportMode)!!,
                 onExport = {
                         voiceId,
                         fixedDurationEnabled,
@@ -178,6 +182,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         ExportArgs(
                             voiceId,
                             args.scriptId,
+                            args.exportMode,
                             fixedDurationEnabled,
                             fixedSilence,
                             silencePerChar,

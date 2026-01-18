@@ -3,6 +3,7 @@
 Text to Speech
 
 [![GitHub release](https://img.shields.io/github/v/release/kkoshin/Muse)](https://github.com/kkoshin/Muse/releases) 
+[![F-Droid](https://img.shields.io/f-droid/v/io.github.kkoshin.muse)](https://f-droid.org/packages/io.github.kkoshin.muse/)
 [![License](https://img.shields.io/github/license/kkoshin/Muse?color=blue)](LICENSE)
 [![GitHub all releases](https://img.shields.io/github/downloads/kkoshin/Muse/total?label=Downloads&logo=github)](https://github.com/kkoshin/Muse/releases/)
 

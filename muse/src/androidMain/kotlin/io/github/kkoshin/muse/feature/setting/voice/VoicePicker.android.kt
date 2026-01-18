@@ -1,5 +1,6 @@
 package io.github.kkoshin.muse.feature.setting.voice
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
@@ -10,6 +11,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +40,7 @@ import androidx.compose.material.icons.filled.Deselect
 import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,6 +100,16 @@ actual fun VoicePicker(
         }
     }
 
+    DisposableEffect(playbackBarVisible) {
+        // make three button style navigation transparent
+        (context as Activity).window.isNavigationBarContrastEnforced = !playbackBarVisible
+        onDispose {
+            if (context.window.isNavigationBarContrastEnforced) {
+                context.window.isNavigationBarContrastEnforced = false
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         speechProcessorManager
             .queryVoiceList(true)
@@ -147,40 +160,38 @@ actual fun VoicePicker(
             )
         },
         content = { contentPadding ->
-            Column(modifier = modifier.padding(contentPadding)) {
-                LazyColumn {
-                    voices
-                        .groupBy { it.accent }
-                        .toSortedMap()
-                        .forEach { (accent, voicesList) ->
-                            stickyHeader {
-                                Text(
-                                    accent.name,
-                                    style = MaterialTheme.typography.subtitle1,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            if (MaterialTheme.colors.isLight) Color(
-                                                0xFFEDEDED
-                                            ) else Color.DarkGray
-                                        )
-                                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                                )
-                            }
-                            items(voicesList) {
-                                VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
-                                    if (isChecked) {
-                                        selected.add(voice.voiceId)
-                                    } else {
-                                        selected.remove(voice.voiceId)
-                                    }
-                                }, onClick = { voice ->
-                                    previewVoice = voice
-                                    playbackBarVisible = true
-                                })
-                            }
+            LazyColumn(contentPadding = contentPadding) {
+                voices
+                    .groupBy { it.accent }
+                    .toSortedMap()
+                    .forEach { (accent, voicesList) ->
+                        stickyHeader {
+                            Text(
+                                accent.name,
+                                style = MaterialTheme.typography.subtitle1,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        if (MaterialTheme.colors.isLight) Color(
+                                            0xFFEDEDED
+                                        ) else Color.DarkGray
+                                    )
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                            )
                         }
-                }
+                        items(voicesList) {
+                            VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
+                                if (isChecked) {
+                                    selected.add(voice.voiceId)
+                                } else {
+                                    selected.remove(voice.voiceId)
+                                }
+                            }, onClick = { voice ->
+                                previewVoice = voice
+                                playbackBarVisible = true
+                            })
+                        }
+                    }
             }
         },
         bottomBar = {
@@ -192,11 +203,11 @@ actual fun VoicePicker(
                 previewVoice?.let { voice ->
                     PlaybackBar(
                         modifier = Modifier
-                            .navigationBarsPadding()
                             .background(
                                 MaterialTheme.colors.secondary,
                                 RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                            ),
+                            )
+                            .navigationBarsPadding(),
                         voice = voice,
                         onClose = {
                             playbackBarVisible = false
@@ -258,7 +269,13 @@ internal fun getAccentFlag(accent: Voice.Accent): String =
 @Composable
 fun PlaybackBar(modifier: Modifier = Modifier, voice: Voice, onClose: () -> Unit) {
     Row(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier = modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = {}
+            )
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(16.dp))

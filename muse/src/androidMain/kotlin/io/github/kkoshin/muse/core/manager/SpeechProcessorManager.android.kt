@@ -76,6 +76,47 @@ actual class SpeechProcessorManager(
     }
 
     /**
+     * 生成长句子
+     * 仅支持 mp3 格式
+     */
+    suspend fun getOrGenerateForLongText(voiceId: String, longText: String): Result<Uri> {
+        val textHash = longText.hashCode()
+        val key = stringPreferencesKey("${voiceId}_$textHash")
+        return runCatching {
+            check(longText.isNotBlank())
+            appContext.dataStore.data
+                .first()[key]
+                ?.toUri() ?: run {
+                val audio = provider.generate(voiceId, longText).getOrThrow()
+                assert(audio.mimeType == SupportedAudioType.MP3) {
+                    "only support Mp3 yet."
+                }
+                // 文本可能比较长，文件名只能取它的 hash 值
+                val fileName = "Audio_$textHash.mp3"
+                withContext(Dispatchers.IO) {
+                    MediaFile
+                        .create(
+                            appContext,
+                            MediaStoreType.Audio,
+                            fileName,
+                            "Music/${appContext.getString(R.string.app_name)}/$voiceId",
+                            enablePending = true,
+                        ).let {
+                            it.write {
+                                writeAll(audio.content.source())
+                            }
+                            it.releasePendingStatus()
+                            appContext.dataStore.edit { voices ->
+                                voices[key] = it.mediaUri.toString()
+                            }
+                            it.mediaUri
+                        }
+                }
+            }
+        }
+    }
+
+    /**
      * 如果已经生成过了，本地有音频文件就直接返回
      * TODO 目前的音频格式是固定为 [MonoAudioSampleMetadata]
      * @return 本地文件的 URI，目前仅为 MP3 文件
