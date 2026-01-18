@@ -30,6 +30,8 @@ import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
 import platform.AVFoundation.AVPlayerItemFailedToPlayToEndTimeErrorKey
 import platform.AVFoundation.AVPlayerItemFailedToPlayToEndTimeNotification
+import platform.AVFoundation.AVPlayerItemStatusFailed
+import platform.AVFoundation.AVPlayerItemStatusReadyToPlay
 import platform.AVFoundation.AVPlayerTimeControlStatusPlaying
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.currentTime
@@ -61,8 +63,10 @@ actual fun AudioPlaybackButton(
             val playerItem = AVPlayerItem(uRL = audioPath.toNsUrl()!!)
             player = AVPlayer(playerItem)
 
+            playbackState = PlaybackState.Buffering
+
             // 监听播放结束通知
-            val observer = NSNotificationCenter.defaultCenter.addObserverForName(
+            val stopObserver = NSNotificationCenter.defaultCenter.addObserverForName(
                 name = AVPlayerItemDidPlayToEndTimeNotification,
                 `object` = playerItem,
                 queue = null
@@ -86,7 +90,7 @@ actual fun AudioPlaybackButton(
             isPlaying = true
 
             onDispose {
-                NSNotificationCenter.defaultCenter.removeObserver(observer)
+                NSNotificationCenter.defaultCenter.removeObserver(stopObserver)
                 NSNotificationCenter.defaultCenter.removeObserver(errorObserver)
                 player?.pause()
                 player = null
@@ -96,30 +100,40 @@ actual fun AudioPlaybackButton(
         }
     }
 
-    // 更新播放状态和进度
-    LaunchedEffect(player, isPlaying) {
-        if (player != null && isPlaying) {
-            while (isPlaying && playbackState == PlaybackState.Ready) {
-                player?.currentItem?.let { item ->
-                    // 获取当前时间和总时长
-                    val currentSeconds = CMTimeGetSeconds(player?.currentTime()!!)
-                    val durationSeconds = CMTimeGetSeconds(item.duration())
-
-                    if (durationSeconds > 0) {
-                        progress = (currentSeconds / durationSeconds).toFloat()
-                        onProgress(progress)
-                    }
-                }
-                delay(100.milliseconds)
-            }
-        }
-    }
-
-    // 监听播放状态变化
+    // 状态轮询与进度更新
     LaunchedEffect(player) {
         while (player != null) {
+            val currentItem = player?.currentItem
+
+            // 更新播放状态
+            if (currentItem != null) {
+                when (currentItem.status) {
+                    AVPlayerItemStatusReadyToPlay -> {
+                        if (playbackState == PlaybackState.Buffering) {
+                            playbackState = PlaybackState.Ready
+                        }
+                    }
+                    AVPlayerItemStatusFailed -> {
+                        playbackState = PlaybackState.Idle
+                        logcat { "Error: ${currentItem.error?.localizedDescription}" }
+                    }
+                }
+            }
+
+            // 更新进度
+            if (isPlaying && playbackState == PlaybackState.Ready) {
+                val currentSeconds = CMTimeGetSeconds(player!!.currentTime())
+                val durationSeconds = CMTimeGetSeconds(player!!.currentItem!!.duration())
+                if (durationSeconds > 0) {
+                    progress = (currentSeconds / durationSeconds).toFloat()
+                    onProgress(progress)
+                }
+            }
+
+            // 同步播放图标状态
             isPlaying = player?.timeControlStatus == AVPlayerTimeControlStatusPlaying
-            delay(200.milliseconds)
+
+            delay(100.milliseconds)
         }
     }
 
