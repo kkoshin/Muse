@@ -1,19 +1,22 @@
 package io.github.kkoshin.muse.platformbridge
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import io.github.kkoshin.muse.LocalNavigationController
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.extended.Back
 
 @Composable
-actual fun AppBackButton(onBack: () -> Unit) {
+actual fun AppBackButton(modifier: Modifier, onBack: () -> Unit) {
     val localNavController = LocalNavigationController.current
-    IconButton(onClick = {
-        onBack()
-        localNavController.navigateUp()
-    }) {
-        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+    IconButton(
+        modifier = modifier,
+        onClick = {
+            onBack()
+            localNavController.navigateUp()
+        }) {
+        Icon(MiuixIcons.Back, contentDescription = null)
     }
 }

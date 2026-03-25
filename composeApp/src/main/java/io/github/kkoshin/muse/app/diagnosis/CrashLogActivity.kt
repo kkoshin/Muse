@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
-import io.github.kkoshin.muse.feature.theme.AppTheme
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 
 class CrashLogActivity : ComponentActivity() {
 

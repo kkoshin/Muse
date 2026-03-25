@@ -74,11 +74,9 @@ fun ExportScreen(
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    AppBackButton(
-                        onBack = {
-                            onExit(progress is ProgressStatus.Success)
-                        }
-                    )
+                    AppBackButton {
+                        onExit(progress is ProgressStatus.Success)
+                    }
                 },
                 windowInsets = WindowInsets.statusBars,
                 backgroundColor = MaterialTheme.colors.surface,

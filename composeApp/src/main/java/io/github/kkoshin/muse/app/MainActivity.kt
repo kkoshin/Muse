@@ -15,8 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import io.github.kkoshin.muse.feature.theme.AppTheme
 import io.github.kkoshin.muse.MainScreen
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     /**

@@ -1,6 +1,6 @@
 [versions]
 agp = "8.12.0"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "29"
 android-targetSdk = "35"
 androidx-activityCompose = "1.9.3"
@@ -10,7 +10,7 @@ compose-plugin = "1.10.0"
 datastore = "1.1.0"
 junit = "4.13.2"
 koinBom = "4.1.1"
-kotlin = "2.2.10"
+kotlin = "2.3.10"
 kotlinxCoroutines = "1.10.1"
 kotlinxDatetime = "0.6.2"
 lifecycleViewmodel = "2.8.4"
@@ -22,6 +22,7 @@ accompanist = "0.36.0"
 navigationCompose = "2.9.0"
 sqldelight = "2.0.2"
 about = "11.2.2"
+miuix = "0.8.8"
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
@@ -67,6 +68,8 @@ about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "abou
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"
 sugar = "com.github.foodiestudio:sugar:1.0.2"
 devtools = "com.github.foodiestudio:devtools:0.1.8"
+miuix = { module = "top.yukonga.miuix.kmp:miuix", version.ref = "miuix" }
+miuix-icons = { module = "top.yukonga.miuix.kmp:miuix-icons", version.ref = "miuix" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -91,4 +94,8 @@ ktor-common = [
 about = [
     "about-core",
     "about-ui"
+]
+miuix = [
+    "miuix",
+    "miuix-icons"
 ]

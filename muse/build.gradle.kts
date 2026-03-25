@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -37,7 +36,7 @@ kotlin {
     }
 
     listOf(
-        iosX64(),
+//        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -87,6 +86,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
+            implementation(libs.bundles.miuix)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
