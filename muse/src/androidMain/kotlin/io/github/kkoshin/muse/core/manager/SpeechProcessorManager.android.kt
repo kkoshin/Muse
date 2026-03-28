@@ -28,7 +28,7 @@ import io.github.kkoshin.muse.repo.MusePathManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import okio.Path
 import okio.sink
 

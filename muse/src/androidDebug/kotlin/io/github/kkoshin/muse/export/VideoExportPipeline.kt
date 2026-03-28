@@ -63,9 +63,10 @@ fun rememberVideoExportPipeline(
             bgm.add(oneSilence)
         }
 
-        val videoItem = EditedMediaItemSequence(mainTrack)
+        val videoItem = EditedMediaItemSequence.Builder(mainTrack).build()
+        val bgmSequence = EditedMediaItemSequence.Builder(bgm).build()
 
-        val composition = Composition.Builder(videoItem, EditedMediaItemSequence(bgm)).build()
+        val composition = Composition.Builder(listOf(videoItem, bgmSequence)).build()
 
         VideoExportPipeline(context.applicationContext, composition)
     }

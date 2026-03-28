@@ -2,7 +2,7 @@
 
 package io.github.kkoshin.muse.repo.model
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

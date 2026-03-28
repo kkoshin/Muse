@@ -4,7 +4,7 @@ import io.github.kkoshin.elevenlabs.ElevenLabsClient
 import io.github.kkoshin.elevenlabs.model.SoundGenerationRequest
 import io.ktor.resources.Resource
 import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.core.readBytes
+import io.ktor.utils.io.readAvailable
 import okio.Sink
 import okio.buffer
 import okio.use
@@ -31,14 +31,15 @@ suspend fun ElevenLabsClient.makeSoundEffects(
 
 suspend fun ByteReadChannel.writeToSink(sink: Sink, bufferSize: Int = 8192) {
     val okioBufferedSink = sink.buffer() // 使用 Okio 缓冲提升性能
+    val buffer = ByteArray(bufferSize)
     okioBufferedSink.use {
         while (!isClosedForRead) {
-            val packet = readRemaining(bufferSize.toLong()) // 分块读取数据
-            val bytes = packet.readBytes()                  // 转换为 ByteArray
-            if (bytes.isNotEmpty()) {
-                okioBufferedSink.write(bytes)                // 写入 Okio Sink
+            val bytesRead = readAvailable(buffer, 0, bufferSize)
+            if (bytesRead > 0) {
+                okioBufferedSink.write(buffer, 0, bytesRead)
+            } else if (bytesRead == -1) {
+                break
             }
-            packet.release()                                 // 释放 Ktor 内存
         }
         okioBufferedSink.flush()                             // 确保所有数据写入
     }

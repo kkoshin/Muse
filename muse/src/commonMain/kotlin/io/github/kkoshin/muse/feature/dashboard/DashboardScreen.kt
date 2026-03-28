@@ -61,7 +61,7 @@ import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
 import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
