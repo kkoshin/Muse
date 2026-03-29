@@ -5,7 +5,7 @@ import io.github.kkoshin.elevenlabs.model.SpeechToTextChunkResponseModel
 import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.core.provider.Voice
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import okio.Path
 
 /**

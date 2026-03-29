@@ -1,7 +1,7 @@
 package io.github.kkoshin.elevenlabs
 
 import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.cancel
+import io.ktor.utils.io.readAvailable
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -40,7 +40,7 @@ class StreamingByteReadChannelSource(
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
-            channel.cancel()
+            channel.cancel(null)
         }
     }
 

@@ -3,34 +3,43 @@ agp = "8.12.0"
 android-compileSdk = "36"
 android-minSdk = "29"
 android-targetSdk = "35"
-androidx-activityCompose = "1.9.3"
-atomicfu = "0.23.2"
-bytesize = "2.0.0-beta04"
-compose-plugin = "1.10.0"
+androidx-activityCompose = "1.13.0"
+atomicfu = "0.32.1"
+bytesize = "2.1.0"
+compose-plugin = "1.10.3"
 datastore = "1.1.0"
 junit = "4.13.2"
 koinBom = "4.1.1"
 kotlin = "2.3.10"
-kotlinxCoroutines = "1.10.1"
-kotlinxDatetime = "0.6.2"
-lifecycleViewmodel = "2.8.4"
-# compatible with Kotlin 2.1
-kotlinx-json = "1.9.0"
-ktor = "2.3.12"
-media3 = "1.5.0"
+kotlinxCoroutines = "1.10.2"
+kotlinxDatetime = "0.7.1"
+lifecycleViewmodel = "2.10.0"
+# compatible with Kotlin 2.3
+kotlinx-json = "1.10.0"
+ktor = "3.4.1"
+media3 = "1.9.2"
 accompanist = "0.36.0"
-navigationCompose = "2.9.0"
-sqldelight = "2.0.2"
-about = "11.2.2"
+navigationCompose = "2.9.2"
+sqldelight = "2.3.2"
+about = "13.2.1"
+logcat = "0.1"
+okio = "3.6.0"
+startup = "1.1.1"
+androidx-lifecycle = "2.8.2"
 miuix = "0.8.8"
 
 [libraries]
+logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
 bytesize = { module = "me.saket.bytesize:bytesize", version.ref = "bytesize" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-test = { module = "io.insert-koin:koin-test" }
@@ -39,6 +48,14 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-plugin" }
+compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-plugin" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-plugin" }
+compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version = "1.7.3" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-plugin" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-plugin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-json" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -67,7 +84,7 @@ about-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about
 about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "about" }
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"
 sugar = "com.github.foodiestudio:sugar:1.0.2"
-devtools = "com.github.foodiestudio:devtools:0.1.8"
+devtools = "com.github.foodiestudio:devtools:0.1.9"
 miuix = { module = "top.yukonga.miuix.kmp:miuix", version.ref = "miuix" }
 miuix-icons = { module = "top.yukonga.miuix.kmp:miuix-icons", version.ref = "miuix" }
 
@@ -83,6 +100,7 @@ about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 
 [bundles]
+jetpack = ["androidx-startup", "androidx-lifecycle-runtime-ktx", "androidx-datastore", "androidx-datastore-preferences"]
 media3 = ["media3-transformer", "media3-effect", "media3-exoplayer"]
 ktor-common = [
     "ktor-client-core",

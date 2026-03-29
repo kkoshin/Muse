@@ -34,7 +34,7 @@ class ElevenLabsClient(
         data: T,
     ): Result<W> =
         runCatching {
-            ktorClient.post<R>(resources) {
+            ktorClient.post(resources) {
                 headers {
                     append("xi-api-key", apiKey)
                 }
@@ -46,7 +46,7 @@ class ElevenLabsClient(
         resources: R,
         noinline formDataBuilder: FormBuilder.() -> Unit,
     ): Result<W> = runCatching {
-        ktorClient.post<R>(resources) {
+        ktorClient.post(resources) {
             headers {
                 append("xi-api-key", apiKey)
             }

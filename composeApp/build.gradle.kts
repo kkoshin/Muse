@@ -69,22 +69,20 @@ android {
 
 dependencies {
     implementation(project(":muse"))
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.material)
-    implementation(compose.ui)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material)
+    implementation(libs.compose.ui)
 
     implementation(libs.navigation.compose)
     implementation(libs.xcrash)
-    implementation(sharedLibs.logcat)
-    implementation(platform(sharedLibs.koin.bom))
-    implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
-        exclude(group = "androidx.appcompat")
-    }
+    implementation(libs.logcat)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
     implementation(libs.sugar)
-    implementation(compose.materialIconsExtended)
+    implementation(libs.compose.material.icons.extended)
     implementation(libs.androidx.activity.compose)
-    implementation(sharedLibs.bundles.jetpack)
+    implementation(libs.bundles.jetpack)
     implementation(libs.accompanist.navigation.material)
     implementation(libs.browser)
 

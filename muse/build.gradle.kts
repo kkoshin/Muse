@@ -12,24 +12,14 @@ plugins {
     alias(libs.plugins.kotlin.cocoapods)
 }
 
-aboutLibraries {
-    // Remove the "generated" timestamp to allow for reproducible builds
-    excludeFields = arrayOf("generated")
-}
-
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+    androidTarget()
 
     cocoapods {
         name = "muse"
         version = "2.0"
         summary = "muse feature"
-        homepage = "https://github.com/kkoshin/muse"
+        homepage = "https://github.com/kkoshin"
         ios.deploymentTarget = "16.0"
 
         pod("lame")
@@ -49,13 +39,11 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(sharedLibs.logcat)
+            implementation(libs.logcat)
             implementation(libs.sugar)
-            implementation(sharedLibs.bundles.jetpack)
+            implementation(libs.bundles.jetpack)
             implementation(libs.documentfile)
-            implementation(dependencies.create(sharedLibs.koin.asProvider().get()).toString()) {
-                exclude(group = "androidx.appcompat")
-            }
+            implementation(libs.koin.android)
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
             }
@@ -66,17 +54,17 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.material.icons.extended)
+            implementation(libs.compose.resources)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
             implementation(libs.bundles.about)
             implementation(libs.bytesize)
-            implementation(sharedLibs.okio)
+            implementation(libs.okio)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
@@ -142,8 +130,8 @@ android {
         compose = true
     }
     dependencies {
-        debugImplementation(compose.preview)
-        debugImplementation(compose.uiTooling)
+        debugImplementation(libs.compose.ui.tooling.preview)
+        debugImplementation(libs.compose.ui.tooling)
     }
 
     lint {
