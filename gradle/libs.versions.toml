@@ -22,8 +22,16 @@ accompanist = "0.36.0"
 navigationCompose = "2.9.2"
 sqldelight = "2.3.2"
 about = "13.2.1"
+logcat = "0.1"
+okio = "3.6.0"
+startup = "1.1.1"
+androidx-lifecycle = "2.8.2"
 
 [libraries]
+logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
@@ -89,6 +97,7 @@ about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 
 [bundles]
+jetpack = ["androidx-startup", "androidx-lifecycle-runtime-ktx", "androidx-datastore", "androidx-datastore-preferences"]
 media3 = ["media3-transformer", "media3-effect", "media3-exoplayer"]
 ktor-common = [
     "ktor-client-core",

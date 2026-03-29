@@ -39,9 +39,9 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(sharedLibs.logcat)
+            implementation(libs.logcat)
             implementation(libs.sugar)
-            implementation(sharedLibs.bundles.jetpack)
+            implementation(libs.bundles.jetpack)
             implementation(libs.documentfile)
             implementation(libs.koin.android)
             implementation(dependencies.create(libs.lame.get()).toString()) {
@@ -64,7 +64,7 @@ kotlin {
             implementation(project(":elevenlabs"))
             implementation(libs.bundles.about)
             implementation(libs.bytesize)
-            implementation(sharedLibs.okio)
+            implementation(libs.okio)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
