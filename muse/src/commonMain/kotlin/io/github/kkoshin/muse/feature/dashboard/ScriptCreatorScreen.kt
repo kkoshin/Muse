@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.FileOpen
@@ -44,7 +43,6 @@ import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Back
@@ -89,8 +87,6 @@ fun ScriptCreatorScreen(
         onResult(null)
     }
 
-    val scrollBehavior = MiuixScrollBehavior()
-
     ScreenScaffold(
         modifier = modifier,
         title = "",
@@ -123,14 +119,13 @@ fun ScriptCreatorScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
-        content = { paddingValues ->
+        content = { paddingValues, scrollBehavior ->
             BasicTextField(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    .nestedScroll(scrollBehavior!!.nestedScrollConnection),
                 value = content,
                 textStyle = AppTheme.textStyles.title2.copy(color = AppTheme.colorScheme.onSurface),
                 onValueChange = {

@@ -1,3 +1,5 @@
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -144,5 +146,13 @@ sqldelight {
         create("AppDatabase") {
             packageName.set("io.github.kkoshin.muse.database")
         }
+    }
+}
+
+// To enable the prior behavior, you can simply configure this in your build script
+aboutLibraries {
+    library {
+        duplicationMode = DuplicateMode.KEEP
+        duplicationRule = DuplicateRule.SIMPLE
     }
 }

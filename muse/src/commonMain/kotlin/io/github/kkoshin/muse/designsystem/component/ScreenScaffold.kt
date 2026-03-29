@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.platformbridge.AppBackButton
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.TopAppBar
@@ -20,8 +21,8 @@ fun ScreenScaffold(
     },
     actions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit,
-    scrollBehavior: ScrollBehavior? = null,
+    content: @Composable (PaddingValues, ScrollBehavior?) -> Unit,
+    scrollBehavior: ScrollBehavior? = MiuixScrollBehavior(),
 ) {
     Scaffold(
         modifier = modifier,
@@ -35,6 +36,6 @@ fun ScreenScaffold(
         },
         floatingActionButton = floatingActionButton
     ) { paddingValues ->
-        content(paddingValues)
+        content(paddingValues, scrollBehavior)
     }
 }

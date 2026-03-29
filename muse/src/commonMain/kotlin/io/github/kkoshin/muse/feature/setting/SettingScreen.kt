@@ -73,7 +73,6 @@ fun SettingScreen(
         }
     }
 
-    val scrollBehavior = MiuixScrollBehavior()
 
     val headerModifier =
         Modifier.padding(horizontal = 16.dp)
@@ -89,12 +88,11 @@ fun SettingScreen(
 
     ScreenScaffold(
         title = stringResource(Res.string.setting),
-        scrollBehavior = scrollBehavior,
-        content = { paddingValues ->
+        content = { paddingValues, scrollBehavior ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    .nestedScroll(scrollBehavior!!.nestedScrollConnection),
                 contentPadding = paddingValues
             ) {
                 preferenceCategory(

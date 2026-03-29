@@ -66,7 +66,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import kotlin.time.Instant
@@ -100,13 +99,10 @@ fun DashboardScreen(
         viewModel.loadScripts()
     }
 
-    val scrollBehavior = MiuixScrollBehavior()
-
     ScreenScaffold(
         modifier = modifier,
         title = stringResource(Res.string.projects),
         navigationIcon = {},
-        scrollBehavior = scrollBehavior,
         actions = {
             IconButton(
                 modifier = Modifier.padding(end = 16.dp),
@@ -114,7 +110,7 @@ fun DashboardScreen(
                 Icon(Icons.Default.Settings, "settings")
             }
         },
-        content = { paddingValues ->
+        content = { paddingValues, scrollBehavior ->
             if (scripts.isEmpty()) {
                 val modId = "modIcon"
                 val text = buildAnnotatedString {
@@ -155,7 +151,7 @@ fun DashboardScreen(
                         .fillMaxSize()
                         // If you want to add the overscroll effect, please add it before the scroll behavior
                         .overScrollVertical()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                        .nestedScroll(scrollBehavior!!.nestedScrollConnection),
                     contentPadding = PaddingValues(
                         top = paddingValues.calculateTopPadding() + 8.dp,
                         bottom = 56.dp
