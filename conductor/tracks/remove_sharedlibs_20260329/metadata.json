@@ -1,0 +1,8 @@
+{
+  "track_id": "remove_sharedlibs_20260329",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-03-29T00:00:00Z",
+  "updated_at": "2026-03-29T00:00:00Z",
+  "description": "Remove sharedLibs usage. - in the build.gradle.kts, replace all dependencies that from sharedLibs with local version catalog (aka. libs) - keep all dependencies not changed after refactoring."
+}
