@@ -7,22 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentPaste
@@ -37,9 +25,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
+import io.github.kkoshin.muse.designsystem.component.ScreenScaffold
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import io.github.kkoshin.muse.platformbridge.DocumentPicker
 import io.github.kkoshin.muse.platformbridge.LocalToaster
@@ -49,6 +40,14 @@ import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.extended.Back
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -66,7 +65,7 @@ object ScriptCreatorArgs {
 }
 
 @Composable
-expect fun rememberPicker(onResult: (text: String) -> Unit) : DocumentPicker
+expect fun rememberPicker(onResult: (text: String) -> Unit): DocumentPicker
 
 @Composable
 fun ScriptCreatorScreen(
@@ -90,47 +89,50 @@ fun ScriptCreatorScreen(
         onResult(null)
     }
 
-    Scaffold(
+    val scrollBehavior = MiuixScrollBehavior()
+
+    ScreenScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onResult(null)
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
-                },
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp,
-                actions = {
-                    IconButton(
-                        enabled = content.isNotEmpty(),
-                        onClick = {
-                            scope.launch {
-                                Script(text = content).let {
-                                    repo.insertScript(it)
-                                    onResult(it.id)
-                                }
-                            }
-                        },
-                    ) {
-                        Icon(Icons.Default.Save, contentDescription = null)
-                    }
-                },
-            )
+        title = "",
+        navigationIcon = {
+            IconButton(
+                modifier = Modifier.padding(start = 16.dp),
+                onClick = {
+                    onResult(null)
+                }) {
+                Icon(MiuixIcons.Back, contentDescription = null)
+            }
         },
+        actions = {
+            IconButton(
+                modifier = Modifier.padding(end = 16.dp),
+                enabled = content.isNotEmpty(),
+                onClick = {
+                    scope.launch {
+                        Script(text = content).let {
+                            repo.insertScript(it)
+                            onResult(it.id)
+                        }
+                    }
+                },
+            ) {
+                Icon(
+                    Icons.Default.Save,
+                    contentDescription = null,
+                    tint = if (content.isNotEmpty()) AppTheme.colorScheme.onSurface else AppTheme.colorScheme.disabledOnSurface
+                )
+            }
+        },
+        scrollBehavior = scrollBehavior,
         content = { paddingValues ->
             BasicTextField(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 32.dp),
+                    .padding(horizontal = 16.dp)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
                 value = content,
-                textStyle = MaterialTheme.typography.h5.copy(color = MaterialTheme.colors.onSurface),
+                textStyle = AppTheme.textStyles.title2.copy(color = AppTheme.colorScheme.onSurface),
                 onValueChange = {
                     if (it.length <= MAX_TEXT_LENGTH) {
                         content = it
@@ -138,7 +140,7 @@ fun ScriptCreatorScreen(
                         toaster.show("The text has exceeded the maximum limit of $MAX_TEXT_LENGTH characters")
                     }
                 },
-                cursorBrush = SolidColor(MaterialTheme.colors.onBackground),
+                cursorBrush = SolidColor(AppTheme.colorScheme.onBackground),
                 decorationBox = { field ->
                     Box {
                         field()
@@ -146,15 +148,14 @@ fun ScriptCreatorScreen(
                             Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                                 Text(
                                     "Enter text",
-                                    style = MaterialTheme.typography.h5,
-                                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                                    style = AppTheme.textStyles.title2,
+                                    color = AppTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                 )
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    OutlinedButton(
-                                        shape = RoundedCornerShape(50),
+                                    Button(
                                         onClick = {
                                             clipboardManager.getText()?.toString()
                                                 ?.take(MAX_TEXT_LENGTH)?.let {
@@ -171,7 +172,7 @@ fun ScriptCreatorScreen(
                                         Text("Paste")
                                     }
                                     Button(
-                                        shape = RoundedCornerShape(50),
+                                        colors = ButtonDefaults.buttonColorsPrimary(),
                                         onClick = {
                                             filePicker.launch()
                                         },

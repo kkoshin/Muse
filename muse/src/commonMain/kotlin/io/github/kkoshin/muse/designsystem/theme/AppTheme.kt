@@ -12,6 +12,7 @@ import top.yukonga.miuix.kmp.theme.ColorSchemeMode
 import top.yukonga.miuix.kmp.theme.Colors
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.TextStyles
+import top.yukonga.miuix.kmp.theme.ThemeColorSpec
 import top.yukonga.miuix.kmp.theme.ThemeController
 
 @Composable
@@ -22,7 +23,8 @@ fun AppTheme(content: @Composable () -> Unit) {
         ThemeController(
             ColorSchemeMode.System, keyColor = Color(
                 0xFF5D9CED,
-            )
+            ),
+            colorSpec = ThemeColorSpec.Spec2025
         )
     }
 
