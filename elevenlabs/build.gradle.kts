@@ -32,7 +32,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(libs.bundles.ktor.common)
-            implementation(sharedLibs.okio)
+            implementation(libs.okio)
             implementation(libs.atomicfu)
         }
         iosMain.dependencies {

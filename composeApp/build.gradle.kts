@@ -76,13 +76,13 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.xcrash)
-    implementation(sharedLibs.logcat)
+    implementation(libs.logcat)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.sugar)
     implementation(libs.compose.material.icons.extended)
     implementation(libs.androidx.activity.compose)
-    implementation(sharedLibs.bundles.jetpack)
+    implementation(libs.bundles.jetpack)
     implementation(libs.accompanist.navigation.material)
     implementation(libs.browser)
 
