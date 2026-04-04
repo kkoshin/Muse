@@ -2,7 +2,7 @@
 
 ## Core Technologies
 - **Language:** Kotlin
-- **Multiplatform:** Kotlin Multiplatform (KMP) for shared logic across Android and iOS.
+- **Multiplatform:** Kotlin Multiplatform (KMP) for shared logic across Android, iOS, and Desktop (Experimental UI debugging).
 - **UI Framework:** Compose Multiplatform for shared UI components.
 - **Dependency Injection:** Koin for lightweight dependency management.
 

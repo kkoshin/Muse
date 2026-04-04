@@ -5,6 +5,7 @@ import okio.FileSystem
 enum class Platform {
     Android,
     Ios,
+    Desktop,
 }
 
 expect val CURRENT_PLATFORM: Platform
