@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Add Desktop Playground Support**
+- [x] **Track: Add Desktop Playground Support**
 *Link: [./tracks/desktop_support_20260404/](./tracks/desktop_support_20260404/)*
