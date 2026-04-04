@@ -8,6 +8,8 @@ plugins {
 }
 
 kotlin {
+    jvm()
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -28,6 +30,9 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {

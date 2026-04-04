@@ -203,6 +203,7 @@ fun SettingScreen(
                         },
                     )
                     Platform.Ios -> {}
+                    Platform.Desktop -> {}
                 }
 
                 preferenceCategory(

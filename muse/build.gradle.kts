@@ -14,6 +14,7 @@ plugins {
 
 kotlin {
     androidTarget()
+    jvm()
 
     cocoapods {
         name = "muse"
@@ -82,6 +83,9 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.sql.ios)
+        }
+        jvmMain.dependencies {
+            implementation(libs.sql.jvm)
         }
     }
 
