@@ -1,3 +1,5 @@
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -27,7 +29,7 @@ kotlin {
     }
 
     listOf(
-        iosX64(),
+//        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -75,6 +77,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.runtime.compose)
+            implementation(libs.bundles.miuix)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -147,5 +150,13 @@ sqldelight {
         create("AppDatabase") {
             packageName.set("io.github.kkoshin.muse.database")
         }
+    }
+}
+
+// To enable the prior behavior, you can simply configure this in your build script
+aboutLibraries {
+    library {
+        duplicationMode = DuplicateMode.KEEP
+        duplicationRule = DuplicateRule.SIMPLE
     }
 }

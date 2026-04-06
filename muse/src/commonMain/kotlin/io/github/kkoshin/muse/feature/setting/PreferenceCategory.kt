@@ -23,7 +23,7 @@ fun PreferenceCategory(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
 ) {
-    Box(modifier.padding(horizontal = 16.dp).padding(top = 12.dp, bottom = 8.dp)) {
+    Box(modifier.padding(top = 12.dp, bottom = 8.dp)) {
         title()
     }
 }

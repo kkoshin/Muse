@@ -122,11 +122,11 @@ fun VoicePicker(
                 windowInsets = WindowInsets.statusBars,
                 backgroundColor = MaterialTheme.colors.surface,
                 navigationIcon = {
-                    AppBackButton(onBack = {
+                    AppBackButton {
                         scope.launch {
                             speechProcessorManager.updateAvailableVoice(selected.toSet())
                         }
-                    })
+                    }
                 },
                 title = {
                     Text(text = stringResource(Res.string.voices))

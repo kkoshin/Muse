@@ -3,7 +3,6 @@
 package io.github.kkoshin.muse
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -14,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
@@ -44,7 +44,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
+            color = AppTheme.colorScheme.background
         ) {
             NavHost(
                 modifier = Modifier.fillMaxSize(),

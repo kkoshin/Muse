@@ -20,17 +20,17 @@ All tasks follow a strict lifecycle:
 2. **Mark In Progress:** Before beginning work, edit `plan.md` and change the task from `[ ]` to `[~]`
 
 3. **Write Failing Tests (Red Phase):**
-   - Create a new test file for the feature or bug fix.
-   - Write one or more unit tests that clearly define the expected behavior and acceptance criteria for the task.
-   - **CRITICAL:** Run the tests and confirm that they fail as expected. This is the "Red" phase of TDD. Do not proceed until you have failing tests.
+    - Create a new test file for the feature or bug fix.
+    - Write one or more unit tests that clearly define the expected behavior and acceptance criteria for the task.
+    - **CRITICAL:** Run the tests and confirm that they fail as expected. This is the "Red" phase of TDD. Do not proceed until you have failing tests.
 
 4. **Implement to Pass Tests (Green Phase):**
-   - Write the minimum amount of application code necessary to make the failing tests pass.
-   - Run the test suite again and confirm that all tests now pass. This is the "Green" phase.
+    - Write the minimum amount of application code necessary to make the failing tests pass.
+    - Run the test suite again and confirm that all tests now pass. This is the "Green" phase.
 
 5. **Refactor (Optional but Recommended):**
-   - With the safety of passing tests, refactor the implementation code and the test code to improve clarity, remove duplication, and enhance performance without changing the external behavior.
-   - Rerun tests to ensure they still pass after refactoring.
+    - With the safety of passing tests, refactor the implementation code and the test code to improve clarity, remove duplication, and enhance performance without changing the external behavior.
+    - Rerun tests to ensure they still pass after refactoring.
 
 6. **Verify Coverage:** Run coverage reports using the project's chosen tools. For example, in a Python project, this might look like:
    ```bash
@@ -39,10 +39,10 @@ All tasks follow a strict lifecycle:
    Target: >80% coverage for new code. The specific tools and commands will vary by language and framework.
 
 7. **Document Deviations:** If implementation differs from tech stack:
-   - **STOP** implementation
-   - Update `tech-stack.md` with new design
-   - Add dated note explaining the change
-   - Resume implementation
+    - **STOP** implementation
+    - Update `tech-stack.md` with new design
+    - Add dated note explaining the change
+    - Resume implementation
 
 8. **Update Plan:**
     - **Action:** Read `plan.md`, find the line for the completed task, update its status from `[~]` to `[x]`.
@@ -182,37 +182,37 @@ Before marking any task complete, verify:
 Before requesting review:
 
 1. **Functionality**
-   - Feature works as specified
-   - Edge cases handled
-   - Error messages are user-friendly
+    - Feature works as specified
+    - Edge cases handled
+    - Error messages are user-friendly
 
 2. **Code Quality**
-   - Follows style guide
-   - DRY principle applied
-   - Clear variable/function names
-   - Appropriate comments
+    - Follows style guide
+    - DRY principle applied
+    - Clear variable/function names
+    - Appropriate comments
 
 3. **Testing**
-   - Unit tests comprehensive
-   - Integration tests pass
-   - Coverage adequate (>80%)
+    - Unit tests comprehensive
+    - Integration tests pass
+    - Coverage adequate (>80%)
 
 4. **Security**
-   - No hardcoded secrets
-   - Input validation present
-   - SQL injection prevented
-   - XSS protection in place
+    - No hardcoded secrets
+    - Input validation present
+    - SQL injection prevented
+    - XSS protection in place
 
 5. **Performance**
-   - Database queries optimized
-   - Images optimized
-   - Caching implemented where needed
+    - Database queries optimized
+    - Images optimized
+    - Caching implemented where needed
 
 6. **Mobile Experience**
-   - Touch targets adequate (44x44px)
-   - Text readable without zooming
-   - Performance acceptable on mobile
-   - Interactions feel native
+    - Touch targets adequate (44x44px)
+    - Text readable without zooming
+    - Performance acceptable on mobile
+    - Interactions feel native
 
 ## Commit Guidelines
 

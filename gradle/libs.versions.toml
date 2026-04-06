@@ -26,6 +26,7 @@ logcat = "0.1"
 okio = "3.6.0"
 startup = "1.1.1"
 androidx-lifecycle = "2.8.2"
+miuix = "0.8.8"
 
 [libraries]
 logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
@@ -85,6 +86,8 @@ about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "abou
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"
 sugar = "com.github.foodiestudio:sugar:1.0.2"
 devtools = "com.github.foodiestudio:devtools:0.1.9"
+miuix = { module = "top.yukonga.miuix.kmp:miuix", version.ref = "miuix" }
+miuix-icons = { module = "top.yukonga.miuix.kmp:miuix-icons", version.ref = "miuix" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -94,7 +97,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
-about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
+about = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "about" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 
 [bundles]
@@ -110,4 +113,8 @@ ktor-common = [
 about = [
     "about-core",
     "about-ui"
+]
+miuix = [
+    "miuix",
+    "miuix-icons"
 ]

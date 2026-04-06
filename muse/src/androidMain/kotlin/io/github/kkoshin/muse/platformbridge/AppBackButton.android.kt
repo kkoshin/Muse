@@ -1,19 +1,21 @@
 package io.github.kkoshin.muse.platformbridge
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.extended.Back
 
 @Composable
-actual fun AppBackButton(onBack: () -> Unit) {
+actual fun AppBackButton(modifier: Modifier, onBack: () -> Unit) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     IconButton(
+        modifier = modifier,
         onClick = {
             backPressedDispatcher?.onBackPressed()
         }) {
-        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+        Icon(MiuixIcons.Back, contentDescription = null)
     }
 }
