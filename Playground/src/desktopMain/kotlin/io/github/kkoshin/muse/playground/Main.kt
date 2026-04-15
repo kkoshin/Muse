@@ -5,6 +5,7 @@ import androidx.compose.ui.window.application
 import io.github.kkoshin.muse.appModule
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.feature.theme.AppTheme
+import io.github.kkoshin.muse.playground.ui.CaptionView
 import org.koin.core.context.startKoin
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -16,11 +17,7 @@ fun main() = application {
 
     Window(onCloseRequest = ::exitApplication, title = "Muse Playground") {
         AppTheme {
-            ScriptCreatorScreen(
-                onResult = { scriptId ->
-                    println("Result: $scriptId")
-                }
-            )
+            CaptionView()
         }
     }
 }
