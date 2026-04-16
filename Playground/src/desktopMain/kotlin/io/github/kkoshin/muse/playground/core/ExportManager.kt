@@ -12,8 +12,27 @@ import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionTransform
 import io.github.kkoshin.muse.playground.ui.drawCaption
 import org.jetbrains.skia.Bitmap
+import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.Image
+import java.io.File
 
 class ExportManager {
+
+    fun exportToFile(
+        caption: Caption,
+        captionTransform: CaptionTransform,
+        width: Int,
+        height: Int,
+        textMeasurer: TextMeasurer,
+        file: File
+    ) {
+        val bitmap = exportToBitmap(caption, captionTransform, width, height, textMeasurer)
+        val image = Image.makeFromBitmap(bitmap)
+        val data = image.encodeToData(EncodedImageFormat.PNG)
+        if (data != null) {
+            file.writeBytes(data.bytes)
+        }
+    }
 
     fun exportToBitmap(
         caption: Caption,
