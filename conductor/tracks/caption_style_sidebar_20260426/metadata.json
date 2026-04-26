@@ -1,0 +1,8 @@
+{
+  "track_id": "caption_style_sidebar_20260426",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-26T00:00:00Z",
+  "updated_at": "2026-04-26T00:00:00Z",
+  "description": "给 io.github.kkoshin.muse.playground.ui 下的 CaptionView 添加一个样式的调节功能（以侧边栏的形式），目前需要支持 CaptionStyle 里的样式，当拖动调节的时候，预览的文字效果也要实时应用。"
+}
