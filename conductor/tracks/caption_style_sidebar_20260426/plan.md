@@ -1,13 +1,13 @@
 # Implementation Plan: CaptionView Style Adjustment Sidebar
 
 ## Phase 1: Layout & State Preparation
-- [ ] Task: Refactor `CaptionView` to manage mutable state for `CaptionStyle`.
-- [ ] Task: Update the `CaptionView` layout to include a right-side panel for the sidebar alongside the main canvas.
-- [ ] Task: Conductor - User Manual Verification 'Layout & State Preparation' (Protocol in workflow.md)
+- [x] Task: Refactor `CaptionView` to manage mutable state for `CaptionStyle`.
+- [x] Task: Update the `CaptionView` layout to include a right-side panel for the sidebar alongside the main canvas.
+- [x] Task: Conductor - User Manual Verification 'Layout & State Preparation' (Protocol in workflow.md)
 
 ## Phase 2: Reusable UI Controls
-- [ ] Task: Implement a reusable Color Picker component for the sidebar.
-- [ ] Task: Implement a reusable Slider with Numeric Input component for continuous/precise adjustments.
+- [x] Task: Implement a reusable Color Picker component for the sidebar.
+- [x] Task: Implement a reusable Slider with Numeric Input component for continuous/precise adjustments.
 - [ ] Task: Conductor - User Manual Verification 'Reusable UI Controls' (Protocol in workflow.md)
 
 ## Phase 3: Sidebar Assembly & Integration

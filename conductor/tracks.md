@@ -4,7 +4,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: CaptionView Style Adjustment Sidebar**
+- [x] **Track: CaptionView Style Adjustment Sidebar**
 *Link: [./tracks/caption_style_sidebar_20260426/](./tracks/caption_style_sidebar_20260426/)*
 
 ---
