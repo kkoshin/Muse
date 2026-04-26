@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +32,7 @@ fun DrawScope.drawCaption(
     // 1. 应用变换 (对应数据模型中的位置、缩放)
     withTransform({
         translate(offsetX, offsetY)
+        scale(captionTransform.scale, pivot = Offset.Zero)
     }) {
         // Draw background
         style.background?.let { bg ->

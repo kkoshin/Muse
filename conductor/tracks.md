@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: CaptionView Interactive Selection and Transformation**
+- [x] **Track: CaptionView Interactive Selection and Transformation**
 *Link: [./tracks/caption_interaction_20260426/](./tracks/caption_interaction_20260426/)*

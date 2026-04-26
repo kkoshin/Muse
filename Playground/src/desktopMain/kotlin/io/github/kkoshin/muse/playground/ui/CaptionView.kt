@@ -3,6 +3,8 @@ package io.github.kkoshin.muse.playground.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +38,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -63,9 +69,16 @@ fun CaptionView() {
         mutableStateOf(CaptionTransform(DpOffset(100.dp, 100.dp)))
     }
     var captionStyle by remember { mutableStateOf(CaptionStyle()) }
+    var isSelectionBoxVisible by remember { mutableStateOf(false) }
     val caption = remember(captionStyle) { DefaultCaption.copy(style = captionStyle) }
 
     val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+
+    val textLayoutResult = remember(caption, textMeasurer) {
+        textMeasurer.measure(caption.text, TextStyle())
+    }
+
     val exportManager = remember { ExportManager() }
     val scope = rememberCoroutineScope()
 
@@ -74,12 +87,91 @@ fun CaptionView() {
             modifier = Modifier
                 .weight(1f)
                 .background(androidx.compose.ui.graphics.Color(0xFFF5F5F5))
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        isSelectionBoxVisible = true
+                    }
+                }
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawCaption(captionTransform, caption, textMeasurer)
             }
 
-            SelectionBox(Modifier.size(200.dp, 200.dp).offset(200.dp, 100.dp))
+            if (isSelectionBoxVisible) {
+
+                val padding = captionStyle.background?.contentPadding ?: 0.dp
+                val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
+                val totalPadding = padding + borderPadding
+
+                val boxWidth = with(density) {
+                    (textLayoutResult.size.width.toDp() + totalPadding * 2) * captionTransform.scale
+                }
+                val boxHeight = with(density) {
+                    (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale
+                }
+                val boxOffset = DpOffset(
+                    captionTransform.offset.x - totalPadding * captionTransform.scale,
+                    captionTransform.offset.y - totalPadding * captionTransform.scale
+                )
+
+                SelectionBox(
+                    modifier = Modifier
+                        .size(boxWidth, boxHeight)
+                        .offset(boxOffset.x, boxOffset.y)
+                        .pointerInput(Unit) {
+                            detectDragGestures { change, dragAmount ->
+                                change.consume()
+                                captionTransform = captionTransform.copy(
+                                    offset = DpOffset(
+                                        captionTransform.offset.x + dragAmount.x.toDp(),
+                                        captionTransform.offset.y + dragAmount.y.toDp()
+                                    )
+                                )
+                            }
+                        },
+                    onClose = { isSelectionBoxVisible = false },
+                    onScaleDrag = { dragAmount ->
+                        val oldScale = captionTransform.scale
+                        
+                        // 计算当前 SelectionBox 的中心和尺寸
+                        val padding = captionStyle.background?.contentPadding ?: 0.dp
+                        val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
+                        val totalPadding = padding + borderPadding
+                        
+                        val textSizeDp = with(density) {
+                            DpOffset(textLayoutResult.size.width.toDp(), textLayoutResult.size.height.toDp())
+                        }
+                        
+                        val boxWidth = (textSizeDp.x + totalPadding * 2) * oldScale
+                        val boxHeight = (textSizeDp.y + totalPadding * 2) * oldScale
+                        
+                        // 当前 handle 相对于中心的距离 (初始距离)
+                        val d1 = Math.sqrt(Math.pow(boxWidth.value.toDouble() / 2, 2.0) + Math.pow(boxHeight.value.toDouble() / 2, 2.0))
+                        
+                        // 拖动后的 handle 相对于中心的距离
+                        // dragAmount 是相对于 handle 的位移，handle 位于中心 + (w/2, h/2)
+                        val dragAmountDpX = with(density) { dragAmount.x.toDp() }
+                        val dragAmountDpY = with(density) { dragAmount.y.toDp() }
+                        val nextHandleX = boxWidth.value / 2 + dragAmountDpX.value
+                        val nextHandleY = boxHeight.value / 2 + dragAmountDpY.value
+                        val d2 = Math.sqrt(Math.pow(nextHandleX.toDouble(), 2.0) + Math.pow(nextHandleY.toDouble(), 2.0))
+                        
+                        val scaleRatio = (d2 / d1).toFloat()
+                        val newScale = (oldScale * scaleRatio).coerceAtLeast(0.1f)
+                        
+                        // 为了保持中心不变：newOffset = oldOffset + (textSize / 2) * (oldScale - newScale)
+                        val newOffset = DpOffset(
+                            captionTransform.offset.x + (textSizeDp.x / 2) * (oldScale - newScale),
+                            captionTransform.offset.y + (textSizeDp.y / 2) * (oldScale - newScale)
+                        )
+                        
+                        captionTransform = captionTransform.copy(
+                            offset = newOffset,
+                            scale = newScale
+                        )
+                    }
+                )
+            }
 
             Button(
                 onClick = {
@@ -252,7 +344,11 @@ fun CaptionView() {
 
 // action menu: zoom, delete
 @Composable
-private fun SelectionBox(modifier: Modifier = Modifier) {
+private fun SelectionBox(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit = {},
+    onScaleDrag: (androidx.compose.ui.geometry.Offset) -> Unit = {}
+) {
     Box(
         modifier
     ) {
@@ -263,7 +359,7 @@ private fun SelectionBox(modifier: Modifier = Modifier) {
         )
         IconButton(
             modifier = Modifier.align(Alignment.TopEnd).offset(24.dp, y = -24.dp),
-            onClick = {}) {
+            onClick = onClose) {
             Icon(
                 Icons.Default.Close,
                 contentDescription = "Close",
@@ -274,7 +370,13 @@ private fun SelectionBox(modifier: Modifier = Modifier) {
         }
 
         IconButton(
-            modifier = Modifier.align(Alignment.BottomEnd).offset(24.dp, y = 24.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).offset(24.dp, y = 24.dp)
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        onScaleDrag(dragAmount)
+                    }
+                },
             onClick = {}) {
             Icon(
                 Icons.Default.Expand, contentDescription = "Scale",

@@ -4,5 +4,6 @@ import androidx.compose.ui.unit.DpOffset
 
 // TODO: 支持更多属性
 data class CaptionTransform(
-    val offset: DpOffset
+    val offset: DpOffset,
+    val scale: Float = 1.0f
 )
