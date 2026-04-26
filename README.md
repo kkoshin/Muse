@@ -17,3 +17,18 @@ Text to Speech
 
 #### iOS Support
 The latest version (v0.2.0 and above) supports building for iOS. You can use the `run_ios.sh` script to execute the iOS build process.
+
+#### Development & Release
+This project uses [Gemini CLI](https://github.com/google/gemini-cli) to automate development tasks. 
+
+A specialized **Muse Release Manager** skill is included to handle the release SOP:
+- **Versioning**: Automatic increment of `versionCode` and `versionName`.
+- **Changelogs**: Automated generation of Android fastlane metadata.
+- **Verification**: Pre-release build and test suite validation.
+
+To use it, ensure you have Gemini CLI installed and run:
+```bash
+gemini run-skill muse-release-manager
+```
+or simply ask the agent to "prepare the next release".
+
