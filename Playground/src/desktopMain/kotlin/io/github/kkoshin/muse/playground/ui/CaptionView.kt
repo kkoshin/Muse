@@ -215,7 +215,6 @@ fun CaptionView() {
                                 captionTransform = captionTransform,
                                 width = Constants.REFERENCE_WIDTH.toInt(),
                                 height = Constants.REFERENCE_HEIGHT.toInt(),
-                                textMeasurer = textMeasurer,
                                 file = destination
                             )
                         }
