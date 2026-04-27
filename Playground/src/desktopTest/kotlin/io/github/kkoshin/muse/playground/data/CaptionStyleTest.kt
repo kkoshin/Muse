@@ -32,4 +32,22 @@ class CaptionStyleTest {
         assertEquals(expectedSize, textStyle.fontSize)
         assertEquals(TextAlign.Center, textStyle.textAlign)
     }
+
+    @Test
+    fun testHighlightStyleToTextStyle() {
+        val highlightStyle = CaptionStyle.HighlightStyle(textColor = Color.Blue, fontScale = 3.0f)
+        val density = 1.0f
+        val textStyle = highlightStyle.toTextStyle(density)
+
+        assertEquals(Color.Blue, textStyle.color)
+        val expectedSize = (Constants.REFERENCE_FONT_SIZE * 3.0f * 1.0f).sp
+        assertEquals(expectedSize, textStyle.fontSize)
+    }
+
+    @Test
+    fun testDefaultHighlightStyle() {
+        val style = CaptionStyle()
+        assertEquals(Color.Red, style.highlightStyle.textColor)
+        assertEquals(2.0f, style.highlightStyle.fontScale)
+    }
 }

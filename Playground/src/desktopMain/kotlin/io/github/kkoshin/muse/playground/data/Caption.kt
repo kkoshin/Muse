@@ -17,7 +17,8 @@ data class CaptionStyle(
     val textColor: Color = Color.Black,
     val fontScale: Float = 1.0f,
     val border: Border? = null,
-    val background: Background? = null
+    val background: Background? = null,
+    val highlightStyle: HighlightStyle = HighlightStyle()
 ) {
     data class Border(
         val color: Color,
@@ -29,6 +30,11 @@ data class CaptionStyle(
         val radius: Dp,
         val color: Color,
     )
+
+    data class HighlightStyle(
+        val textColor: Color = Color.Red,
+        val fontScale: Float = 2.0f
+    )
 }
 
 fun CaptionStyle.toTextStyle(density: Float): TextStyle {
@@ -36,5 +42,12 @@ fun CaptionStyle.toTextStyle(density: Float): TextStyle {
         color = textColor,
         fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
         textAlign = TextAlign.Center
+    )
+}
+
+fun CaptionStyle.HighlightStyle.toTextStyle(density: Float): TextStyle {
+    return TextStyle(
+        color = textColor,
+        fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
     )
 }
