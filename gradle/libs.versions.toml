@@ -26,6 +26,7 @@ logcat = "0.1"
 okio = "3.6.0"
 startup = "1.1.1"
 androidx-lifecycle = "2.8.2"
+nucleus = "1.9.1"
 
 [libraries]
 logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
@@ -96,6 +97,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+nucleus = { id = "io.github.kdroidfilter.nucleus", version.ref = "nucleus" }
 
 [bundles]
 jetpack = ["androidx-startup", "androidx-lifecycle-runtime-ktx", "androidx-datastore", "androidx-datastore-preferences"]

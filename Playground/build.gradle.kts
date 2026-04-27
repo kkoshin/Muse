@@ -1,9 +1,10 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import io.github.kdroidfilter.nucleus.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.nucleus)
 }
 
 kotlin {
@@ -17,8 +18,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material)
                 implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
+                implementation(libs.compose.material.icons.extended)
                 
                 implementation(project(":muse"))
                 implementation(project(":elevenlabs"))
@@ -28,17 +28,21 @@ kotlin {
                 implementation(libs.koin.compose)
             }
         }
+
+        val desktopTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 
-compose.desktop {
-    application {
-        mainClass = "io.github.kkoshin.muse.playground.MainKt"
+nucleus.application {
+    mainClass = "io.github.kkoshin.muse.playground.MainKt"
 
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "MusePlayground"
-            packageVersion = "1.0.0"
-        }
+    nativeDistributions {
+        targetFormats(TargetFormat.Dmg, TargetFormat.Nsis, TargetFormat.Deb)
+        packageName = "MusePlayground"
+        packageVersion = "1.0.0"
     }
 }
