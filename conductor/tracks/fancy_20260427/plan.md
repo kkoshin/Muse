@@ -22,7 +22,7 @@
 - [x] Task: Create `FancyCaptionView` Composable in `fancy`'s `commonMain` that encapsulates the `Canvas` and `drawCaption` logic.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Rendering Logic Migration' (Protocol in workflow.md)
 
-## Phase 4: Playground Refactoring
+## Phase 4: Playground Refactoring [checkpoint: 8d98de5]
 - [x] Task: Refactor `ExportManager.kt` in `Playground` to use the `fancy` module's models and rendering functions for generating bitmaps, passing the necessary `FancyConfig`.
 - [x] Task: Refactor `CaptionView.kt` in `Playground` to use `FancyCaptionView` instead of calling `Canvas` directly.
 - [x] Task: Remove any unused code or imports related to the migrated files in `Playground`.
