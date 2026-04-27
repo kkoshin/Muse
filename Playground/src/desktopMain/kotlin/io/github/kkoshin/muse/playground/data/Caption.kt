@@ -5,8 +5,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import io.github.kkoshin.muse.playground.Constants.REFERENCE_FONT_SIZE
@@ -43,10 +47,16 @@ fun List<CaptionSegment>.toAnnotatedString(density: Float): AnnotatedString {
 data class CaptionStyle(
     val textColor: Color = Color.Black,
     val fontScale: Float = 1.0f,
+    val letterSpacing: Float = 0f,
+    val textStyle: TextStyleOption = TextStyleOption.Normal,
     val border: Border? = null,
     val background: Background? = null,
     val highlightStyle: HighlightStyle = HighlightStyle()
 ) {
+    enum class TextStyleOption {
+        Normal, Bold, Italic, Underline
+    }
+
     data class Border(
         val color: Color,
         val width: Dp,
@@ -68,7 +78,11 @@ fun CaptionStyle.toTextStyle(density: Float): TextStyle {
     return TextStyle(
         color = textColor,
         fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        letterSpacing = letterSpacing.em,
+        fontWeight = if (textStyle == CaptionStyle.TextStyleOption.Bold) FontWeight.Bold else FontWeight.Normal,
+        fontStyle = if (textStyle == CaptionStyle.TextStyleOption.Italic) FontStyle.Italic else FontStyle.Normal,
+        textDecoration = if (textStyle == CaptionStyle.TextStyleOption.Underline) TextDecoration.Underline else TextDecoration.None
     )
 }
 

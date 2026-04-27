@@ -1,7 +1,11 @@
 package io.github.kkoshin.muse.playground.data
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import io.github.kkoshin.muse.playground.Constants
 import kotlin.test.Test
@@ -19,6 +23,39 @@ class CaptionStyleTest {
         val expectedSize = (Constants.REFERENCE_FONT_SIZE * 1.0f * density).sp
         assertEquals(expectedSize, textStyle.fontSize)
         assertEquals(TextAlign.Center, textStyle.textAlign)
+        assertEquals(0.em, textStyle.letterSpacing)
+        assertEquals(FontWeight.Normal, textStyle.fontWeight)
+        assertEquals(FontStyle.Normal, textStyle.fontStyle)
+        assertEquals(TextDecoration.None, textStyle.textDecoration)
+    }
+
+    @Test
+    fun testToTextStyleWithLetterSpacing() {
+        val style = CaptionStyle(letterSpacing = 0.5f)
+        val density = 1.0f
+        val textStyle = style.toTextStyle(density)
+        assertEquals(0.5.em, textStyle.letterSpacing)
+    }
+
+    @Test
+    fun testToTextStyleWithBold() {
+        val style = CaptionStyle(textStyle = CaptionStyle.TextStyleOption.Bold)
+        val textStyle = style.toTextStyle(1.0f)
+        assertEquals(FontWeight.Bold, textStyle.fontWeight)
+    }
+
+    @Test
+    fun testToTextStyleWithItalic() {
+        val style = CaptionStyle(textStyle = CaptionStyle.TextStyleOption.Italic)
+        val textStyle = style.toTextStyle(1.0f)
+        assertEquals(FontStyle.Italic, textStyle.fontStyle)
+    }
+
+    @Test
+    fun testToTextStyleWithUnderline() {
+        val style = CaptionStyle(textStyle = CaptionStyle.TextStyleOption.Underline)
+        val textStyle = style.toTextStyle(1.0f)
+        assertEquals(TextDecoration.Underline, textStyle.textDecoration)
     }
 
     @Test
