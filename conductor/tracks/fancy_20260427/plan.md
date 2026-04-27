@@ -17,9 +17,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Data Models Migration' (Protocol in workflow.md)
 
 ## Phase 3: Rendering Logic Migration
-- [ ] Task: Move `CaptionRender.kt` (`drawCaption`) from `Playground` to `fancy`'s `commonMain`.
-- [ ] Task: Refactor `drawCaption` to accept `FancyConfig` instead of relying on global `Constants`.
-- [ ] Task: Create `FancyCaptionView` Composable in `fancy`'s `commonMain` that encapsulates the `Canvas` and `drawCaption` logic.
+- [x] Task: Move `CaptionRender.kt` (`drawCaption`) from `Playground` to `fancy`'s `commonMain`.
+- [x] Task: Refactor `drawCaption` to accept `FancyConfig` instead of relying on global `Constants`.
+- [x] Task: Create `FancyCaptionView` Composable in `fancy`'s `commonMain` that encapsulates the `Canvas` and `drawCaption` logic.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Rendering Logic Migration' (Protocol in workflow.md)
 
 ## Phase 4: Playground Refactoring
