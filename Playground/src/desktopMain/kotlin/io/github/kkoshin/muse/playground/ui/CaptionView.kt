@@ -37,16 +37,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.core.ExportManager
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionStyle
 import io.github.kkoshin.muse.playground.data.CaptionTransform
 import io.github.kkoshin.muse.playground.data.toOffset
 import io.github.kkoshin.muse.playground.data.toRelative
+import io.github.kkoshin.muse.playground.data.toTextStyle
 import io.github.kkoshin.muse.playground.ui.components.ColorPicker
 import io.github.kkoshin.muse.playground.ui.components.DebugInfo
 import io.github.kkoshin.muse.playground.ui.components.NumericSlider
@@ -75,7 +76,7 @@ fun CaptionView() {
     val density = LocalDensity.current
 
     val textLayoutResult = remember(caption, textMeasurer) {
-        textMeasurer.measure(caption.text, TextStyle())
+        textMeasurer.measure(caption.text, caption.style.toTextStyle(density.density))
     }
 
     var containerSize by remember { mutableStateOf(Size.Zero) }
@@ -87,7 +88,7 @@ fun CaptionView() {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .background(androidx.compose.ui.graphics.Color(0xFFF5F5F5))
+                .background(Color(0xFFF5F5F5))
                 .onGloballyPositioned {
                     containerSize = it.size.toSize()
                 }
@@ -102,15 +103,16 @@ fun CaptionView() {
             }
 
             if (isSelectionBoxVisible && containerSize != Size.Zero) {
+                val previewScale = (containerSize.width / density.density) / Constants.REFERENCE_WIDTH
                 val padding = captionStyle.background?.contentPadding ?: 0.dp
                 val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
                 val totalPadding = padding + borderPadding
 
                 val boxWidth = with(density) {
-                    (textLayoutResult.size.width.toDp() + totalPadding * 2) * captionTransform.scale
+                    (textLayoutResult.size.width.toDp() + totalPadding * 2) * captionTransform.scale * previewScale
                 }
                 val boxHeight = with(density) {
-                    (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale
+                    (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale * previewScale
                 }
 
                 val centerPixelOffset = captionTransform.offset.toOffset(containerSize)
@@ -141,6 +143,7 @@ fun CaptionView() {
                     onClose = { isSelectionBoxVisible = false },
                     onScaleDrag = { dragAmount ->
                         val oldScale = captionTransform.scale
+                        val previewScaleDrag = (containerSize.width / density.density) / Constants.REFERENCE_WIDTH
 
                         val textSizeDp = with(density) {
                             androidx.compose.ui.unit.DpOffset(
@@ -149,8 +152,8 @@ fun CaptionView() {
                             )
                         }
 
-                        val boxWidthNow = (textSizeDp.x + totalPadding * 2) * oldScale
-                        val boxHeightNow = (textSizeDp.y + totalPadding * 2) * oldScale
+                        val boxWidthNow = (textSizeDp.x + totalPadding * 2) * oldScale * previewScaleDrag
+                        val boxHeightNow = (textSizeDp.y + totalPadding * 2) * oldScale * previewScaleDrag
 
                         val d1 = Math.sqrt(
                             Math.pow(
@@ -197,8 +200,8 @@ fun CaptionView() {
                             exportManager.exportToFile(
                                 caption = caption,
                                 captionTransform = captionTransform,
-                                width = 1920,
-                                height = 1080,
+                                width = Constants.REFERENCE_WIDTH.toInt(),
+                                height = Constants.REFERENCE_HEIGHT.toInt(),
                                 textMeasurer = textMeasurer,
                                 file = destination
                             )
@@ -259,7 +262,7 @@ fun CaptionView() {
                             background = CaptionStyle.Background(
                                 8.dp,
                                 8.dp,
-                                java.awt.Color.LIGHT_GRAY
+                                Color.LightGray
                             )
                         )
                     } else {
@@ -311,7 +314,7 @@ fun CaptionView() {
             ) {
                 Checkbox(checked = hasBorder, onCheckedChange = {
                     captionStyle = if (it) {
-                        captionStyle.copy(border = CaptionStyle.Border(java.awt.Color.BLACK, 2.dp))
+                        captionStyle.copy(border = CaptionStyle.Border(Color.Black, 2.dp))
                     } else {
                         captionStyle.copy(border = null)
                     }

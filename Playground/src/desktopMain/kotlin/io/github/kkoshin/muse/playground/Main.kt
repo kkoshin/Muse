@@ -22,8 +22,8 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "Muse Playground",
         state = rememberWindowState(
-            width = (1920 / density.density.toInt() + 300).dp,
-            height = (1080 / density.density.toInt()).dp
+            width = (Constants.REFERENCE_WIDTH / density.density.toInt() + 300).dp,
+            height = (Constants.REFERENCE_HEIGHT / density.density.toInt()).dp
         )
     ) {
         AppTheme {

@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionTransform
 import io.github.kkoshin.muse.playground.ui.drawCaption
@@ -46,9 +47,14 @@ class ExportManager {
 
         val drawScope = CanvasDrawScope()
         val size = Size(width.toFloat(), height.toFloat())
+        
+        // 以参考宽度为基准计算导出密度
+        // 这样在 drawCaption 里的 previewScale 始终为 1.0，
+        // 而所有的 dp 值（padding, border）会根据分辨率自动缩放。
+        val exportDensity = width / Constants.REFERENCE_WIDTH
 
         drawScope.draw(
-            density = Density(1f), // 根据导出分辨率设定密度
+            density = Density(exportDensity), 
             layoutDirection = LayoutDirection.Ltr,
             canvas = canvas,
             size = size

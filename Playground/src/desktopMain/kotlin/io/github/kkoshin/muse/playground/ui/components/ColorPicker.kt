@@ -17,18 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import java.awt.Color as AwtColor
 import androidx.compose.ui.graphics.Color as ComposeColor
 
 @Composable
 fun ColorPicker(
-    selectedColor: AwtColor,
-    onColorSelected: (AwtColor) -> Unit,
+    selectedColor: ComposeColor,
+    onColorSelected: (ComposeColor) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = listOf(
-        AwtColor.BLACK, AwtColor.WHITE, AwtColor.RED, AwtColor.GREEN, AwtColor.BLUE,
-        AwtColor.YELLOW, AwtColor.CYAN, AwtColor.MAGENTA, AwtColor.GRAY, AwtColor.DARK_GRAY
+        ComposeColor.Black, ComposeColor.White, ComposeColor.Red, ComposeColor.Green, ComposeColor.Blue,
+        ComposeColor.Yellow, ComposeColor.Cyan, ComposeColor.Magenta, ComposeColor.Gray, ComposeColor.DarkGray
     )
 
     Column(modifier = modifier) {
@@ -62,16 +61,15 @@ fun ColorPicker(
 
 @Composable
 private fun ColorItem(
-    color: AwtColor,
+    color: ComposeColor,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val composeColor = ComposeColor(color.rgb)
     Box(
         modifier = Modifier
             .size(32.dp)
             .clip(CircleShape)
-            .background(composeColor)
+            .background(color)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
                 color = if (isSelected) MaterialTheme.colors.primary else ComposeColor.LightGray,
