@@ -1,10 +1,10 @@
 # Implementation Plan: Extract `fancy` Module for Caption Rendering
 
 ## Phase 1: Module Creation and Configuration
-- [ ] Task: Create a new Gradle module directory `fancy` in the project root.
-- [ ] Task: Create `build.gradle.kts` for `fancy` configuring it as a Kotlin Multiplatform module (Android, iOS, Desktop) with Compose support.
-- [ ] Task: Include the `:fancy` module in `settings.gradle.kts`.
-- [ ] Task: Add `:fancy` as a dependency in the `:Playground` module's `build.gradle.kts`.
+- [x] Task: Create a new Gradle module directory `fancy` in the project root.
+- [x] Task: Create `build.gradle.kts` for `fancy` configuring it as a Kotlin Multiplatform module (Android, iOS, Desktop) with Compose support.
+- [x] Task: Include the `:fancy` module in `settings.gradle.kts`.
+- [x] Task: Add `:fancy` as a dependency in the `:Playground` module's `build.gradle.kts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Module Creation and Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Core Data Models Migration
