@@ -28,11 +28,14 @@
 
 实现方案中存在三种相互独立的缩放因子，它们共同决定了最终的视觉效果：
 
-### 1. 字体缩放 (`fontScale`) —— 样式属性
-*   **来源**: `CaptionStyle.fontScale`
-*   **作用**: 修改字幕文本的**真实字号**。
-*   **计算**: `fontSize = 基准字号 * fontScale * 密度`
-*   **特点**: 只影响文字大小，不影响背景边距（Padding）或边框宽度。这保证了用户可以单独调节文字大小。
+### 1. 字体与排版样式 —— 样式属性
+*   **来源**: `CaptionStyle` 中的 `fontScale`, `letterSpacing`, `textStyle`。
+*   **作用**: 控制文本的基础视觉表现。
+*   **计算**:
+    *   **字号**: `fontSize = 基准字号 * fontScale * 密度`
+    *   **字间距**: 使用 `em` 单位（如 `letterSpacing.em`），确保间距随字号缩放比例同步变化。
+    *   **样式**: 支持互斥的 `Normal`, `Bold`, `Italic`, `Underline` 状态。
+*   **特点**: 这些属性只影响文字本身的渲染，不影响背景、边框的布局计算。这保证了排版细节的调整不会破坏整体布局。
 
 ### 2. 变换缩放 (`captionTransform.scale`) —— 布局缩放
 *   **来源**: `CaptionTransform.scale`
