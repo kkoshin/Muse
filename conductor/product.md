@@ -15,7 +15,7 @@ Text to Speech
 ## Key Features
 - Direct integration with the ElevenLabs API for high-fidelity voice generation.
 - **Audio Isolation:** Remove background noise from audio files using ElevenLabs' advanced models.
-- **Caption Design and Rendering:** Advanced tools for designing and rendering high-quality captions with customizable styles (font scale, colors, backgrounds, and borders).
+- **Caption Design and Rendering:** Advanced tools for designing and rendering high-quality captions with customizable styles (font scale, letter spacing, text styles, colors, backgrounds, borders, and **rich text support including highlights**).
 - **Audio Export and Sharing:** Export generated TTS audio to MP3 format and share it via system sheets.
 
 ## User Experience Priorities

@@ -11,6 +11,7 @@ import androidx.compose.ui.text.drawText
 import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.muse.playground.data.toAnnotatedString
 import io.github.kkoshin.muse.playground.data.toOffset
 import io.github.kkoshin.muse.playground.data.toTextStyle
 
@@ -21,10 +22,25 @@ fun DrawScope.drawCaption(
     textMeasurer: TextMeasurer,
 ) {
     val style = caption.style
-    val textResult = textMeasurer.measure(
-        text = caption.text,
-        style = caption.style.toTextStyle(density),
-    )
+    val currentDensity = density
+
+    val textLayoutInput = if (caption.segments.isNotEmpty()) {
+        caption.segments.toAnnotatedString()
+    } else {
+        caption.text
+    }
+
+    val textResult = if (textLayoutInput is String) {
+        textMeasurer.measure(
+            text = textLayoutInput,
+            style = caption.style.toTextStyle(),
+        )
+    } else {
+        textMeasurer.measure(
+            text = textLayoutInput as androidx.compose.ui.text.AnnotatedString,
+            style = caption.style.toTextStyle(),
+        )
+    }
 
     // 从 RelativeOffset 转换为当前 Canvas 上的像素坐标 (作为中心点)
     val centerPixelOffset = captionTransform.offset.toOffset(size)
@@ -35,8 +51,6 @@ fun DrawScope.drawCaption(
 
     val contentWidth = textResult.size.width.toFloat() + totalPadding * 2
     val contentHeight = textResult.size.height.toFloat() + totalPadding * 2
-
-    val currentDensity = density
 
     // 1. 应用变换 (对应数据模型中的位置、缩放)
     withTransform({

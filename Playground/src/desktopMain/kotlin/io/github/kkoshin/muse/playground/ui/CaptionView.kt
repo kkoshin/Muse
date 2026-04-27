@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -43,8 +44,10 @@ import androidx.compose.ui.unit.toSize
 import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.core.ExportManager
 import io.github.kkoshin.muse.playground.data.Caption
+import io.github.kkoshin.muse.playground.data.CaptionProcessor
 import io.github.kkoshin.muse.playground.data.CaptionStyle
 import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.muse.playground.data.toAnnotatedString
 import io.github.kkoshin.muse.playground.data.toOffset
 import io.github.kkoshin.muse.playground.data.toRelative
 import io.github.kkoshin.muse.playground.data.toTextStyle
@@ -59,7 +62,7 @@ import java.awt.Frame
 import java.io.File
 
 private val DefaultCaption: Caption = Caption(
-    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：<b>加粗效果</b>\n部分字放大效果等等等",
+    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
     style = CaptionStyle()
 )
 
@@ -70,20 +73,30 @@ fun CaptionView() {
     }
     var captionStyle by remember { mutableStateOf(CaptionStyle()) }
     var isSelectionBoxVisible by remember { mutableStateOf(false) }
-    val caption = remember(captionStyle) { DefaultCaption.copy(style = captionStyle) }
+    val caption = remember(captionStyle) {
+        DefaultCaption.copy(
+            style = captionStyle,
+            segments = CaptionProcessor.processHighlight(DefaultCaption.text, captionStyle)
+        )
+    }
 
     val textMeasurer = rememberTextMeasurer()
+    // 当前可能是 x2 的倍率
     val density = LocalDensity.current
 
     val textLayoutResult = remember(caption, textMeasurer) {
-        textMeasurer.measure(caption.text, caption.style.toTextStyle(density.density))
+        val annotatedString = if (caption.segments.isNotEmpty()) {
+            caption.segments.toAnnotatedString()
+        } else {
+            androidx.compose.ui.text.AnnotatedString(caption.text)
+        }
+        textMeasurer.measure(annotatedString, caption.style.toTextStyle())
     }
 
     var containerSize by remember { mutableStateOf(Size.Zero) }
 
     val exportManager = remember { ExportManager() }
     val scope = rememberCoroutineScope()
-
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -202,7 +215,6 @@ fun CaptionView() {
                                 captionTransform = captionTransform,
                                 width = Constants.REFERENCE_WIDTH.toInt(),
                                 height = Constants.REFERENCE_HEIGHT.toInt(),
-                                textMeasurer = textMeasurer,
                                 file = destination
                             )
                         }
@@ -251,6 +263,43 @@ fun CaptionView() {
                 valueRange = 0.5f..3.0f,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+
+            NumericSlider(
+                label = "Letter Spacing",
+                value = captionStyle.letterSpacing,
+                onValueChange = {
+                    captionStyle = captionStyle.copy(letterSpacing = it)
+                },
+                valueRange = 0.0f..1.0f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Text(
+                "Text Style",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+
+            Row(modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)) {
+                CaptionStyle.TextStyleOption.values().forEach { option ->
+                    Button(
+                        onClick = { captionStyle = captionStyle.copy(textStyle = option) },
+                        modifier = Modifier.padding(end = 4.dp).weight(1f),
+                        colors = if (captionStyle.textStyle == option) {
+                            ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                        } else {
+                            ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
+                        },
+                        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
+                    ) {
+                        Text(
+                            option.name,
+                            style = MaterialTheme.typography.caption,
+                            color = if (captionStyle.textStyle == option) Color.White else Color.Black
+                        )
+                    }
+                }
+            }
 
             Divider()
 

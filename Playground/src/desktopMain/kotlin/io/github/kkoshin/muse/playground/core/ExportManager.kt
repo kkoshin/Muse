@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import io.github.kkoshin.muse.playground.Constants
@@ -24,10 +25,9 @@ class ExportManager {
         captionTransform: CaptionTransform,
         width: Int,
         height: Int,
-        textMeasurer: TextMeasurer,
         file: File
     ) {
-        val bitmap = exportToBitmap(caption, captionTransform, width, height, textMeasurer)
+        val bitmap = exportToBitmap(caption, captionTransform, width, height)
         val image = Image.makeFromBitmap(bitmap)
         val data = image.encodeToData(EncodedImageFormat.PNG)
         if (data != null) {
@@ -39,8 +39,7 @@ class ExportManager {
         caption: Caption,
         captionTransform: CaptionTransform,
         width: Int,
-        height: Int,
-        textMeasurer: TextMeasurer
+        height: Int
     ): Bitmap {
         val bitmap = ImageBitmap(width, height)
         val canvas = Canvas(bitmap)
@@ -52,9 +51,16 @@ class ExportManager {
         // 这样在 drawCaption 里的 previewScale 始终为 1.0，
         // 而所有的 dp 值（padding, border）会根据分辨率自动缩放。
         val exportDensity = width / Constants.REFERENCE_WIDTH
+        val density = Density(exportDensity)
+
+        val textMeasurer = TextMeasurer(
+            defaultFontFamilyResolver = createFontFamilyResolver(),
+            defaultDensity = density,
+            defaultLayoutDirection = LayoutDirection.Ltr
+        )
 
         drawScope.draw(
-            density = Density(exportDensity), 
+            density = density, 
             layoutDirection = LayoutDirection.Ltr,
             canvas = canvas,
             size = size
