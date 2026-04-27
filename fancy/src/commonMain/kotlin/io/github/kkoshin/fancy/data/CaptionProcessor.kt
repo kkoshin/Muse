@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.playground.data
+package io.github.kkoshin.fancy.data
 
 object CaptionProcessor {
     fun processHighlight(text: String, style: CaptionStyle): List<CaptionSegment> {

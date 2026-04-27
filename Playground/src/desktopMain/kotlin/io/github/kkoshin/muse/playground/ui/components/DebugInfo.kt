@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.fancy.data.CaptionTransform
 
 @Composable
 fun DebugInfo(

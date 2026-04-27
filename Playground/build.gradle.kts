@@ -22,6 +22,7 @@ kotlin {
                 
                 implementation(project(":muse"))
                 implementation(project(":elevenlabs"))
+                implementation(project(":fancy"))
 
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)

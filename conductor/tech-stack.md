@@ -5,6 +5,7 @@
 - **Multiplatform:** Kotlin Multiplatform (KMP) for shared logic across Android, iOS, and Desktop (Experimental UI debugging).
 - **UI Framework:** Compose Multiplatform for shared UI components.
 - **Dependency Injection:** Koin for lightweight dependency management.
+- **Modules:** Standalone modules for specialized logic (e.g., `fancy` for caption rendering).
 
 ## Backend and Networking
 - **Networking:** Ktor for asynchronous HTTP requests.

@@ -1,6 +1,5 @@
 package io.github.kkoshin.muse.playground.ui
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -41,16 +40,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import io.github.kkoshin.fancy.config.FancyConfig
+import io.github.kkoshin.fancy.data.Caption
+import io.github.kkoshin.fancy.data.CaptionProcessor
+import io.github.kkoshin.fancy.data.CaptionStyle
+import io.github.kkoshin.fancy.data.CaptionTransform
+import io.github.kkoshin.fancy.data.toAnnotatedString
+import io.github.kkoshin.fancy.data.toOffset
+import io.github.kkoshin.fancy.data.toRelative
+import io.github.kkoshin.fancy.data.toTextStyle
+import io.github.kkoshin.fancy.ui.FancyCaptionView
 import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.core.ExportManager
-import io.github.kkoshin.muse.playground.data.Caption
-import io.github.kkoshin.muse.playground.data.CaptionProcessor
-import io.github.kkoshin.muse.playground.data.CaptionStyle
-import io.github.kkoshin.muse.playground.data.CaptionTransform
-import io.github.kkoshin.muse.playground.data.toAnnotatedString
-import io.github.kkoshin.muse.playground.data.toOffset
-import io.github.kkoshin.muse.playground.data.toRelative
-import io.github.kkoshin.muse.playground.data.toTextStyle
 import io.github.kkoshin.muse.playground.ui.components.ColorPicker
 import io.github.kkoshin.muse.playground.ui.components.DebugInfo
 import io.github.kkoshin.muse.playground.ui.components.NumericSlider
@@ -68,6 +69,14 @@ private val DefaultCaption: Caption = Caption(
 
 @Composable
 fun CaptionView() {
+    val config = remember {
+        FancyConfig(
+            referenceWidth = Constants.REFERENCE_WIDTH,
+            referenceHeight = Constants.REFERENCE_HEIGHT,
+            referenceFontSize = Constants.REFERENCE_FONT_SIZE.toFloat()
+        )
+    }
+
     var captionTransform by remember {
         mutableStateOf(CaptionTransform())
     }
@@ -84,13 +93,13 @@ fun CaptionView() {
     // 当前可能是 x2 的倍率
     val density = LocalDensity.current
 
-    val textLayoutResult = remember(caption, textMeasurer) {
+    val textLayoutResult = remember(caption, textMeasurer, config) {
         val annotatedString = if (caption.segments.isNotEmpty()) {
-            caption.segments.toAnnotatedString()
+            caption.segments.toAnnotatedString(config)
         } else {
             androidx.compose.ui.text.AnnotatedString(caption.text)
         }
-        textMeasurer.measure(annotatedString, caption.style.toTextStyle())
+        textMeasurer.measure(annotatedString, caption.style.toTextStyle(config))
     }
 
     var containerSize by remember { mutableStateOf(Size.Zero) }
@@ -111,12 +120,15 @@ fun CaptionView() {
                     }
                 }
         ) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawCaption(captionTransform, caption, textMeasurer)
-            }
+            FancyCaptionView(
+                caption = caption,
+                captionTransform = captionTransform,
+                config = config,
+                modifier = Modifier.fillMaxSize()
+            )
 
             if (isSelectionBoxVisible && containerSize != Size.Zero) {
-                val previewScale = (containerSize.width / density.density) / Constants.REFERENCE_WIDTH
+                val previewScale = (containerSize.width / density.density) / config.referenceWidth
                 val padding = captionStyle.background?.contentPadding ?: 0.dp
                 val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
                 val totalPadding = padding + borderPadding
@@ -156,7 +168,7 @@ fun CaptionView() {
                     onClose = { isSelectionBoxVisible = false },
                     onScaleDrag = { dragAmount ->
                         val oldScale = captionTransform.scale
-                        val previewScaleDrag = (containerSize.width / density.density) / Constants.REFERENCE_WIDTH
+                        val previewScaleDrag = (containerSize.width / density.density) / config.referenceWidth
 
                         val textSizeDp = with(density) {
                             androidx.compose.ui.unit.DpOffset(
@@ -213,8 +225,8 @@ fun CaptionView() {
                             exportManager.exportToFile(
                                 caption = caption,
                                 captionTransform = captionTransform,
-                                width = Constants.REFERENCE_WIDTH.toInt(),
-                                height = Constants.REFERENCE_HEIGHT.toInt(),
+                                width = config.referenceWidth.toInt(),
+                                height = config.referenceHeight.toInt(),
                                 file = destination
                             )
                         }

@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.playground.data
+package io.github.kkoshin.fancy.data
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,22 +42,8 @@ class CaptionProcessorTest {
     @Test
     fun testHighlightMultiLine() {
         val text = "abc\ndefg" 
-        // line 1: "abc" -> "a", "b", "c"
-        // line 2: "defg" -> "d", "ef", "g"
         val style = CaptionStyle()
         val segments = CaptionProcessor.processHighlight(text, style)
-
-        // Expected segments: "a", "b" (highlight), "c\n", "d", "ef" (highlight), "g"
-        // Wait, if I preserve newlines, where should they go?
-        // Let's say we split by \n, process each line, and join them back with \n segments.
-        
-        // Revised expected segments:
-        // 1. "a" (null)
-        // 2. "b" (highlight)
-        // 3. "c\n" (null) OR "c" (null) then "\n" (null)
-        // 4. "d" (null)
-        // 5. "ef" (highlight)
-        // 6. "g" (null)
 
         assertEquals(6, segments.size)
         assertEquals("a", segments[0].text)

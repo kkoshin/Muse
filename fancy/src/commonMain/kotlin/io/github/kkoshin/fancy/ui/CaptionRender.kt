@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.playground.ui
+package io.github.kkoshin.fancy.ui
 
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -8,24 +8,28 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
-import io.github.kkoshin.muse.playground.Constants
-import io.github.kkoshin.muse.playground.data.Caption
-import io.github.kkoshin.muse.playground.data.CaptionTransform
-import io.github.kkoshin.muse.playground.data.toAnnotatedString
-import io.github.kkoshin.muse.playground.data.toOffset
-import io.github.kkoshin.muse.playground.data.toTextStyle
+import io.github.kkoshin.fancy.config.FancyConfig
+import io.github.kkoshin.fancy.data.Caption
+import io.github.kkoshin.fancy.data.CaptionTransform
+import io.github.kkoshin.fancy.data.toAnnotatedString
+import io.github.kkoshin.fancy.data.toOffset
+import io.github.kkoshin.fancy.data.toTextStyle
 
-// 这是一个纯绘制逻辑，不依赖 Composable 上下文，只依赖 DrawScope
+/**
+ * Core drawing logic for captions.
+ * This is a pure drawing function that does not depend on Composable context.
+ */
 fun DrawScope.drawCaption(
     captionTransform: CaptionTransform,
     caption: Caption,
     textMeasurer: TextMeasurer,
+    config: FancyConfig
 ) {
     val style = caption.style
     val currentDensity = density
 
     val textLayoutInput = if (caption.segments.isNotEmpty()) {
-        caption.segments.toAnnotatedString()
+        caption.segments.toAnnotatedString(config)
     } else {
         caption.text
     }
@@ -33,16 +37,16 @@ fun DrawScope.drawCaption(
     val textResult = if (textLayoutInput is String) {
         textMeasurer.measure(
             text = textLayoutInput,
-            style = caption.style.toTextStyle(),
+            style = caption.style.toTextStyle(config),
         )
     } else {
         textMeasurer.measure(
             text = textLayoutInput as androidx.compose.ui.text.AnnotatedString,
-            style = caption.style.toTextStyle(),
+            style = caption.style.toTextStyle(config),
         )
     }
 
-    // 从 RelativeOffset 转换为当前 Canvas 上的像素坐标 (作为中心点)
+    // Convert from RelativeOffset to pixel coordinates on the current Canvas (as center point)
     val centerPixelOffset = captionTransform.offset.toOffset(size)
 
     val padding = style.background?.contentPadding?.toPx() ?: 0f
@@ -52,17 +56,17 @@ fun DrawScope.drawCaption(
     val contentWidth = textResult.size.width.toFloat() + totalPadding * 2
     val contentHeight = textResult.size.height.toFloat() + totalPadding * 2
 
-    // 1. 应用变换 (对应数据模型中的位置、缩放)
+    // 1. Apply transformations (position, scale)
     withTransform({
-        // 将中心点平移到目标位置
+        // Translate center point to target position
         translate(centerPixelOffset.x, centerPixelOffset.y)
 
-        // 应用预览缩放 (基于参考宽度)
-        val previewScale = (size.width / currentDensity) / Constants.REFERENCE_WIDTH
+        // Apply preview scale (based on reference width)
+        val previewScale = (size.width / currentDensity) / config.referenceWidth
         scale(previewScale, previewScale, pivot = Offset.Zero)
 
         scale(captionTransform.scale, captionTransform.scale, pivot = Offset.Zero)
-        // 向左上角平移一半尺寸，使 RelativeOffset 成为中心
+        // Translate to top-left corner by half the size, so RelativeOffset becomes the center
         translate(-contentWidth / 2, -contentHeight / 2)
     }) {
         // Draw background

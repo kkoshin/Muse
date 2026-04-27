@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.playground.data
+package io.github.kkoshin.fancy.data
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size

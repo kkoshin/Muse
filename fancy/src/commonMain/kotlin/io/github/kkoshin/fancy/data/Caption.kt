@@ -1,4 +1,4 @@
-package io.github.kkoshin.muse.playground.data
+package io.github.kkoshin.fancy.data
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import io.github.kkoshin.muse.playground.Constants.REFERENCE_FONT_SIZE
+import io.github.kkoshin.fancy.config.FancyConfig
 
 data class Caption(
     val text: String,
@@ -25,13 +25,13 @@ data class CaptionSegment(
     val styleOverride: CaptionStyle.HighlightStyle? = null
 )
 
-fun List<CaptionSegment>.toAnnotatedString(): AnnotatedString {
+fun List<CaptionSegment>.toAnnotatedString(config: FancyConfig): AnnotatedString {
     return buildAnnotatedString {
         forEach { segment ->
             if (segment.styleOverride != null) {
                 val spanStyle = SpanStyle(
                     color = segment.styleOverride.textColor,
-                    fontSize = (REFERENCE_FONT_SIZE * segment.styleOverride.fontScale).sp
+                    fontSize = (config.referenceFontSize * segment.styleOverride.fontScale).sp
                 )
                 pushStyle(spanStyle)
                 append(segment.text)
@@ -73,10 +73,10 @@ data class CaptionStyle(
     )
 }
 
-fun CaptionStyle.toTextStyle(): TextStyle {
+fun CaptionStyle.toTextStyle(config: FancyConfig): TextStyle {
     return TextStyle(
         color = textColor,
-        fontSize = (REFERENCE_FONT_SIZE * fontScale).sp,
+        fontSize = (config.referenceFontSize * fontScale).sp,
         textAlign = TextAlign.Center,
         letterSpacing = letterSpacing.em,
         fontWeight = if (textStyle == CaptionStyle.TextStyleOption.Bold) FontWeight.Bold else FontWeight.Normal,
@@ -85,10 +85,9 @@ fun CaptionStyle.toTextStyle(): TextStyle {
     )
 }
 
-fun CaptionStyle.HighlightStyle.toTextStyle(): TextStyle {
+fun CaptionStyle.HighlightStyle.toTextStyle(config: FancyConfig): TextStyle {
     return TextStyle(
         color = textColor,
-        // 使用 sp 单位，最终绘制的时候转换为 px 时会乘上 density 里的 fontScale，现有的流程里会保证这个值为 1.0，所以这里也就省略了。
-        fontSize = (REFERENCE_FONT_SIZE * fontScale).sp,
+        fontSize = (config.referenceFontSize * fontScale).sp,
     )
 }
