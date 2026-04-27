@@ -16,11 +16,11 @@
 - [x] Task: Update tests to pass `FancyConfig` parameters correctly and verify they pass.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Data Models Migration' (Protocol in workflow.md)
 
-## Phase 3: Rendering Logic Migration
+## Phase 3: Rendering Logic Migration [checkpoint: 8b35783]
 - [x] Task: Move `CaptionRender.kt` (`drawCaption`) from `Playground` to `fancy`'s `commonMain`.
 - [x] Task: Refactor `drawCaption` to accept `FancyConfig` instead of relying on global `Constants`.
 - [x] Task: Create `FancyCaptionView` Composable in `fancy`'s `commonMain` that encapsulates the `Canvas` and `drawCaption` logic.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Rendering Logic Migration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Rendering Logic Migration' (Protocol in workflow.md)
 
 ## Phase 4: Playground Refactoring
 - [ ] Task: Refactor `ExportManager.kt` in `Playground` to use the `fancy` module's models and rendering functions for generating bitmaps, passing the necessary `FancyConfig`.
