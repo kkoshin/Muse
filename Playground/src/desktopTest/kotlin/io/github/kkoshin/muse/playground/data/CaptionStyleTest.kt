@@ -3,7 +3,7 @@ package io.github.kkoshin.muse.playground.data
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import io.github.kkoshin.muse.playground.Constants.REFERENCE_FONT_SIZE
+import io.github.kkoshin.muse.playground.Constants
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,8 +16,8 @@ class CaptionStyleTest {
         val textStyle = style.toTextStyle(density)
         
         assertEquals(Color.Red, textStyle.color)
-        // Current implementation: fontSize = density * REFERENCE_FONT_SIZE.sp
-        assertEquals((density * REFERENCE_FONT_SIZE).sp, textStyle.fontSize)
+        val expectedSize = (Constants.REFERENCE_FONT_SIZE * 1.0f * density).sp
+        assertEquals(expectedSize, textStyle.fontSize)
         assertEquals(TextAlign.Center, textStyle.textAlign)
     }
 
@@ -28,8 +28,8 @@ class CaptionStyleTest {
         val textStyle = style.toTextStyle(density)
         
         assertEquals(Color.Red, textStyle.color)
-        // New formula: fontSize = baseFontSize * fontScale * density
-        assertEquals((REFERENCE_FONT_SIZE * 1.5f * density).sp, textStyle.fontSize)
+        val expectedSize = (Constants.REFERENCE_FONT_SIZE * 1.5f * density).sp
+        assertEquals(expectedSize, textStyle.fontSize)
         assertEquals(TextAlign.Center, textStyle.textAlign)
     }
 }
