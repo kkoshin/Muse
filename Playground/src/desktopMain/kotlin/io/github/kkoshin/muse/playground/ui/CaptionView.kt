@@ -242,6 +242,16 @@ fun CaptionView() {
                 modifier = Modifier.padding(16.dp)
             )
 
+            NumericSlider(
+                label = "Font Scale",
+                value = captionStyle.fontScale,
+                onValueChange = {
+                    captionStyle = captionStyle.copy(fontScale = it)
+                },
+                valueRange = 0.5f..3.0f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
             Divider()
 
             // Background
