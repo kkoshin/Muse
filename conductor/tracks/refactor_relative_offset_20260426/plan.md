@@ -11,8 +11,8 @@
 - [x] Task: Update `ExportManager.kt` to interpret relative offsets for target resolution. (Handled in CaptionRender)
 - [x] Task: Conductor - User Manual Verification 'Integration' (Protocol in workflow.md)
 
-## Phase 3: Validation & Cleanup
+## Phase 3: Validation & Cleanup [checkpoint: 2f024bd]
 - [x] Task: Verify that resizing the Playground window preserves caption position.
 - [x] Task: Verify that exported images are correctly formatted.
 - [x] Task: Remove any remaining `DpOffset` logic related to caption transformation.
-- [ ] Task: Conductor - User Manual Verification 'Validation & Cleanup' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Validation & Cleanup' (Protocol in workflow.md)
