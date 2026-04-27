@@ -43,8 +43,10 @@ import androidx.compose.ui.unit.toSize
 import io.github.kkoshin.muse.playground.Constants
 import io.github.kkoshin.muse.playground.core.ExportManager
 import io.github.kkoshin.muse.playground.data.Caption
+import io.github.kkoshin.muse.playground.data.CaptionProcessor
 import io.github.kkoshin.muse.playground.data.CaptionStyle
 import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.muse.playground.data.toAnnotatedString
 import io.github.kkoshin.muse.playground.data.toOffset
 import io.github.kkoshin.muse.playground.data.toRelative
 import io.github.kkoshin.muse.playground.data.toTextStyle
@@ -59,7 +61,7 @@ import java.awt.Frame
 import java.io.File
 
 private val DefaultCaption: Caption = Caption(
-    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：<b>加粗效果</b>\n部分字放大效果等等等",
+    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
     style = CaptionStyle()
 )
 
@@ -70,13 +72,23 @@ fun CaptionView() {
     }
     var captionStyle by remember { mutableStateOf(CaptionStyle()) }
     var isSelectionBoxVisible by remember { mutableStateOf(false) }
-    val caption = remember(captionStyle) { DefaultCaption.copy(style = captionStyle) }
+    val caption = remember(captionStyle) { 
+        DefaultCaption.copy(
+            style = captionStyle,
+            segments = CaptionProcessor.processHighlight(DefaultCaption.text, captionStyle)
+        ) 
+    }
 
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
 
     val textLayoutResult = remember(caption, textMeasurer) {
-        textMeasurer.measure(caption.text, caption.style.toTextStyle(density.density))
+        val annotatedString = if (caption.segments.isNotEmpty()) {
+            caption.segments.toAnnotatedString(density.density)
+        } else {
+            androidx.compose.ui.text.AnnotatedString(caption.text)
+        }
+        textMeasurer.measure(annotatedString, caption.style.toTextStyle(density.density))
     }
 
     var containerSize by remember { mutableStateOf(Size.Zero) }
