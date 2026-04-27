@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Extract CaptionView preview rendering and export logic into a standalone multiplatform module named fancy.**
+- [x] **Track: Extract CaptionView preview rendering and export logic into a standalone multiplatform module named fancy.**
 *Link: [./tracks/fancy_20260427/](./tracks/fancy_20260427/)*
