@@ -15,6 +15,7 @@ data class Caption(
 
 data class CaptionStyle(
     val textColor: Color = Color.Black,
+    val fontScale: Float = 1.0f,
     val border: Border? = null,
     val background: Background? = null
 ) {
@@ -31,5 +32,9 @@ data class CaptionStyle(
 }
 
 fun CaptionStyle.toTextStyle(density: Float): TextStyle {
-    return TextStyle(color = textColor, fontSize = density * REFERENCE_FONT_SIZE.sp, textAlign = TextAlign.Center)
+    return TextStyle(
+        color = textColor,
+        fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
+        textAlign = TextAlign.Center
+    )
 }

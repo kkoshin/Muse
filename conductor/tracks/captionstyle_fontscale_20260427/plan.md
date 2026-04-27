@@ -1,7 +1,7 @@
 # Implementation Plan: CaptionStyle fontScale Support
 
 ## Phase 1: Data Model Update
-- [ ] Task: Update `CaptionStyle` data class
+- [x] Task: Update `CaptionStyle` data class
     - [ ] Add `val fontScale: Float = 1.0f` to the `CaptionStyle` definition.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model Update' (Protocol in workflow.md)
 
