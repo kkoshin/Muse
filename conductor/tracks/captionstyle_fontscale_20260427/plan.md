@@ -5,12 +5,12 @@
     - [ ] Add `val fontScale: Float = 1.0f` to the `CaptionStyle` definition.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Data Model Update' (Protocol in workflow.md)
 
-## Phase 2: Update Rendering Logic
+## Phase 2: Update Rendering Logic [checkpoint: cf45aff]
 - [x] Task: Apply `fontScale` in `drawCaption`
-    - [ ] Modify `drawCaption` in `CaptionRender.kt` to dynamically calculate the `fontSize` for the text.
-    - [ ] Calculate the final font size using the formula: `baseFontSize * caption.style.fontScale * density`.
-    - [ ] Ensure that only the text size is scaled; background and border DP properties must remain absolute.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Update Rendering Logic' (Protocol in workflow.md)
+    - [x] Modify `drawCaption` in `CaptionRender.kt` to dynamically calculate the `fontSize` for the text.
+    - [x] Calculate the final font size using the formula: `baseFontSize * caption.style.fontScale * density`.
+    - [x] Ensure that only the text size is scaled; background and border DP properties must remain absolute.
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Update Rendering Logic' (Protocol in workflow.md)
 
 ## Phase 3: UI Integration
 - [ ] Task: Add slider to Style Sidebar
