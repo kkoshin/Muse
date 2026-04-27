@@ -13,6 +13,11 @@ data class Caption(
     val style: CaptionStyle
 )
 
+data class CaptionSegment(
+    val text: String,
+    val styleOverride: CaptionStyle.HighlightStyle? = null
+)
+
 data class CaptionStyle(
     val textColor: Color = Color.Black,
     val fontScale: Float = 1.0f,
