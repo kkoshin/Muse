@@ -1,0 +1,8 @@
+{
+  "track_id": "fancy_20260427",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-27T00:00:00Z",
+  "updated_at": "2026-04-27T00:00:00Z",
+  "description": "Extract CaptionView preview rendering and export logic into a standalone multiplatform module named fancy."
+}
