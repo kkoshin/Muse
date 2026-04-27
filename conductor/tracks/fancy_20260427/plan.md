@@ -23,7 +23,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Rendering Logic Migration' (Protocol in workflow.md)
 
 ## Phase 4: Playground Refactoring
-- [ ] Task: Refactor `ExportManager.kt` in `Playground` to use the `fancy` module's models and rendering functions for generating bitmaps, passing the necessary `FancyConfig`.
-- [ ] Task: Refactor `CaptionView.kt` in `Playground` to use `FancyCaptionView` instead of calling `Canvas` directly.
-- [ ] Task: Remove any unused code or imports related to the migrated files in `Playground`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Playground Refactoring' (Protocol in workflow.md)
+- [x] Task: Refactor `ExportManager.kt` in `Playground` to use the `fancy` module's models and rendering functions for generating bitmaps, passing the necessary `FancyConfig`.
+- [x] Task: Refactor `CaptionView.kt` in `Playground` to use `FancyCaptionView` instead of calling `Canvas` directly.
+- [x] Task: Remove any unused code or imports related to the migrated files in `Playground`.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Playground Refactoring' (Protocol in workflow.md)

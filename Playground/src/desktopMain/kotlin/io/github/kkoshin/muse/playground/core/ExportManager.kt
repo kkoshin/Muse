@@ -9,16 +9,22 @@ import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import io.github.kkoshin.fancy.config.FancyConfig
+import io.github.kkoshin.fancy.data.Caption
+import io.github.kkoshin.fancy.data.CaptionTransform
+import io.github.kkoshin.fancy.ui.drawCaption
 import io.github.kkoshin.muse.playground.Constants
-import io.github.kkoshin.muse.playground.data.Caption
-import io.github.kkoshin.muse.playground.data.CaptionTransform
-import io.github.kkoshin.muse.playground.ui.drawCaption
-import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import java.io.File
 
 class ExportManager {
+
+    private val config = FancyConfig(
+        referenceWidth = Constants.REFERENCE_WIDTH,
+        referenceHeight = Constants.REFERENCE_HEIGHT,
+        referenceFontSize = Constants.REFERENCE_FONT_SIZE.toFloat()
+    )
 
     fun exportToFile(
         caption: Caption,
@@ -40,7 +46,7 @@ class ExportManager {
         captionTransform: CaptionTransform,
         width: Int,
         height: Int
-    ): Bitmap {
+    ): org.jetbrains.skia.Bitmap {
         val bitmap = ImageBitmap(width, height)
         val canvas = Canvas(bitmap)
 
@@ -65,7 +71,7 @@ class ExportManager {
             canvas = canvas,
             size = size
         ) {
-            drawCaption(captionTransform, caption, textMeasurer)
+            drawCaption(captionTransform, caption, textMeasurer, config)
         }
         return bitmap.asSkiaBitmap()
     }
