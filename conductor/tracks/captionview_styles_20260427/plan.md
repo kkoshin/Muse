@@ -8,7 +8,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Data Model Updates' (Protocol in workflow.md)
 
 ## Phase 2: UI Updates (Sidebar)
-- [ ] Task: Add a new `NumericSlider` for `letterSpacing` to the `CaptionView.kt` Sidebar, placed near the "Font Scale" control.
-- [ ] Task: Add UI controls (e.g., a Row of toggleable buttons or text) to `CaptionView.kt` to allow the user to select the active `TextStyleOption`.
-- [ ] Task: Update the `CaptionView.kt` state management to correctly apply these new options to the `captionStyle` state.
+- [x] Task: Add a new `NumericSlider` for `letterSpacing` to the `CaptionView.kt` Sidebar, placed near the "Font Scale" control.
+- [x] Task: Add UI controls (e.g., a Row of toggleable buttons or text) to `CaptionView.kt` to allow the user to select the active `TextStyleOption`.
+- [x] Task: Update the `CaptionView.kt` state management to correctly apply these new options to the `captionStyle` state.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: UI Updates' (Protocol in workflow.md)

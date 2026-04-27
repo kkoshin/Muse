@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -263,6 +264,43 @@ fun CaptionView() {
                 valueRange = 0.5f..3.0f,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+
+            NumericSlider(
+                label = "Letter Spacing",
+                value = captionStyle.letterSpacing,
+                onValueChange = {
+                    captionStyle = captionStyle.copy(letterSpacing = it)
+                },
+                valueRange = 0.0f..1.0f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Text(
+                "Text Style",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+
+            Row(modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)) {
+                CaptionStyle.TextStyleOption.values().forEach { option ->
+                    Button(
+                        onClick = { captionStyle = captionStyle.copy(textStyle = option) },
+                        modifier = Modifier.padding(end = 4.dp).weight(1f),
+                        colors = if (captionStyle.textStyle == option) {
+                            ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                        } else {
+                            ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
+                        },
+                        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
+                    ) {
+                        Text(
+                            option.name,
+                            style = MaterialTheme.typography.caption,
+                            color = if (captionStyle.textStyle == option) Color.White else Color.Black
+                        )
+                    }
+                }
+            }
 
             Divider()
 
