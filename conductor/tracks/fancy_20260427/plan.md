@@ -8,12 +8,12 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Module Creation and Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Core Data Models Migration
-- [ ] Task: Define a `FancyConfig` data class in `fancy` to encapsulate `referenceWidth`, `referenceHeight`, and `referenceFontSize`.
-- [ ] Task: Move `Caption.kt` (including `Caption`, `CaptionStyle`, `CaptionSegment`, `CaptionTransform`) from `Playground` to `fancy`'s `commonMain`.
-- [ ] Task: Refactor data models in `fancy` to remove dependencies on `Constants.REFERENCE_WIDTH` etc., and use `FancyConfig` instead.
-- [ ] Task: Move `CaptionProcessor.kt` from `Playground` to `fancy`'s `commonMain`.
-- [ ] Task: Move `CaptionStyleTest.kt` and `CaptionProcessorTest.kt` from `Playground` to `fancy`'s `commonTest`.
-- [ ] Task: Update tests to pass `FancyConfig` parameters correctly and verify they pass.
+- [x] Task: Define a `FancyConfig` data class in `fancy` to encapsulate `referenceWidth`, `referenceHeight`, and `referenceFontSize`.
+- [x] Task: Move `Caption.kt` (including `Caption`, `CaptionStyle`, `CaptionSegment`, `CaptionTransform`) from `Playground` to `fancy`'s `commonMain`.
+- [x] Task: Refactor data models in `fancy` to remove dependencies on `Constants.REFERENCE_WIDTH` etc., and use `FancyConfig` instead.
+- [x] Task: Move `CaptionProcessor.kt` from `Playground` to `fancy`'s `commonMain`.
+- [x] Task: Move `CaptionStyleTest.kt` and `CaptionProcessorTest.kt` from `Playground` to `fancy`'s `commonTest`.
+- [x] Task: Update tests to pass `FancyConfig` parameters correctly and verify they pass.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Data Models Migration' (Protocol in workflow.md)
 
 ## Phase 3: Rendering Logic Migration
