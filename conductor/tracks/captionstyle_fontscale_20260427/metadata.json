@@ -1,8 +1,0 @@
-{
-  "track_id": "captionstyle_fontscale_20260427",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-04-27T10:00:00Z",
-  "updated_at": "2026-04-27T10:00:00Z",
-  "description": "CaptionStyle 添加 fontScale 的支持，最终绘制的 fontSize 应该采用基准的 fontSize * fontScale * density. 对应的 Style Sidebar 也要增加 fontScale 的支持"
-}
