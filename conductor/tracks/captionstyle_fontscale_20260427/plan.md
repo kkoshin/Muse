@@ -1,9 +1,9 @@
 # Implementation Plan: CaptionStyle fontScale Support
 
-## Phase 1: Data Model Update
+## Phase 1: Data Model Update [checkpoint: 28ed744]
 - [x] Task: Update `CaptionStyle` data class
     - [ ] Add `val fontScale: Float = 1.0f` to the `CaptionStyle` definition.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model Update' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Data Model Update' (Protocol in workflow.md)
 
 ## Phase 2: Update Rendering Logic
 - [ ] Task: Apply `fontScale` in `drawCaption`
