@@ -52,8 +52,6 @@ fun DrawScope.drawCaption(
     val contentWidth = textResult.size.width.toFloat() + totalPadding * 2
     val contentHeight = textResult.size.height.toFloat() + totalPadding * 2
 
-    val currentDensity = density
-
     // 1. 应用变换 (对应数据模型中的位置、缩放)
     withTransform({
         // 将中心点平移到目标位置
