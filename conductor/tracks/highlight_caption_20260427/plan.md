@@ -1,10 +1,10 @@
 # Implementation Plan: Rich Text Captions (Highlight Support)
 
 ## Phase 1: Data Model and Highlighting Logic
-- [ ] Task: Update `CaptionStyle` to include a default `highlightStyle` property.
-- [ ] Task: Create a `CaptionSegment` data model to represent text spans and their associated styling overrides.
-- [ ] Task: TDD - Write unit tests for a new text processing utility that splits text by lines and identifies the middle character(s) to create a list of `CaptionSegment`s.
-- [ ] Task: Implement the text processing utility to make the tests pass.
+- [x] Task: Update `CaptionStyle` to include a default `highlightStyle` property.
+- [x] Task: Create a `CaptionSegment` data model to represent text spans and their associated styling overrides.
+- [x] Task: TDD - Write unit tests for a new text processing utility that splits text by lines and identifies the middle character(s) to create a list of `CaptionSegment`s.
+- [x] Task: Implement the text processing utility to make the tests pass.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model and Highlighting Logic' (Protocol in workflow.md)
 
 ## Phase 2: Rendering Integration
