@@ -17,19 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Expand
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,11 +45,12 @@ import io.github.kkoshin.muse.playground.core.ExportManager
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionStyle
 import io.github.kkoshin.muse.playground.data.CaptionTransform
-import io.github.kkoshin.muse.playground.data.RelativeOffset
 import io.github.kkoshin.muse.playground.data.toOffset
 import io.github.kkoshin.muse.playground.data.toRelative
 import io.github.kkoshin.muse.playground.ui.components.ColorPicker
+import io.github.kkoshin.muse.playground.ui.components.DebugInfo
 import io.github.kkoshin.muse.playground.ui.components.NumericSlider
+import io.github.kkoshin.muse.playground.ui.components.SelectionBox
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.FileDialog
@@ -118,9 +112,9 @@ fun CaptionView() {
                 val boxHeight = with(density) {
                     (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale
                 }
-                
+
                 val centerPixelOffset = captionTransform.offset.toOffset(containerSize)
-                
+
                 val boxOffsetPx = Offset(
                     centerPixelOffset.x - with(density) { boxWidth.toPx() } / 2,
                     centerPixelOffset.y - with(density) { boxHeight.toPx() } / 2
@@ -147,25 +141,34 @@ fun CaptionView() {
                     onClose = { isSelectionBoxVisible = false },
                     onScaleDrag = { dragAmount ->
                         val oldScale = captionTransform.scale
-                        
+
                         val textSizeDp = with(density) {
-                            androidx.compose.ui.unit.DpOffset(textLayoutResult.size.width.toDp(), textLayoutResult.size.height.toDp())
+                            androidx.compose.ui.unit.DpOffset(
+                                textLayoutResult.size.width.toDp(),
+                                textLayoutResult.size.height.toDp()
+                            )
                         }
-                        
+
                         val boxWidthNow = (textSizeDp.x + totalPadding * 2) * oldScale
                         val boxHeightNow = (textSizeDp.y + totalPadding * 2) * oldScale
-                        
-                        val d1 = Math.sqrt(Math.pow(boxWidthNow.value.toDouble() / 2, 2.0) + Math.pow(boxHeightNow.value.toDouble() / 2, 2.0))
-                        
+
+                        val d1 = Math.sqrt(
+                            Math.pow(
+                                boxWidthNow.value.toDouble() / 2,
+                                2.0
+                            ) + Math.pow(boxHeightNow.value.toDouble() / 2, 2.0)
+                        )
+
                         val dragAmountDpX = with(density) { dragAmount.x.toDp() }
                         val dragAmountDpY = with(density) { dragAmount.y.toDp() }
                         val nextHandleX = boxWidthNow.value / 2 + dragAmountDpX.value
                         val nextHandleY = boxHeightNow.value / 2 + dragAmountDpY.value
-                        val d2 = Math.sqrt(Math.pow(nextHandleX.toDouble(), 2.0) + Math.pow(nextHandleY.toDouble(), 2.0))
-                        
+                        val d2 =
+                            Math.sqrt(Math.pow(nextHandleX.toDouble(), 2.0) + Math.pow(nextHandleY.toDouble(), 2.0))
+
                         val scaleRatio = (d2 / d1).toFloat()
                         val newScale = (oldScale * scaleRatio).coerceAtLeast(0.1f)
-                        
+
                         // 中心点保持不变，直接更新缩放即可 (因为 RelativeOffset 就是中心)
                         captionTransform = captionTransform.copy(
                             scale = newScale
@@ -206,6 +209,7 @@ fun CaptionView() {
             ) {
                 Text("Export")
             }
+            DebugInfo(modifier = Modifier.align(Alignment.BottomStart), captionTransform)
         }
 
         // Sidebar
@@ -336,52 +340,6 @@ fun CaptionView() {
             }
 
             Spacer(Modifier.height(32.dp))
-        }
-    }
-}
-
-// action menu: zoom, delete
-@Composable
-private fun SelectionBox(
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit = {},
-    onScaleDrag: (androidx.compose.ui.geometry.Offset) -> Unit = {}
-) {
-    Box(
-        modifier
-    ) {
-        Spacer(
-            Modifier
-                .matchParentSize()
-                .border(2.dp, MaterialTheme.colors.secondary, RoundedCornerShape(16.dp))
-        )
-        IconButton(
-            modifier = Modifier.align(Alignment.TopEnd).offset(24.dp, y = -24.dp),
-            onClick = onClose) {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = "Close",
-                tint = MaterialTheme.colors.onSecondary,
-                modifier = Modifier.background(MaterialTheme.colors.primary, CircleShape)
-                    .padding(8.dp)
-            )
-        }
-
-        IconButton(
-            modifier = Modifier.align(Alignment.BottomEnd).offset(24.dp, y = 24.dp)
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        onScaleDrag(dragAmount)
-                    }
-                },
-            onClick = {}) {
-            Icon(
-                Icons.Default.Expand, contentDescription = "Scale",
-                tint = MaterialTheme.colors.onSecondary,
-                modifier = Modifier.background(MaterialTheme.colors.primary, CircleShape)
-                    .padding(8.dp)
-            )
         }
     }
 }
