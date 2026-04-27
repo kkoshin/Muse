@@ -6,13 +6,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.muse.playground.data.toOffset
 
 // 这是一个纯绘制逻辑，不依赖 Composable 上下文，只依赖 DrawScope
 fun DrawScope.drawCaption(
@@ -26,24 +26,34 @@ fun DrawScope.drawCaption(
         style = TextStyle(color = Color(style.textColor.rgb))
     )
 
-    val offsetX = captionTransform.offset.x.toPx()
-    val offsetY = captionTransform.offset.y.toPx()
+    // 从 RelativeOffset 转换为当前 Canvas 上的像素坐标 (作为中心点)
+    val centerPixelOffset = captionTransform.offset.toOffset(size)
+
+    val padding = style.background?.contentPadding?.toPx() ?: 0f
+    val borderPadding = (style.border?.width?.toPx() ?: 0f) / 2
+    val totalPadding = padding + borderPadding
+
+    val contentWidth = textResult.size.width.toFloat() + totalPadding * 2
+    val contentHeight = textResult.size.height.toFloat() + totalPadding * 2
 
     // 1. 应用变换 (对应数据模型中的位置、缩放)
     withTransform({
-        translate(offsetX, offsetY)
-        scale(captionTransform.scale, pivot = Offset.Zero)
+        // 将中心点平移到目标位置
+        translate(centerPixelOffset.x, centerPixelOffset.y)
+        scale(captionTransform.scale, captionTransform.scale, pivot = Offset.Zero)
+        // 向左上角平移一半尺寸，使 RelativeOffset 成为中心
+        translate(-contentWidth / 2, -contentHeight / 2)
     }) {
         // Draw background
         style.background?.let { bg ->
-            val padding = bg.contentPadding.toPx()
+            val bgPadding = bg.contentPadding.toPx()
             val radius = bg.radius.toPx()
             drawRoundRect(
                 color = Color(bg.color.rgb),
-                topLeft = Offset(-padding, -padding),
+                topLeft = Offset(totalPadding - bgPadding, totalPadding - bgPadding),
                 size = Size(
-                    textResult.size.width.toFloat() + padding * 2,
-                    textResult.size.height.toFloat() + padding * 2
+                    textResult.size.width.toFloat() + bgPadding * 2,
+                    textResult.size.height.toFloat() + bgPadding * 2
                 ),
                 cornerRadius = CornerRadius(radius, radius)
             )
@@ -51,21 +61,21 @@ fun DrawScope.drawCaption(
 
         // Draw border
         style.border?.let { b ->
-            val padding = style.background?.contentPadding?.toPx() ?: 0f
+            val bPadding = style.background?.contentPadding?.toPx() ?: 0f
             val width = b.width.toPx()
             val radius = style.background?.radius?.toPx() ?: 0f
             drawRoundRect(
                 color = Color(b.color.rgb),
-                topLeft = Offset(-padding - width / 2, -padding - width / 2),
+                topLeft = Offset(totalPadding - bPadding - width / 2, totalPadding - bPadding - width / 2),
                 size = Size(
-                    textResult.size.width.toFloat() + (padding + width / 2) * 2,
-                    textResult.size.height.toFloat() + (padding + width / 2) * 2
+                    textResult.size.width.toFloat() + (bPadding + width / 2) * 2,
+                    textResult.size.height.toFloat() + (bPadding + width / 2) * 2
                 ),
                 style = Stroke(width = width),
                 cornerRadius = CornerRadius(radius + width / 2, radius + width / 2)
             )
         }
 
-        drawText(textResult)
+        drawText(textResult, topLeft = Offset(totalPadding, totalPadding))
     }
 }

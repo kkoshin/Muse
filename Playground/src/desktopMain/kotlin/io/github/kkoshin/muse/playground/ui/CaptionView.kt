@@ -39,17 +39,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import io.github.kkoshin.muse.playground.core.ExportManager
 import io.github.kkoshin.muse.playground.data.Caption
 import io.github.kkoshin.muse.playground.data.CaptionStyle
 import io.github.kkoshin.muse.playground.data.CaptionTransform
+import io.github.kkoshin.muse.playground.data.RelativeOffset
+import io.github.kkoshin.muse.playground.data.toOffset
+import io.github.kkoshin.muse.playground.data.toRelative
 import io.github.kkoshin.muse.playground.ui.components.ColorPicker
 import io.github.kkoshin.muse.playground.ui.components.NumericSlider
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +71,7 @@ private val DefaultCaption: Caption = Caption(
 @Composable
 fun CaptionView() {
     var captionTransform by remember {
-        mutableStateOf(CaptionTransform(DpOffset(100.dp, 100.dp)))
+        mutableStateOf(CaptionTransform())
     }
     var captionStyle by remember { mutableStateOf(CaptionStyle()) }
     var isSelectionBoxVisible by remember { mutableStateOf(false) }
@@ -79,6 +84,8 @@ fun CaptionView() {
         textMeasurer.measure(caption.text, TextStyle())
     }
 
+    var containerSize by remember { mutableStateOf(Size.Zero) }
+
     val exportManager = remember { ExportManager() }
     val scope = rememberCoroutineScope()
 
@@ -87,6 +94,9 @@ fun CaptionView() {
             modifier = Modifier
                 .weight(1f)
                 .background(androidx.compose.ui.graphics.Color(0xFFF5F5F5))
+                .onGloballyPositioned {
+                    containerSize = it.size.toSize()
+                }
                 .pointerInput(Unit) {
                     detectTapGestures {
                         isSelectionBoxVisible = true
@@ -97,8 +107,7 @@ fun CaptionView() {
                 drawCaption(captionTransform, caption, textMeasurer)
             }
 
-            if (isSelectionBoxVisible) {
-
+            if (isSelectionBoxVisible && containerSize != Size.Zero) {
                 val padding = captionStyle.background?.contentPadding ?: 0.dp
                 val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
                 val totalPadding = padding + borderPadding
@@ -109,23 +118,29 @@ fun CaptionView() {
                 val boxHeight = with(density) {
                     (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale
                 }
-                val boxOffset = DpOffset(
-                    captionTransform.offset.x - totalPadding * captionTransform.scale,
-                    captionTransform.offset.y - totalPadding * captionTransform.scale
+                
+                val centerPixelOffset = captionTransform.offset.toOffset(containerSize)
+                
+                val boxOffsetPx = Offset(
+                    centerPixelOffset.x - with(density) { boxWidth.toPx() } / 2,
+                    centerPixelOffset.y - with(density) { boxHeight.toPx() } / 2
                 )
+
+                val boxOffsetDp = with(density) {
+                    androidx.compose.ui.unit.DpOffset(boxOffsetPx.x.toDp(), boxOffsetPx.y.toDp())
+                }
 
                 SelectionBox(
                     modifier = Modifier
                         .size(boxWidth, boxHeight)
-                        .offset(boxOffset.x, boxOffset.y)
-                        .pointerInput(Unit) {
+                        .offset(boxOffsetDp.x, boxOffsetDp.y)
+                        .pointerInput(containerSize) {
                             detectDragGestures { change, dragAmount ->
                                 change.consume()
+                                val currentPixelOffset = captionTransform.offset.toOffset(containerSize)
+                                val nextPixelOffset = currentPixelOffset + dragAmount
                                 captionTransform = captionTransform.copy(
-                                    offset = DpOffset(
-                                        captionTransform.offset.x + dragAmount.x.toDp(),
-                                        captionTransform.offset.y + dragAmount.y.toDp()
-                                    )
+                                    offset = nextPixelOffset.toRelative(containerSize)
                                 )
                             }
                         },
@@ -133,40 +148,26 @@ fun CaptionView() {
                     onScaleDrag = { dragAmount ->
                         val oldScale = captionTransform.scale
                         
-                        // 计算当前 SelectionBox 的中心和尺寸
-                        val padding = captionStyle.background?.contentPadding ?: 0.dp
-                        val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
-                        val totalPadding = padding + borderPadding
-                        
                         val textSizeDp = with(density) {
-                            DpOffset(textLayoutResult.size.width.toDp(), textLayoutResult.size.height.toDp())
+                            androidx.compose.ui.unit.DpOffset(textLayoutResult.size.width.toDp(), textLayoutResult.size.height.toDp())
                         }
                         
-                        val boxWidth = (textSizeDp.x + totalPadding * 2) * oldScale
-                        val boxHeight = (textSizeDp.y + totalPadding * 2) * oldScale
+                        val boxWidthNow = (textSizeDp.x + totalPadding * 2) * oldScale
+                        val boxHeightNow = (textSizeDp.y + totalPadding * 2) * oldScale
                         
-                        // 当前 handle 相对于中心的距离 (初始距离)
-                        val d1 = Math.sqrt(Math.pow(boxWidth.value.toDouble() / 2, 2.0) + Math.pow(boxHeight.value.toDouble() / 2, 2.0))
+                        val d1 = Math.sqrt(Math.pow(boxWidthNow.value.toDouble() / 2, 2.0) + Math.pow(boxHeightNow.value.toDouble() / 2, 2.0))
                         
-                        // 拖动后的 handle 相对于中心的距离
-                        // dragAmount 是相对于 handle 的位移，handle 位于中心 + (w/2, h/2)
                         val dragAmountDpX = with(density) { dragAmount.x.toDp() }
                         val dragAmountDpY = with(density) { dragAmount.y.toDp() }
-                        val nextHandleX = boxWidth.value / 2 + dragAmountDpX.value
-                        val nextHandleY = boxHeight.value / 2 + dragAmountDpY.value
+                        val nextHandleX = boxWidthNow.value / 2 + dragAmountDpX.value
+                        val nextHandleY = boxHeightNow.value / 2 + dragAmountDpY.value
                         val d2 = Math.sqrt(Math.pow(nextHandleX.toDouble(), 2.0) + Math.pow(nextHandleY.toDouble(), 2.0))
                         
                         val scaleRatio = (d2 / d1).toFloat()
                         val newScale = (oldScale * scaleRatio).coerceAtLeast(0.1f)
                         
-                        // 为了保持中心不变：newOffset = oldOffset + (textSize / 2) * (oldScale - newScale)
-                        val newOffset = DpOffset(
-                            captionTransform.offset.x + (textSizeDp.x / 2) * (oldScale - newScale),
-                            captionTransform.offset.y + (textSizeDp.y / 2) * (oldScale - newScale)
-                        )
-                        
+                        // 中心点保持不变，直接更新缩放即可 (因为 RelativeOffset 就是中心)
                         captionTransform = captionTransform.copy(
-                            offset = newOffset,
                             scale = newScale
                         )
                     }
@@ -175,9 +176,7 @@ fun CaptionView() {
 
             Button(
                 onClick = {
-                    // Desktop 最佳实践：使用文件选择对话框
                     val fileDialog = FileDialog(null as Frame?, "Export Caption", FileDialog.SAVE).apply {
-                        // 默认建议保存到用户图片目录
                         val picturesDir = File(System.getProperty("user.home"), "Pictures")
                         if (picturesDir.exists()) {
                             directory = picturesDir.absolutePath
@@ -191,12 +190,11 @@ fun CaptionView() {
 
                     if (selectedFile != null && selectedDir != null) {
                         val destination = File(selectedDir, selectedFile)
-                        // 在协程 IO 线程中执行文件写入，避免阻塞 UI
                         scope.launch(Dispatchers.IO) {
                             exportManager.exportToFile(
                                 caption = caption,
                                 captionTransform = captionTransform,
-                                width = 1920, // 导出更高分辨率
+                                width = 1920,
                                 height = 1080,
                                 textMeasurer = textMeasurer,
                                 file = destination

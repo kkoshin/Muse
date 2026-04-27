@@ -28,6 +28,12 @@ kotlin {
                 implementation(libs.koin.compose)
             }
         }
+
+        val desktopTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 
