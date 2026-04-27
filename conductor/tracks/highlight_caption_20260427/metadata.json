@@ -1,8 +1,0 @@
-{
-  "track_id": "highlight_caption_20260427",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-04-27T00:00:00Z",
-  "updated_at": "2026-04-27T00:00:00Z",
-  "description": "为 Caption 增加富文本的支持，先实现Caption 对 Highlight 的支持"
-}
