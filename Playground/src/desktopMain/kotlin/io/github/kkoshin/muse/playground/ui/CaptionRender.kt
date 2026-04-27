@@ -25,7 +25,7 @@ fun DrawScope.drawCaption(
     val currentDensity = density
 
     val textLayoutInput = if (caption.segments.isNotEmpty()) {
-        caption.segments.toAnnotatedString(currentDensity)
+        caption.segments.toAnnotatedString()
     } else {
         caption.text
     }
@@ -33,12 +33,12 @@ fun DrawScope.drawCaption(
     val textResult = if (textLayoutInput is String) {
         textMeasurer.measure(
             text = textLayoutInput,
-            style = caption.style.toTextStyle(currentDensity),
+            style = caption.style.toTextStyle(),
         )
     } else {
         textMeasurer.measure(
             text = textLayoutInput as androidx.compose.ui.text.AnnotatedString,
-            style = caption.style.toTextStyle(currentDensity),
+            style = caption.style.toTextStyle(),
         )
     }
 

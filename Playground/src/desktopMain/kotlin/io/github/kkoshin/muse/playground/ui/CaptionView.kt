@@ -73,30 +73,30 @@ fun CaptionView() {
     }
     var captionStyle by remember { mutableStateOf(CaptionStyle()) }
     var isSelectionBoxVisible by remember { mutableStateOf(false) }
-    val caption = remember(captionStyle) { 
+    val caption = remember(captionStyle) {
         DefaultCaption.copy(
             style = captionStyle,
             segments = CaptionProcessor.processHighlight(DefaultCaption.text, captionStyle)
-        ) 
+        )
     }
 
     val textMeasurer = rememberTextMeasurer()
+    // 当前可能是 x2 的倍率
     val density = LocalDensity.current
 
     val textLayoutResult = remember(caption, textMeasurer) {
         val annotatedString = if (caption.segments.isNotEmpty()) {
-            caption.segments.toAnnotatedString(density.density)
+            caption.segments.toAnnotatedString()
         } else {
             androidx.compose.ui.text.AnnotatedString(caption.text)
         }
-        textMeasurer.measure(annotatedString, caption.style.toTextStyle(density.density))
+        textMeasurer.measure(annotatedString, caption.style.toTextStyle())
     }
 
     var containerSize by remember { mutableStateOf(Size.Zero) }
 
     val exportManager = remember { ExportManager() }
     val scope = rememberCoroutineScope()
-
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier

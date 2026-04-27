@@ -12,7 +12,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import io.github.kkoshin.muse.playground.Constants.REFERENCE_FONT_SIZE
 
 data class Caption(
@@ -26,13 +25,13 @@ data class CaptionSegment(
     val styleOverride: CaptionStyle.HighlightStyle? = null
 )
 
-fun List<CaptionSegment>.toAnnotatedString(density: Float): AnnotatedString {
+fun List<CaptionSegment>.toAnnotatedString(): AnnotatedString {
     return buildAnnotatedString {
         forEach { segment ->
             if (segment.styleOverride != null) {
                 val spanStyle = SpanStyle(
                     color = segment.styleOverride.textColor,
-                    fontSize = (REFERENCE_FONT_SIZE * segment.styleOverride.fontScale * density).sp
+                    fontSize = (REFERENCE_FONT_SIZE * segment.styleOverride.fontScale).sp
                 )
                 pushStyle(spanStyle)
                 append(segment.text)
@@ -74,10 +73,10 @@ data class CaptionStyle(
     )
 }
 
-fun CaptionStyle.toTextStyle(density: Float): TextStyle {
+fun CaptionStyle.toTextStyle(): TextStyle {
     return TextStyle(
         color = textColor,
-        fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
+        fontSize = (REFERENCE_FONT_SIZE * fontScale).sp,
         textAlign = TextAlign.Center,
         letterSpacing = letterSpacing.em,
         fontWeight = if (textStyle == CaptionStyle.TextStyleOption.Bold) FontWeight.Bold else FontWeight.Normal,
@@ -86,9 +85,10 @@ fun CaptionStyle.toTextStyle(density: Float): TextStyle {
     )
 }
 
-fun CaptionStyle.HighlightStyle.toTextStyle(density: Float): TextStyle {
+fun CaptionStyle.HighlightStyle.toTextStyle(): TextStyle {
     return TextStyle(
         color = textColor,
-        fontSize = (REFERENCE_FONT_SIZE * fontScale * density).sp,
+        // 使用 sp 单位，最终绘制的时候转换为 px 时会乘上 density 里的 fontScale，现有的流程里会保证这个值为 1.0，所以这里也就省略了。
+        fontSize = (REFERENCE_FONT_SIZE * fontScale).sp,
     )
 }
