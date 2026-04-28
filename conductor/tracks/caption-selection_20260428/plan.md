@@ -19,7 +19,7 @@
 - [x] Task: Run tests to ensure they pass (Green Phase).
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Implementation (Green Phase)' (Protocol in workflow.md)
 
-## Phase 3: Refactoring and Manual Verification
-- [ ] Task: Refactor any messy coordinate calculations in `CaptionView.kt` for better readability.
-- [ ] Task: Verify the changes manually in the Playground app (run Desktop app, click around captions).
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Refactoring and Manual Verification' (Protocol in workflow.md)
+## Phase 3: Refactoring and Manual Verification [checkpoint: 1a76050]
+- [x] Task: Refactor any messy coordinate calculations in `CaptionView.kt` for better readability.
+- [x] Task: Verify the changes manually in the Playground app (run Desktop app, click around captions).
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Refactoring and Manual Verification' (Protocol in workflow.md)
