@@ -1,0 +1,8 @@
+{
+  "track_id": "fix-highlight-stroke_20260428",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-04-28T00:00:00Z",
+  "updated_at": "2026-04-28T00:00:00Z",
+  "description": "highlight 部分的双重描边效果没有生效。 能否修复一下"
+}
