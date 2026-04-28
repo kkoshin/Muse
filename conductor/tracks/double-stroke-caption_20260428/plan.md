@@ -1,6 +1,6 @@
 # Implementation Plan: Double Stroke Caption Style
 
-## Phase 1: Core Logic & Tests
+## Phase 1: Core Logic & Tests [checkpoint: e87a7a0]
 - [x] Task: Update Caption Style Model
     - [x] Update style data class/model to include `textStrokeColorExt` and `textStrokeWidthExt`.
 - [x] Task: Write Tests for Double Stroke Model
