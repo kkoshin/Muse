@@ -1,6 +1,6 @@
 # Implementation Plan: Fix Stroke Gap on FontScale Adjustment
 
-## Phase 1: Unify AnnotatedString Structure
+## Phase 1: Unify AnnotatedString Structure [checkpoint: 037abaf]
 - [x] Task: Update `Caption.kt`
     - [x] Modify `toAnnotatedString` to ensure both fill and stroke variants push `SpanStyle`s consistently for every segment.
     - [x] Update the default fill `toAnnotatedString` to accept and use the base `CaptionStyle` for correct text color inheritance.

@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Fix gap between stroke and text when fontScale is adjusted**
+- [x] **Track: Fix gap between stroke and text when fontScale is adjusted**
 *Link: [./tracks/fix-stroke-gap/](./tracks/fix-stroke-gap/)*
