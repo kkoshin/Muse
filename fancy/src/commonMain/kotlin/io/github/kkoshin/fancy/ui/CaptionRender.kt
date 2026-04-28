@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -11,6 +12,7 @@ import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
 import io.github.kkoshin.fancy.data.CaptionTransform
@@ -106,66 +108,55 @@ fun DrawScope.drawCaption(
 
         // Helper to draw a stroke layer
         fun drawStrokeLayer(isOuter: Boolean) {
-            val strokeWidths = mutableSetOf<Dp>()
-            
-            // Base style width
-            val baseWidth = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
-            if (baseWidth > 0.dp) {
-                strokeWidths.add(baseWidth)
-            }
-            
-            // Segment override widths
-            caption.segments.forEach { seg ->
-                val segWidth = if (isOuter) seg.styleOverride?.textStrokeWidthExt else seg.styleOverride?.textStrokeWidth
-                if (segWidth != null && segWidth > 0.dp) {
-                    strokeWidths.add(segWidth)
-                }
-            }
-
-            strokeWidths.forEach { width ->
-                val strokeAnnotatedString = if (caption.segments.isNotEmpty()) {
-                    caption.segments.toAnnotatedString(config, style) { seg, baseStyle ->
+            val strokeAnnotatedString = if (caption.segments.isNotEmpty()) {
+                androidx.compose.ui.text.buildAnnotatedString {
+                    caption.segments.forEach { seg ->
                         val segWidth = if (isOuter) seg.styleOverride?.textStrokeWidthExt else seg.styleOverride?.textStrokeWidth
                         val segColor = if (isOuter) seg.styleOverride?.textStrokeColorExt else seg.styleOverride?.textStrokeColor
-                        
-                        val effectiveWidth = segWidth ?: (if (isOuter) baseStyle.textStrokeWidthExt else baseStyle.textStrokeWidth)
-                        val effectiveColor = segColor ?: (if (isOuter) baseStyle.textStrokeColorExt else baseStyle.textStrokeColor)
+                        val segFontScale = seg.styleOverride?.fontScale ?: style.fontScale
 
-                        if (effectiveWidth == width) effectiveColor else Color.Transparent
-                    }
-                } else {
-                    // Fallback for no segments (unlikely with CaptionProcessor)
-                    val color = if (isOuter) style.textStrokeColorExt else style.textStrokeColor
-                    val w = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
-                    if (w == width) {
-                         androidx.compose.ui.text.buildAnnotatedString { 
-                             pushStyle(androidx.compose.ui.text.SpanStyle(color = color))
-                             append(caption.text)
-                             pop()
-                         }
-                    } else {
-                         androidx.compose.ui.text.buildAnnotatedString { 
-                             pushStyle(androidx.compose.ui.text.SpanStyle(color = Color.Transparent))
-                             append(caption.text)
-                             pop()
-                         }
+                        val effectiveWidth = segWidth ?: (if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth)
+                        val effectiveColor = segColor ?: (if (isOuter) style.textStrokeColorExt else style.textStrokeColor)
+
+                        val scaledWidth = effectiveWidth.toPx() * segFontScale
+                        
+                        pushStyle(
+                            androidx.compose.ui.text.SpanStyle(
+                                color = if (scaledWidth > 0f) effectiveColor else Color.Transparent,
+                                fontSize = (config.referenceFontSize * segFontScale).sp,
+                                drawStyle = if (scaledWidth > 0f) Stroke(width = scaledWidth, join = StrokeJoin.Round) else null
+                            )
+                        )
+                        append(seg.text)
+                        pop()
                     }
                 }
-
-                val strokeResult = textMeasurer.measure(
-                    text = strokeAnnotatedString,
-                    style = style.toTextStyle(config)
-                )
-
-                // Scale stroke width by fontScale to maintain relative thickness
+            } else {
+                val color = if (isOuter) style.textStrokeColorExt else style.textStrokeColor
+                val width = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
                 val scaledWidth = width.toPx() * style.fontScale
-
-                drawText(
-                    textLayoutResult = strokeResult,
-                    topLeft = Offset(totalPadding, totalPadding),
-                    drawStyle = Stroke(width = scaledWidth)
-                )
+                androidx.compose.ui.text.buildAnnotatedString {
+                    pushStyle(
+                        androidx.compose.ui.text.SpanStyle(
+                            color = if (scaledWidth > 0f) color else Color.Transparent,
+                            fontSize = (config.referenceFontSize * style.fontScale).sp,
+                            drawStyle = if (scaledWidth > 0f) Stroke(width = scaledWidth, join = StrokeJoin.Round) else null
+                        )
+                    )
+                    append(caption.text)
+                    pop()
+                }
             }
+
+            val strokeResult = textMeasurer.measure(
+                text = strokeAnnotatedString,
+                style = style.toTextStyle(config)
+            )
+
+            drawText(
+                textLayoutResult = strokeResult,
+                topLeft = Offset(totalPadding, totalPadding)
+            )
         }
 
         // 1. Draw Outer Stroke

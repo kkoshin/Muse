@@ -34,7 +34,7 @@ fun List<CaptionSegment>.toAnnotatedString(
     return buildAnnotatedString {
         forEach { segment ->
             val color = colorProvider(segment, style)
-            val fontScale = segment.styleOverride?.fontScale ?: 1.0f
+            val fontScale = segment.styleOverride?.fontScale ?: style.fontScale
 
             val spanStyle = SpanStyle(
                 color = color,

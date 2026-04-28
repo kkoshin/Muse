@@ -63,7 +63,7 @@ import java.awt.Frame
 import java.io.File
 
 private val DefaultCaption: Caption = Caption(
-    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
+    text = "这是一段测试文本，其中Gemini Cli部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
     style = CaptionStyle()
 )
 
