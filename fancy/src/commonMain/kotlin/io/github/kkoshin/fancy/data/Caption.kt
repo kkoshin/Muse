@@ -47,21 +47,9 @@ fun List<CaptionSegment>.toAnnotatedString(
     }
 }
 
-fun List<CaptionSegment>.toAnnotatedString(config: FancyConfig): AnnotatedString {
-    return buildAnnotatedString {
-        forEach { segment ->
-            if (segment.styleOverride != null) {
-                val spanStyle = SpanStyle(
-                    color = segment.styleOverride.textColor,
-                    fontSize = (config.referenceFontSize * segment.styleOverride.fontScale).sp
-                )
-                pushStyle(spanStyle)
-                append(segment.text)
-                pop()
-            } else {
-                append(segment.text)
-            }
-        }
+fun List<CaptionSegment>.toAnnotatedString(config: FancyConfig, style: CaptionStyle): AnnotatedString {
+    return toAnnotatedString(config, style) { segment, baseStyle ->
+        segment.styleOverride?.textColor ?: baseStyle.textColor
     }
 }
 

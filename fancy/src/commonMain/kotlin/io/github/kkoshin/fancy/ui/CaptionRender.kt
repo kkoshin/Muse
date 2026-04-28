@@ -32,7 +32,7 @@ fun DrawScope.drawCaption(
     val currentDensity = density
 
     val textLayoutInput = if (caption.segments.isNotEmpty()) {
-        caption.segments.toAnnotatedString(config)
+        caption.segments.toAnnotatedString(config, style)
     } else {
         caption.text
     }
@@ -157,10 +157,13 @@ fun DrawScope.drawCaption(
                     style = style.toTextStyle(config)
                 )
 
+                // Scale stroke width by fontScale to maintain relative thickness
+                val scaledWidth = width.toPx() * style.fontScale
+
                 drawText(
                     textLayoutResult = strokeResult,
                     topLeft = Offset(totalPadding, totalPadding),
-                    drawStyle = Stroke(width = width.toPx())
+                    drawStyle = Stroke(width = scaledWidth)
                 )
             }
         }

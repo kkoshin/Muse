@@ -95,7 +95,7 @@ fun CaptionView() {
 
     val textLayoutResult = remember(caption, textMeasurer, config) {
         val annotatedString = if (caption.segments.isNotEmpty()) {
-            caption.segments.toAnnotatedString(config)
+            caption.segments.toAnnotatedString(config, caption.style)
         } else {
             androidx.compose.ui.text.AnnotatedString(caption.text)
         }
