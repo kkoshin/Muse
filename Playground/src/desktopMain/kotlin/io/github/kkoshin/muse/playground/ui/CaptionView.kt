@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
+import io.github.kkoshin.fancy.data.CaptionHitTester
 import io.github.kkoshin.fancy.data.CaptionProcessor
 import io.github.kkoshin.fancy.data.CaptionStyle
 import io.github.kkoshin.fancy.data.CaptionTransform
@@ -114,9 +115,19 @@ fun CaptionView() {
                 .onGloballyPositioned {
                     containerSize = it.size.toSize()
                 }
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        isSelectionBoxVisible = true
+                .pointerInput(caption, captionTransform, config, containerSize, density, textLayoutResult) {
+                    detectTapGestures { offset ->
+                        isSelectionBoxVisible = CaptionHitTester.isHit(
+                            point = offset,
+                            caption = caption,
+                            transform = captionTransform,
+                            config = config,
+                            containerSize = containerSize,
+                            density = density.density,
+                            textWidth = textLayoutResult.size.width.toFloat(),
+                            textHeight = textLayoutResult.size.height.toFloat(),
+                            paddingThreshold = 8.dp
+                        )
                     }
                 }
         ) {
