@@ -63,7 +63,7 @@ import java.awt.Frame
 import java.io.File
 
 private val DefaultCaption: Caption = Caption(
-    text = "这是一段测试文本，其中部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
+    text = "这是一段测试文本，其中Gemini Cli部分内容是需要高亮处理，也会包含部分换行操作等。\n比如：加粗效果\n部分字放大效果等等等",
     style = CaptionStyle()
 )
 
@@ -95,7 +95,7 @@ fun CaptionView() {
 
     val textLayoutResult = remember(caption, textMeasurer, config) {
         val annotatedString = if (caption.segments.isNotEmpty()) {
-            caption.segments.toAnnotatedString(config)
+            caption.segments.toAnnotatedString(config, caption.style)
         } else {
             androidx.compose.ui.text.AnnotatedString(caption.text)
         }
@@ -412,6 +412,45 @@ fun CaptionView() {
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
+
+            Divider()
+
+            // Text Stroke
+            Text(
+                "Inner Stroke",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+            ColorPicker(
+                selectedColor = captionStyle.textStrokeColor,
+                onColorSelected = { captionStyle = captionStyle.copy(textStrokeColor = it) },
+                modifier = Modifier.padding(16.dp)
+            )
+            NumericSlider(
+                label = "Width",
+                value = captionStyle.textStrokeWidth.value,
+                onValueChange = { captionStyle = captionStyle.copy(textStrokeWidth = it.dp) },
+                valueRange = 0f..20f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Text(
+                "Outer Stroke",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+            ColorPicker(
+                selectedColor = captionStyle.textStrokeColorExt,
+                onColorSelected = { captionStyle = captionStyle.copy(textStrokeColorExt = it) },
+                modifier = Modifier.padding(16.dp)
+            )
+            NumericSlider(
+                label = "Width",
+                value = captionStyle.textStrokeWidthExt.value,
+                onValueChange = { captionStyle = captionStyle.copy(textStrokeWidthExt = it.dp) },
+                valueRange = 0f..20f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
             Spacer(Modifier.height(32.dp))
         }

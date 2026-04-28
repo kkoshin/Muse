@@ -3,11 +3,16 @@ package io.github.kkoshin.fancy.ui
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
 import io.github.kkoshin.fancy.data.CaptionTransform
@@ -29,7 +34,7 @@ fun DrawScope.drawCaption(
     val currentDensity = density
 
     val textLayoutInput = if (caption.segments.isNotEmpty()) {
-        caption.segments.toAnnotatedString(config)
+        caption.segments.toAnnotatedString(config, style)
     } else {
         caption.text
     }
@@ -101,6 +106,66 @@ fun DrawScope.drawCaption(
             )
         }
 
+        // Helper to draw a stroke layer
+        fun drawStrokeLayer(isOuter: Boolean) {
+            val strokeAnnotatedString = if (caption.segments.isNotEmpty()) {
+                androidx.compose.ui.text.buildAnnotatedString {
+                    caption.segments.forEach { seg ->
+                        val segWidth = if (isOuter) seg.styleOverride?.textStrokeWidthExt else seg.styleOverride?.textStrokeWidth
+                        val segColor = if (isOuter) seg.styleOverride?.textStrokeColorExt else seg.styleOverride?.textStrokeColor
+                        val segFontScale = seg.styleOverride?.fontScale ?: style.fontScale
+
+                        val effectiveWidth = segWidth ?: (if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth)
+                        val effectiveColor = segColor ?: (if (isOuter) style.textStrokeColorExt else style.textStrokeColor)
+
+                        val scaledWidth = effectiveWidth.toPx() * segFontScale
+                        
+                        pushStyle(
+                            androidx.compose.ui.text.SpanStyle(
+                                color = if (scaledWidth > 0f) effectiveColor else Color.Transparent,
+                                fontSize = (config.referenceFontSize * segFontScale).sp,
+                                drawStyle = if (scaledWidth > 0f) Stroke(width = scaledWidth, join = StrokeJoin.Round) else null
+                            )
+                        )
+                        append(seg.text)
+                        pop()
+                    }
+                }
+            } else {
+                val color = if (isOuter) style.textStrokeColorExt else style.textStrokeColor
+                val width = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
+                val scaledWidth = width.toPx() * style.fontScale
+                androidx.compose.ui.text.buildAnnotatedString {
+                    pushStyle(
+                        androidx.compose.ui.text.SpanStyle(
+                            color = if (scaledWidth > 0f) color else Color.Transparent,
+                            fontSize = (config.referenceFontSize * style.fontScale).sp,
+                            drawStyle = if (scaledWidth > 0f) Stroke(width = scaledWidth, join = StrokeJoin.Round) else null
+                        )
+                    )
+                    append(caption.text)
+                    pop()
+                }
+            }
+
+            val strokeResult = textMeasurer.measure(
+                text = strokeAnnotatedString,
+                style = style.toTextStyle(config)
+            )
+
+            drawText(
+                textLayoutResult = strokeResult,
+                topLeft = Offset(totalPadding, totalPadding)
+            )
+        }
+
+        // 1. Draw Outer Stroke
+        drawStrokeLayer(isOuter = true)
+
+        // 2. Draw Inner Stroke
+        drawStrokeLayer(isOuter = false)
+
+        // 3. Draw Fill
         drawText(textResult, topLeft = Offset(totalPadding, totalPadding))
     }
 }
