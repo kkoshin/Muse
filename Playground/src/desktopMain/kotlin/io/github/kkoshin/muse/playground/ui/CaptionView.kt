@@ -413,6 +413,45 @@ fun CaptionView() {
                 )
             }
 
+            Divider()
+
+            // Text Stroke
+            Text(
+                "Inner Stroke",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+            ColorPicker(
+                selectedColor = captionStyle.textStrokeColor,
+                onColorSelected = { captionStyle = captionStyle.copy(textStrokeColor = it) },
+                modifier = Modifier.padding(16.dp)
+            )
+            NumericSlider(
+                label = "Width",
+                value = captionStyle.textStrokeWidth.value,
+                onValueChange = { captionStyle = captionStyle.copy(textStrokeWidth = it.dp) },
+                valueRange = 0f..20f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Text(
+                "Outer Stroke",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+            ColorPicker(
+                selectedColor = captionStyle.textStrokeColorExt,
+                onColorSelected = { captionStyle = captionStyle.copy(textStrokeColorExt = it) },
+                modifier = Modifier.padding(16.dp)
+            )
+            NumericSlider(
+                label = "Width",
+                value = captionStyle.textStrokeWidthExt.value,
+                onValueChange = { captionStyle = captionStyle.copy(textStrokeWidthExt = it.dp) },
+                valueRange = 0f..20f,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
             Spacer(Modifier.height(32.dp))
         }
     }

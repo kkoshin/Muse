@@ -12,9 +12,9 @@
 - [x] Task: Conductor - User Manual Verification 'Core Logic & Tests' (Protocol in workflow.md)
 
 ## Phase 2: Playground UI Updates
-- [ ] Task: Update StyleSlider UI
-    - [ ] Add editing inputs for inner stroke color and width in `StyleSlider`.
-    - [ ] Add editing inputs for outer stroke color and width in `StyleSlider`.
-- [ ] Task: Wire StyleSlider to Model
-    - [ ] Connect the new UI controls to update the `FancyCaptionView` style model properties.
-- [ ] Task: Conductor - User Manual Verification 'Playground UI Updates' (Protocol in workflow.md)
+- [x] Task: Update StyleSlider UI
+    - [x] Add editing inputs for inner stroke color and width in `StyleSlider`.
+    - [x] Add editing inputs for outer stroke color and width in `StyleSlider`.
+- [x] Task: Wire StyleSlider to Model
+    - [x] Connect the new UI controls to update the `FancyCaptionView` style model properties.
+- [x] Task: Conductor - User Manual Verification 'Playground UI Updates' (Protocol in workflow.md)
