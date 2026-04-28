@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
+import io.github.kkoshin.fancy.data.CaptionHitTester
 import io.github.kkoshin.fancy.data.CaptionProcessor
 import io.github.kkoshin.fancy.data.CaptionStyle
 import io.github.kkoshin.fancy.data.CaptionTransform
@@ -114,9 +115,19 @@ fun CaptionView() {
                 .onGloballyPositioned {
                     containerSize = it.size.toSize()
                 }
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        isSelectionBoxVisible = true
+                .pointerInput(caption, captionTransform, config, containerSize, density, textLayoutResult) {
+                    detectTapGestures { offset ->
+                        isSelectionBoxVisible = CaptionHitTester.isHit(
+                            point = offset,
+                            caption = caption,
+                            transform = captionTransform,
+                            config = config,
+                            containerSize = containerSize,
+                            density = density.density,
+                            textWidth = textLayoutResult.size.width.toFloat(),
+                            textHeight = textLayoutResult.size.height.toFloat(),
+                            paddingThreshold = 8.dp
+                        )
                     }
                 }
         ) {
@@ -128,27 +139,20 @@ fun CaptionView() {
             )
 
             if (isSelectionBoxVisible && containerSize != Size.Zero) {
-                val previewScale = (containerSize.width / density.density) / config.referenceWidth
-                val padding = captionStyle.background?.contentPadding ?: 0.dp
-                val borderPadding = (captionStyle.border?.width ?: 0.dp) / 2
-                val totalPadding = padding + borderPadding
-
-                val boxWidth = with(density) {
-                    (textLayoutResult.size.width.toDp() + totalPadding * 2) * captionTransform.scale * previewScale
-                }
-                val boxHeight = with(density) {
-                    (textLayoutResult.size.height.toDp() + totalPadding * 2) * captionTransform.scale * previewScale
-                }
-
-                val centerPixelOffset = captionTransform.offset.toOffset(containerSize)
-
-                val boxOffsetPx = Offset(
-                    centerPixelOffset.x - with(density) { boxWidth.toPx() } / 2,
-                    centerPixelOffset.y - with(density) { boxHeight.toPx() } / 2
+                val bounds = CaptionHitTester.calculateBounds(
+                    caption = caption,
+                    transform = captionTransform,
+                    config = config,
+                    containerSize = containerSize,
+                    density = density.density,
+                    textWidth = textLayoutResult.size.width.toFloat(),
+                    textHeight = textLayoutResult.size.height.toFloat()
                 )
 
+                val boxWidth = with(density) { bounds.width.toDp() }
+                val boxHeight = with(density) { bounds.height.toDp() }
                 val boxOffsetDp = with(density) {
-                    androidx.compose.ui.unit.DpOffset(boxOffsetPx.x.toDp(), boxOffsetPx.y.toDp())
+                    androidx.compose.ui.unit.DpOffset(bounds.left.toDp(), bounds.top.toDp())
                 }
 
                 SelectionBox(
@@ -168,17 +172,8 @@ fun CaptionView() {
                     onClose = { isSelectionBoxVisible = false },
                     onScaleDrag = { dragAmount ->
                         val oldScale = captionTransform.scale
-                        val previewScaleDrag = (containerSize.width / density.density) / config.referenceWidth
-
-                        val textSizeDp = with(density) {
-                            androidx.compose.ui.unit.DpOffset(
-                                textLayoutResult.size.width.toDp(),
-                                textLayoutResult.size.height.toDp()
-                            )
-                        }
-
-                        val boxWidthNow = (textSizeDp.x + totalPadding * 2) * oldScale * previewScaleDrag
-                        val boxHeightNow = (textSizeDp.y + totalPadding * 2) * oldScale * previewScaleDrag
+                        val boxWidthNow = boxWidth
+                        val boxHeightNow = boxHeight
 
                         val d1 = Math.sqrt(
                             Math.pow(
