@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
@@ -103,60 +104,74 @@ fun DrawScope.drawCaption(
             )
         }
 
-        val hasHighlight = caption.segments.any { it.styleOverride != null }
+        // Helper to draw a stroke layer
+        fun drawStrokeLayer(isOuter: Boolean) {
+            val strokeWidths = mutableSetOf<Dp>()
+            
+            // Base style width
+            val baseWidth = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
+            if (baseWidth > 0.dp) {
+                strokeWidths.add(baseWidth)
+            }
+            
+            // Segment override widths
+            caption.segments.forEach { seg ->
+                val segWidth = if (isOuter) seg.styleOverride?.textStrokeWidthExt else seg.styleOverride?.textStrokeWidth
+                if (segWidth != null && segWidth > 0.dp) {
+                    strokeWidths.add(segWidth)
+                }
+            }
 
-        val finalStrokeColor = if (style.textStrokeColor != Color.Transparent) {
-            style.textStrokeColor
-        } else if (hasHighlight) {
-            style.highlightStyle.textStrokeColor
-        } else {
-            Color.Transparent
+            strokeWidths.forEach { width ->
+                val strokeAnnotatedString = if (caption.segments.isNotEmpty()) {
+                    caption.segments.toAnnotatedString(config, style) { seg, baseStyle ->
+                        val segWidth = if (isOuter) seg.styleOverride?.textStrokeWidthExt else seg.styleOverride?.textStrokeWidth
+                        val segColor = if (isOuter) seg.styleOverride?.textStrokeColorExt else seg.styleOverride?.textStrokeColor
+                        
+                        val effectiveWidth = segWidth ?: (if (isOuter) baseStyle.textStrokeWidthExt else baseStyle.textStrokeWidth)
+                        val effectiveColor = segColor ?: (if (isOuter) baseStyle.textStrokeColorExt else baseStyle.textStrokeColor)
+
+                        if (effectiveWidth == width) effectiveColor else Color.Transparent
+                    }
+                } else {
+                    // Fallback for no segments (unlikely with CaptionProcessor)
+                    val color = if (isOuter) style.textStrokeColorExt else style.textStrokeColor
+                    val w = if (isOuter) style.textStrokeWidthExt else style.textStrokeWidth
+                    if (w == width) {
+                         androidx.compose.ui.text.buildAnnotatedString { 
+                             pushStyle(androidx.compose.ui.text.SpanStyle(color = color))
+                             append(caption.text)
+                             pop()
+                         }
+                    } else {
+                         androidx.compose.ui.text.buildAnnotatedString { 
+                             pushStyle(androidx.compose.ui.text.SpanStyle(color = Color.Transparent))
+                             append(caption.text)
+                             pop()
+                         }
+                    }
+                }
+
+                val strokeResult = textMeasurer.measure(
+                    text = strokeAnnotatedString,
+                    style = style.toTextStyle(config)
+                )
+
+                drawText(
+                    textLayoutResult = strokeResult,
+                    topLeft = Offset(totalPadding, totalPadding),
+                    drawStyle = Stroke(width = width.toPx())
+                )
+            }
         }
 
-        val finalStrokeWidth = if (style.textStrokeWidth > 0.dp) {
-            style.textStrokeWidth
-        } else if (hasHighlight) {
-            style.highlightStyle.textStrokeWidth
-        } else {
-            0.dp
-        }
+        // 1. Draw Outer Stroke
+        drawStrokeLayer(isOuter = true)
 
-        val finalStrokeColorExt = if (style.textStrokeColorExt != Color.Transparent) {
-            style.textStrokeColorExt
-        } else if (hasHighlight) {
-            style.highlightStyle.textStrokeColorExt
-        } else {
-            Color.Transparent
-        }
+        // 2. Draw Inner Stroke
+        drawStrokeLayer(isOuter = false)
 
-        val finalStrokeWidthExt = if (style.textStrokeWidthExt > 0.dp) {
-            style.textStrokeWidthExt
-        } else if (hasHighlight) {
-            style.highlightStyle.textStrokeWidthExt
-        } else {
-            0.dp
-        }
-
-        // Draw Outer Stroke
-        if (finalStrokeColorExt != Color.Transparent && finalStrokeWidthExt > 0.dp) {
-            drawText(
-                textLayoutResult = textResult,
-                color = finalStrokeColorExt,
-                topLeft = Offset(totalPadding, totalPadding),
-                drawStyle = Stroke(width = finalStrokeWidthExt.toPx())
-            )
-        }
-
-        // Draw Inner Stroke
-        if (finalStrokeColor != Color.Transparent && finalStrokeWidth > 0.dp) {
-            drawText(
-                textLayoutResult = textResult,
-                color = finalStrokeColor,
-                topLeft = Offset(totalPadding, totalPadding),
-                drawStyle = Stroke(width = finalStrokeWidth.toPx())
-            )
-        }
-
+        // 3. Draw Fill
         drawText(textResult, topLeft = Offset(totalPadding, totalPadding))
     }
 }

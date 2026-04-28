@@ -26,6 +26,27 @@ data class CaptionSegment(
     val styleOverride: CaptionStyle.HighlightStyle? = null
 )
 
+fun List<CaptionSegment>.toAnnotatedString(
+    config: FancyConfig,
+    style: CaptionStyle,
+    colorProvider: (CaptionSegment, CaptionStyle) -> Color
+): AnnotatedString {
+    return buildAnnotatedString {
+        forEach { segment ->
+            val color = colorProvider(segment, style)
+            val fontScale = segment.styleOverride?.fontScale ?: 1.0f
+
+            val spanStyle = SpanStyle(
+                color = color,
+                fontSize = (config.referenceFontSize * fontScale).sp
+            )
+            pushStyle(spanStyle)
+            append(segment.text)
+            pop()
+        }
+    }
+}
+
 fun List<CaptionSegment>.toAnnotatedString(config: FancyConfig): AnnotatedString {
     return buildAnnotatedString {
         forEach { segment ->
