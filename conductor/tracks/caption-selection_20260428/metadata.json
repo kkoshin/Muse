@@ -1,0 +1,8 @@
+{
+  "track_id": "caption-selection_20260428",
+  "type": "improvement",
+  "status": "new",
+  "created_at": "2026-04-28T00:00:00Z",
+  "updated_at": "2026-04-28T00:00:00Z",
+  "description": "Modify the selection implementation in CaptionView.kt so that it only shows as selected if the actual click position is within the Caption's bounds."
+}
