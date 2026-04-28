@@ -1,0 +1,8 @@
+{
+  "track_id": "double-stroke-caption_20260428",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-28T00:00:00Z",
+  "updated_at": "2026-04-28T00:00:00Z",
+  "description": "给 FancyCaptionView 增加新的样式，双重描边样式。对应的 Playground 模块的 StyleSlider 也要增加对应的编辑入口，Highlight 属性默认启用这个双重描边效果"
+}
