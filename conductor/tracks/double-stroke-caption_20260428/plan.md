@@ -1,15 +1,15 @@
 # Implementation Plan: Double Stroke Caption Style
 
 ## Phase 1: Core Logic & Tests
-- [ ] Task: Update Caption Style Model
-    - [ ] Update style data class/model to include `textStrokeColorExt` and `textStrokeWidthExt`.
-- [ ] Task: Write Tests for Double Stroke Model
-    - [ ] Add unit tests verifying default values and property assignment for new double stroke properties.
-- [ ] Task: Implement Double Stroke Rendering
-    - [ ] Update `FancyCaptionView` rendering logic to draw the outer stroke (`textStrokeColorExt`, `textStrokeWidthExt`) behind the inner stroke, using the provided reference code.
-- [ ] Task: Implement Highlight Default Behavior
-    - [ ] Update logic so when `Highlight` is enabled, it defaults to Inner Stroke: Purple 2dp, Outer Stroke: White 4dp.
-- [ ] Task: Conductor - User Manual Verification 'Core Logic & Tests' (Protocol in workflow.md)
+- [x] Task: Update Caption Style Model
+    - [x] Update style data class/model to include `textStrokeColorExt` and `textStrokeWidthExt`.
+- [x] Task: Write Tests for Double Stroke Model
+    - [x] Add unit tests verifying default values and property assignment for new double stroke properties.
+- [x] Task: Implement Double Stroke Rendering
+    - [x] Update `FancyCaptionView` rendering logic to draw the outer stroke (`textStrokeColorExt`, `textStrokeWidthExt`) behind the inner stroke, using the provided reference code.
+- [x] Task: Implement Highlight Default Behavior
+    - [x] Update logic so when `Highlight` is enabled, it defaults to Inner Stroke: Purple 2dp, Outer Stroke: White 4dp.
+- [x] Task: Conductor - User Manual Verification 'Core Logic & Tests' (Protocol in workflow.md)
 
 ## Phase 2: Playground UI Updates
 - [ ] Task: Update StyleSlider UI

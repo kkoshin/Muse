@@ -3,11 +3,13 @@ package io.github.kkoshin.fancy.ui
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.unit.dp
 import io.github.kkoshin.fancy.config.FancyConfig
 import io.github.kkoshin.fancy.data.Caption
 import io.github.kkoshin.fancy.data.CaptionTransform
@@ -98,6 +100,60 @@ fun DrawScope.drawCaption(
                 ),
                 style = Stroke(width = width),
                 cornerRadius = CornerRadius(radius + width / 2, radius + width / 2)
+            )
+        }
+
+        val hasHighlight = caption.segments.any { it.styleOverride != null }
+
+        val finalStrokeColor = if (style.textStrokeColor != Color.Transparent) {
+            style.textStrokeColor
+        } else if (hasHighlight) {
+            style.highlightStyle.textStrokeColor
+        } else {
+            Color.Transparent
+        }
+
+        val finalStrokeWidth = if (style.textStrokeWidth > 0.dp) {
+            style.textStrokeWidth
+        } else if (hasHighlight) {
+            style.highlightStyle.textStrokeWidth
+        } else {
+            0.dp
+        }
+
+        val finalStrokeColorExt = if (style.textStrokeColorExt != Color.Transparent) {
+            style.textStrokeColorExt
+        } else if (hasHighlight) {
+            style.highlightStyle.textStrokeColorExt
+        } else {
+            Color.Transparent
+        }
+
+        val finalStrokeWidthExt = if (style.textStrokeWidthExt > 0.dp) {
+            style.textStrokeWidthExt
+        } else if (hasHighlight) {
+            style.highlightStyle.textStrokeWidthExt
+        } else {
+            0.dp
+        }
+
+        // Draw Outer Stroke
+        if (finalStrokeColorExt != Color.Transparent && finalStrokeWidthExt > 0.dp) {
+            drawText(
+                textLayoutResult = textResult,
+                color = finalStrokeColorExt,
+                topLeft = Offset(totalPadding, totalPadding),
+                drawStyle = Stroke(width = finalStrokeWidthExt.toPx())
+            )
+        }
+
+        // Draw Inner Stroke
+        if (finalStrokeColor != Color.Transparent && finalStrokeWidth > 0.dp) {
+            drawText(
+                textLayoutResult = textResult,
+                color = finalStrokeColor,
+                topLeft = Offset(totalPadding, totalPadding),
+                drawStyle = Stroke(width = finalStrokeWidth.toPx())
             )
         }
 

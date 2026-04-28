@@ -5,6 +5,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import io.github.kkoshin.fancy.config.FancyConfig
@@ -87,5 +88,29 @@ class CaptionStyleTest {
         val style = CaptionStyle()
         assertEquals(Color.Red, style.highlightStyle.textColor)
         assertEquals(2.0f, style.highlightStyle.fontScale)
+    }
+
+    @Test
+    fun testCaptionStyleWithStroke() {
+        val style = CaptionStyle(
+            textStrokeColor = Color.Blue,
+            textStrokeWidth = 2.dp,
+            textStrokeColorExt = Color.White,
+            textStrokeWidthExt = 4.dp
+        )
+        assertEquals(Color.Blue, style.textStrokeColor)
+        assertEquals(2.dp, style.textStrokeWidth)
+        assertEquals(Color.White, style.textStrokeColorExt)
+        assertEquals(4.dp, style.textStrokeWidthExt)
+    }
+
+    @Test
+    fun testHighlightStyleWithStrokeDefaults() {
+        val style = CaptionStyle()
+        val highlight = style.highlightStyle
+        assertEquals(Color(0xFF800080), highlight.textStrokeColor)
+        assertEquals(2.dp, highlight.textStrokeWidth)
+        assertEquals(Color.White, highlight.textStrokeColorExt)
+        assertEquals(4.dp, highlight.textStrokeWidthExt)
     }
 }

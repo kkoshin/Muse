@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import io.github.kkoshin.fancy.config.FancyConfig
@@ -50,7 +51,11 @@ data class CaptionStyle(
     val textStyle: TextStyleOption = TextStyleOption.Normal,
     val border: Border? = null,
     val background: Background? = null,
-    val highlightStyle: HighlightStyle = HighlightStyle()
+    val highlightStyle: HighlightStyle = HighlightStyle(),
+    val textStrokeColor: Color = Color.Transparent,
+    val textStrokeWidth: Dp = 0.dp,
+    val textStrokeColorExt: Color = Color.Transparent,
+    val textStrokeWidthExt: Dp = 0.dp
 ) {
     enum class TextStyleOption {
         Normal, Bold, Italic, Underline
@@ -69,7 +74,11 @@ data class CaptionStyle(
 
     data class HighlightStyle(
         val textColor: Color = Color.Red,
-        val fontScale: Float = 2.0f
+        val fontScale: Float = 2.0f,
+        val textStrokeColor: Color = Color(0xFF800080),
+        val textStrokeWidth: Dp = 2.dp,
+        val textStrokeColorExt: Color = Color.White,
+        val textStrokeWidthExt: Dp = 4.dp
     )
 }
 
