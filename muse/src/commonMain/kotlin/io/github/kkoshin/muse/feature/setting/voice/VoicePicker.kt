@@ -12,29 +12,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Deselect
-import androidx.compose.material.icons.filled.SelectAll
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import top.yukonga.miuix.kmp.basic.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,12 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.audio.ui.AudioPlaybackButton
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.Voice
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import io.github.kkoshin.muse.designsystem.component.ScreenScaffold
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import io.github.kkoshin.muse.platformbridge.LocalToaster
@@ -64,6 +52,14 @@ import museroot.muse.generated.resources.voices
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Deselect
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import top.yukonga.miuix.kmp.icon.extended.SelectAll
 
 @Serializable
 class VoicePickerArgs(
@@ -114,77 +110,35 @@ fun VoicePicker(
                 }
             }
     }
-    Scaffold(
+    ScreenScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                navigationIcon = {
-                    AppBackButton {
-                        scope.launch {
-                            speechProcessorManager.updateAvailableVoice(selected.toSet())
-                        }
-                    }
-                },
-                title = {
-                    Text(text = stringResource(Res.string.voices))
-                },
-                actions = {
-                    IconButton(
-                        enabled = voices.isNotEmpty(),
-                        onClick = {
-                            selected.clear()
-                        },
-                    ) {
-                        Icon(Icons.Default.Deselect, "deselect All")
-                    }
-                    IconButton(
-                        enabled = voices.isNotEmpty(),
-                        onClick = {
-                            selected.clear()
-                            selected.addAll(voices.map { it.voiceId })
-                        },
-                    ) {
-                        Icon(Icons.Default.SelectAll, "select All")
+        title = stringResource(Res.string.voices),
+        navigationIcon = {
+            AppBackButton(
+                onBack = {
+                    scope.launch {
+                        speechProcessorManager.updateAvailableVoice(selected.toSet())
                     }
                 },
             )
         },
-        content = { contentPadding ->
-            LazyColumn(contentPadding = contentPadding) {
-                voices
-                    .groupBy { it.accent }
-//                    .toSortedMap()
-                    .forEach { (accent, voicesList) ->
-                        stickyHeader {
-                            Text(
-                                accent.name,
-                                style = MaterialTheme.typography.subtitle1,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        if (MaterialTheme.colors.isLight) Color(
-                                            0xFFEDEDED
-                                        ) else Color.DarkGray
-                                    )
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                            )
-                        }
-                        items(voicesList) {
-                            VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
-                                if (isChecked) {
-                                    selected.add(voice.voiceId)
-                                } else {
-                                    selected.remove(voice.voiceId)
-                                }
-                            }, onClick = { voice ->
-                                previewVoice = voice
-                                playbackBarVisible = true
-                            })
-                        }
-                    }
+        actions = {
+            IconButton(
+                enabled = voices.isNotEmpty(),
+                onClick = {
+                    selected.clear()
+                },
+            ) {
+                Icon(Icons.Default.Deselect, "deselect All")
+            }
+            IconButton(
+                enabled = voices.isNotEmpty(),
+                onClick = {
+                    selected.clear()
+                    selected.addAll(voices.map { it.voiceId })
+                },
+            ) {
+                Icon(MiuixIcons.SelectAll, "select All")
             }
         },
         bottomBar = {
@@ -197,7 +151,7 @@ fun VoicePicker(
                     PlaybackBar(
                         modifier = Modifier
                             .background(
-                                MaterialTheme.colors.secondary,
+                                AppTheme.colorScheme.surfaceContainerHigh,
                                 RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                             )
                             .navigationBarsPadding(),
@@ -209,10 +163,43 @@ fun VoicePicker(
                 }
             }
         },
-    )
+    ) { paddingValues, scrollBehavior ->
+        LazyColumn(
+            contentPadding = paddingValues,
+            modifier = Modifier.nestedScroll(scrollBehavior!!.nestedScrollConnection),
+        ) {
+            voices
+                .groupBy { it.accent }
+                .forEach { (accent, voicesList) ->
+                    item {
+                        Text(
+                            accent.name,
+                            style = AppTheme.textStyles.subtitle,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    AppTheme.colorScheme.onBackground.copy(alpha = 0.08f)
+                                )
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                        )
+                    }
+                    items(voicesList) {
+                        VoiceItem(it, selected.toSet(), onSelected = { voice, isChecked ->
+                            if (isChecked) {
+                                selected.add(voice.voiceId)
+                            } else {
+                                selected.remove(voice.voiceId)
+                            }
+                        }, onClick = { voice ->
+                            previewVoice = voice
+                            playbackBarVisible = true
+                        })
+                    }
+                }
+        }
+    }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun VoiceItem(
     voice: Voice,
@@ -220,32 +207,36 @@ private fun VoiceItem(
     onSelected: (Voice, selected: Boolean) -> Unit,
     onClick: (Voice) -> Unit,
 ) {
-    ListItem(
+    Row(
         modifier = Modifier.clickable {
             onClick(voice)
-        },
-        text = {
+        }.padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = getAccentFlag(voice.accent) + " " + voice.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-        },
-        secondaryText = {
             Column {
                 listOfNotNull(voice.gender?.raw, voice.age?.raw, voice.descriptive)
                     .joinToString("・")
                     .let {
-                        Text(it)
+                        Text(
+                            it,
+                            style = AppTheme.textStyles.footnote1,
+                            color = AppTheme.colorScheme.onBackgroundVariant,
+                        )
                     }
             }
-        },
-        trailing = {
-            Checkbox(selectedVoiceIds.contains(voice.voiceId), onCheckedChange = { isChecked ->
-                onSelected(voice, isChecked)
+        }
+        Checkbox(
+            state = if (selectedVoiceIds.contains(voice.voiceId)) ToggleableState.On else ToggleableState.Off,
+            onClick = {
+                onSelected(voice, !selectedVoiceIds.contains(voice.voiceId))
             })
-        },
-    )
+    }
 }
 
 internal fun getAccentFlag(accent: Voice.Accent): String =
@@ -272,13 +263,13 @@ fun PlaybackBar(modifier: Modifier = Modifier, voice: Voice, onClose: () -> Unit
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.width(16.dp))
-        Text(getAccentFlag(voice.accent), style = MaterialTheme.typography.h5)
+        Text(getAccentFlag(voice.accent), style = AppTheme.textStyles.title2)
         Spacer(Modifier.width(8.dp))
         Column(Modifier.weight(1f)) {
-            Text(voice.name, style = MaterialTheme.typography.body1)
+            Text(voice.name, style = AppTheme.textStyles.body1)
             listOfNotNull(voice.gender?.raw, voice.age?.raw, voice.descriptive)
                 .joinToString("・")
-                .let { Text(it, style = MaterialTheme.typography.caption) }
+                .let { Text(it, style = AppTheme.textStyles.footnote1) }
         }
         AudioPlaybackButton(audioSource = voice.previewUrl.toPath())
         IconButton(onClick = { onClose() }) { Icon(Icons.Outlined.KeyboardArrowDown, "close") }

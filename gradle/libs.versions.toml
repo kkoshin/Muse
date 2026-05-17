@@ -1,12 +1,12 @@
 [versions]
 agp = "8.12.0"
-android-compileSdk = "36"
+android-compileSdk = "37"
 android-minSdk = "29"
-android-targetSdk = "35"
+android-targetSdk = "36"
 androidx-activityCompose = "1.13.0"
 atomicfu = "0.32.1"
 bytesize = "2.1.0"
-compose-plugin = "1.10.3"
+compose-plugin = "1.11.0"
 datastore = "1.1.0"
 junit = "4.13.2"
 koinBom = "4.1.1"
@@ -26,7 +26,7 @@ logcat = "0.1"
 okio = "3.6.0"
 startup = "1.1.1"
 androidx-lifecycle = "2.8.2"
-miuix = "0.8.8"
+miuix = "0.9.1"
 
 [libraries]
 logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
@@ -85,7 +85,7 @@ about-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "abou
 xcrash = "com.iqiyi.xcrash:xcrash-android-lib:3.1.0"
 sugar = "com.github.foodiestudio:sugar:1.0.2"
 devtools = "com.github.foodiestudio:devtools:0.1.9"
-miuix = { module = "top.yukonga.miuix.kmp:miuix", version.ref = "miuix" }
+miuix = { module = "top.yukonga.miuix.kmp:miuix-ui", version.ref = "miuix" }
 miuix-icons = { module = "top.yukonga.miuix.kmp:miuix-icons", version.ref = "miuix" }
 
 [plugins]

@@ -3,12 +3,7 @@ package io.github.kkoshin.muse.audio.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -26,9 +21,14 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import io.github.kkoshin.muse.designsystem.theme.AppTheme
 import io.github.kkoshin.muse.platformbridge.toUri
 import kotlinx.coroutines.delay
 import okio.Path
+import top.yukonga.miuix.kmp.basic.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -175,21 +175,21 @@ private fun PlaybackButtonContent(progress: Float?, isPlaying: Boolean) {
         if (progress == null) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                color = AppTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 strokeWidth = 2.dp
             )
         } else {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
                 progress = progress,
-                color = MaterialTheme.colors.onSurface,
+                color = AppTheme.colorScheme.onSurface,
                 strokeWidth = 2.dp
             )
         }
         if (isPlaying) {
-            Icon(Icons.Filled.Pause, "pause", Modifier.size(16.dp))
+            Icon(Icons.Filled.Pause, "pause", Modifier.size(16.dp), tint = AppTheme.colorScheme.onSurface)
         } else {
-            Icon(Icons.Filled.PlayArrow, "play", Modifier.size(16.dp))
+            Icon(Icons.Filled.PlayArrow, "play", Modifier.size(16.dp), tint = AppTheme.colorScheme.onSurface)
         }
     }
 }
