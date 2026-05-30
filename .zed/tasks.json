@@ -2,16 +2,36 @@
   {
     "label": "launch iOS simulator",
     "command": "xcrun simctl boot 'iPhone 16 Pro' && open -a Simulator",
-    "shell": "system"
+    "shell": "system",
   },
   {
     "label": "build iOS(debug)",
     "command": "xcodebuild -project swiftApp/swiftApp.xcodeproj -scheme swiftApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build",
-    "shell": "system"
+    "shell": "system",
   },
   {
     "label": "run iOS(debug)",
     "command": "xcodebuild -project swiftApp/swiftApp.xcodeproj -scheme swiftApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build && xcrun simctl install booted build/ios/Debug-iphonesimulator/swiftApp.app && xcrun simctl launch booted io.github.kkoshin.muse",
-    "shell": "system"
-  }
+    "shell": "system",
+  },
+  {
+    "label": "Android: Build & Install Debug",
+    "command": "./gradlew :composeApp:installDebug && adb shell am start -n io.github.kkoshin.muse.debug/io.github.kkoshin.muse.app.MainActivity",
+    "tags": ["android"],
+  },
+  {
+    "label": "Android: Build Debug APK",
+    "command": "./gradlew :composeApp:assembleDebug",
+    "tags": ["android"],
+  },
+  {
+    "label": "Android: Uninstall Debug",
+    "command": "adb uninstall io.github.kkoshin.muse.debug",
+    "tags": ["android"],
+  },
+  {
+    "label": "Android: Logcat (All)",
+    "command": "adb logcat --pid=$(adb shell pidof -s io.github.kkoshin.muse.debug) -v color",
+    "tags": ["android"],
+  },
 ]
