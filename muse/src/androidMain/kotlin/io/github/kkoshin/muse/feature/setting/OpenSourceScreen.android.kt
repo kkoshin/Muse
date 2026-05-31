@@ -15,15 +15,19 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
-import com.mikepenz.aboutlibraries.util.withContext
+import com.mikepenz.aboutlibraries.ui.compose.produceLibraries
 import kotlinx.collections.immutable.toImmutableList
+import museroot.muse.generated.resources.Res
 
 @Composable
 actual fun OpenSourceScreen(modifier: Modifier, onOpenURL: (String) -> Unit) {
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val libs by produceLibraries {
+        Res.readBytes("files/aboutlibraries.json").decodeToString()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -45,24 +49,23 @@ actual fun OpenSourceScreen(modifier: Modifier, onOpenURL: (String) -> Unit) {
             )
         },
         content = { contentPadding ->
-            LibrariesContainer(
-                Modifier.padding(contentPadding).fillMaxSize(),
-                librariesBlock = { context ->
-                    val libs = Libs.Builder().withContext(context).build()
-                    libs.copy(
-                        libraries = libs.libraries
+            libs?.let { loadedLibs ->
+                LibrariesContainer(
+                    libraries = loadedLibs.copy(
+                        libraries = loadedLibs.libraries
                             .filterNot {
                                 // ignore androidx and kotlin libraries
                                 it.uniqueId.startsWith("androidx.") || it.uniqueId.startsWith("org.jetbrains.kotlin")
                             }.toImmutableList(),
-                    )
-                },
-                onLibraryClick = { library ->
-                    library.website?.let {
-                        onOpenURL(it)
-                    }
-                },
-            )
+                    ),
+                    modifier = Modifier.padding(contentPadding).fillMaxSize(),
+                    onLibraryClick = { library ->
+                        library.website?.let {
+                            onOpenURL(it)
+                        }
+                    },
+                )
+            }
         },
     )
 }

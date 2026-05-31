@@ -1,3 +1,5 @@
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -98,6 +100,13 @@ kotlin {
     }
 }
 
+// Auto-generate aboutlibraries.json before resource copying
+tasks.configureEach {
+    if (name == "copyNonXmlValueResourcesForCommonMain") {
+        dependsOn("exportLibraryDefinitions")
+    }
+}
+
 android {
     namespace = "io.github.kkoshin.muse"
     compileSdk = libs.versions.android.compileSdk
@@ -147,5 +156,16 @@ sqldelight {
         create("AppDatabase") {
             packageName.set("io.github.kkoshin.muse.database")
         }
+    }
+}
+
+// To enable the prior behavior, you can simply configure this in your build script
+aboutLibraries {
+    library {
+        duplicationMode = DuplicateMode.KEEP
+        duplicationRule = DuplicateRule.SIMPLE
+    }
+    export {
+        outputFile.set(project.file("src/commonMain/composeResources/files/aboutlibraries.json"))
     }
 }
