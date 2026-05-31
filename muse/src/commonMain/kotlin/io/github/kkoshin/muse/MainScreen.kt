@@ -2,11 +2,18 @@
 
 package io.github.kkoshin.muse
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SinglePaneSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
@@ -43,6 +50,22 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlin.uuid.ExperimentalUuidApi
 
+private val fadeTransition: (AnimatedContentTransitionScope<Scene<NavKey>>) -> ContentTransform = {
+    ContentTransform(
+        targetContentEnter = fadeIn(tween(300)),
+        initialContentExit = fadeOut(tween(300)),
+        sizeTransform = SizeTransform(false),
+    )
+}
+
+private val fadePopTransition: (AnimatedContentTransitionScope<Scene<NavKey>>, Int) -> ContentTransform = { _, _ ->
+    ContentTransform(
+        targetContentEnter = fadeIn(tween(300)),
+        initialContentExit = fadeOut(tween(300)),
+        sizeTransform = SizeTransform(false),
+    )
+}
+
 private val navConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
@@ -72,6 +95,9 @@ fun MainScreen() {
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         sceneStrategy = bottomSheetStrategy.then(SinglePaneSceneStrategy()),
+        transitionSpec = fadeTransition,
+        popTransitionSpec = fadeTransition,
+        predictivePopTransitionSpec = fadePopTransition,
         entryProvider = { key ->
             when (key) {
                 is DashboardArgs -> NavEntry(key) {
