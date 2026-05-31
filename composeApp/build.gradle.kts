@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.compose.material)
     implementation(libs.compose.ui)
 
-    implementation(libs.navigation.compose)
+    implementation(libs.navigation3.ui)
     implementation(libs.xcrash)
     implementation(libs.logcat)
     implementation(platform(libs.koin.bom))
@@ -83,7 +83,6 @@ dependencies {
     implementation(libs.compose.material.icons.extended)
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.jetpack)
-    implementation(libs.accompanist.navigation.material)
     implementation(libs.browser)
 
     debugImplementation(libs.devtools)

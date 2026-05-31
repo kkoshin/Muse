@@ -31,12 +31,14 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
+import io.github.kkoshin.muse.Route
+
 @Serializable
 class WhiteNoiseScreenArgs(
     val prompt: String,
     val durationInMills: Long? = null,
     val promptInfluence: Float = 0.3f,
-)
+) : Route
 
 @Composable
 fun WhiteNoiseScreen(

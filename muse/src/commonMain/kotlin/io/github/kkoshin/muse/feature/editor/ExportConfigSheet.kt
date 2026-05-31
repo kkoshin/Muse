@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -42,7 +43,7 @@ class ExportConfigSheetArgs(
     val voiceIds: List<String>,
     val voiceNames: List<String>,
     val exportMode: String
-) {
+) : Route {
     init {
         check(voiceNames.size == voiceIds.size)
     }

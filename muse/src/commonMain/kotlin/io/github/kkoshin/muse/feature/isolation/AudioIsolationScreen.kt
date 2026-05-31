@@ -23,6 +23,7 @@ import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.denoise_done
+import io.github.kkoshin.muse.Route
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -30,7 +31,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Serializable
 class AudioIsolationArgs(
     val audioUri: String,
-)
+) : Route
 
 @Composable
 fun AudioIsolationScreen(

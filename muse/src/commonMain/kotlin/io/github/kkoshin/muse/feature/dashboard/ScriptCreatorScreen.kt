@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import io.github.kkoshin.muse.platformbridge.DocumentPicker
 import io.github.kkoshin.muse.platformbridge.LocalToaster
@@ -47,23 +46,14 @@ import io.github.kkoshin.muse.repo.MAX_TEXT_LENGTH
 import io.github.kkoshin.muse.repo.MuseRepo
 import io.github.kkoshin.muse.repo.model.Script
 import kotlinx.coroutines.launch
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Serializable
-object ScriptCreatorArgs {
-    private const val RESULT_KEY = "script_creator_result_script_id"
-
-    fun SavedStateHandle.getScriptId(): Uuid? {
-        return get<String?>(RESULT_KEY)?.let(Uuid::parse)
-    }
-
-    fun SavedStateHandle.setScriptId(scriptId: Uuid?) {
-        set(RESULT_KEY, scriptId?.toString())
-    }
-}
+object ScriptCreatorArgs : Route
 
 @Composable
 expect fun rememberPicker(onResult: (text: String) -> Unit) : DocumentPicker
