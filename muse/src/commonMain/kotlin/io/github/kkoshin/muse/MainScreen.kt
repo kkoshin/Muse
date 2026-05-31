@@ -2,177 +2,226 @@
 
 package io.github.kkoshin.muse
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.scene.SinglePaneSceneStrategy
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.kkoshin.muse.feature.dashboard.DashboardArgs
 import io.github.kkoshin.muse.feature.dashboard.DashboardScreen
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs
-import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorArgs.setScriptId
 import io.github.kkoshin.muse.feature.dashboard.ScriptCreatorScreen
 import io.github.kkoshin.muse.feature.editor.EditorArgs
 import io.github.kkoshin.muse.feature.editor.EditorScreen
+import io.github.kkoshin.muse.feature.editor.ExportConfigSheet
 import io.github.kkoshin.muse.feature.editor.ExportConfigSheetArgs
+import io.github.kkoshin.muse.feature.editor.ExportMode
 import io.github.kkoshin.muse.feature.export.ExportArgs
 import io.github.kkoshin.muse.feature.export.ExportScreen
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewArgs
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationPreviewScreen
+import io.github.kkoshin.muse.feature.isolation.AudioIsolationScreen
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreen
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreenArgs
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreen
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreenArgs
+import io.github.kkoshin.muse.feature.setting.OpenSourceArgs
+import io.github.kkoshin.muse.feature.setting.OpenSourceScreen
 import io.github.kkoshin.muse.feature.setting.SettingArgs
 import io.github.kkoshin.muse.feature.setting.SettingScreen
 import io.github.kkoshin.muse.feature.setting.voice.VoicePicker
 import io.github.kkoshin.muse.feature.setting.voice.VoicePickerArgs
+import io.github.kkoshin.muse.navigation.BottomSheetSceneStrategy
+import io.github.kkoshin.muse.navigation.bottomSheetMetadata
+import io.github.kkoshin.muse.platformbridge.toNavRouteString
 import io.github.kkoshin.muse.platformbridge.rememberPlatformSpecificInfo
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import kotlin.uuid.ExperimentalUuidApi
 
-@Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
-    val platformInfo = rememberPlatformSpecificInfo()
-    
-    CompositionLocalProvider(
-        LocalNavigationController provides LocalNavControllerImpl(navController)
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
-        ) {
-            NavHost(
-                modifier = Modifier.fillMaxSize(),
-                navController = navController,
-                startDestination = DashboardArgs,
-            ) {
-            composable<DashboardArgs> { _ ->
-                DashboardScreen(
-                    initScriptId = null,
-                    onLaunchEditor = { script ->
-                        navController.navigate(
-                            EditorArgs(
-                                scriptId = script.id.toString(),
-                            ),
-                        )
-                    },
-                    onCreateScriptRequest = {
-                        navController.navigate(ScriptCreatorArgs)
-                    },
-                    onLaunchSettingsPage = {
-                        navController.navigate(SettingArgs) {
-                            launchSingleTop = true
-                        }
-                    },
-                    onLaunchAudioIsolation = { uri ->
-                        onLaunchAudioIsolation(navController, uri)
-                    },
-                    onLaunchWhiteNoise = {
-                        navController.navigate(WhiteNoiseConfigScreenArgs)
-                    },
-                )
-            }
-
-            composable<EditorArgs> { entry ->
-                val args = entry.toRoute<EditorArgs>()
-                EditorScreen(
-                    args = args,
-                    onExportRequest = { voices, mode ->
-                        navController.navigate(
-                            voices.associate { it.voiceId to it.name }.let {
-                                ExportConfigSheetArgs(
-                                    voiceIds = it.keys.toList(),
-                                    voiceNames = it.values.toList(),
-                                    scriptId = args.scriptId,
-                                    exportMode = mode.name,
-                                )
-                            },
-                        )
-                    },
-                    onPickVoice = {
-                        navController.navigate(VoicePickerArgs(emptyList()))
-                    },
-                )
-            }
-
-            composable<ExportArgs> { entry ->
-                ExportScreen(args = entry.toRoute(), onExit = { isSuccess ->
-                    if (isSuccess) {
-                        navController.popBackStack(DashboardArgs, false)
-                    } else {
-                        navController.popBackStack()
-                    }
-                })
-            }
-
-            composable<ScriptCreatorArgs> {
-                ScriptCreatorScreen(onResult = { scriptId ->
-                    navController.popBackStack()
-                    navController.currentBackStackEntry
-                        ?.savedStateHandle?.setScriptId(scriptId)
-                })
-            }
-
-            composable<VoicePickerArgs> { entry ->
-                val args = entry.toRoute<VoicePickerArgs>()
-                VoicePicker(selectedVoiceIds = args.selectedVoiceIds.toSet()) {
-                    navController.popBackStack()
-                }
-            }
-
-            composable<SettingArgs> {
-                SettingScreen(
-                    versionName = platformInfo.versionName,
-                    versionCode = platformInfo.versionCode,
-                    folderPath = platformInfo.exportFolderPath,
-                    onLaunchVoiceScreen = {
-                        navController.navigate(VoicePickerArgs(it.toList()))
-                    },
-                    onLaunchOpenSourceScreen = {
-                        onLaunchOpenSource(navController)
-                    },
-                    onOpenURL = { url ->
-                        platformInfo.onOpenURL(url)
-                    }
-                )
-            }
-
-            composable<WhiteNoiseConfigScreenArgs> {
-                WhiteNoiseConfigScreen { prompt, config ->
-                    navController.navigate(
-                        WhiteNoiseScreenArgs(
-                            prompt,
-                            config.duration?.inWholeMilliseconds,
-                            config.promptInfluence
-                        )
-                    )
-                }
-            }
-
-            composable<WhiteNoiseScreenArgs> { entry ->
-                WhiteNoiseScreen(args = entry.toRoute()) { isSuccess ->
-                    if (isSuccess) {
-                        navController.popBackStack(DashboardArgs, false)
-                    } else {
-                        navController.popBackStack()
-                    }
-                }
-            }
-            
-            addPlatformSpecificRoutes(navController)
+private val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(DashboardArgs::class, DashboardArgs.serializer())
+            subclass(ScriptCreatorArgs::class, ScriptCreatorArgs.serializer())
+            subclass(EditorArgs::class, EditorArgs.serializer())
+            subclass(ExportConfigSheetArgs::class, ExportConfigSheetArgs.serializer())
+            subclass(ExportArgs::class, ExportArgs.serializer())
+            subclass(SettingArgs::class, SettingArgs.serializer())
+            subclass(OpenSourceArgs::class, OpenSourceArgs.serializer())
+            subclass(VoicePickerArgs::class, VoicePickerArgs.serializer())
+            subclass(WhiteNoiseConfigScreenArgs::class, WhiteNoiseConfigScreenArgs.serializer())
+            subclass(WhiteNoiseScreenArgs::class, WhiteNoiseScreenArgs.serializer())
+            subclass(AudioIsolationPreviewArgs::class, AudioIsolationPreviewArgs.serializer())
+            subclass(AudioIsolationArgs::class, AudioIsolationArgs.serializer())
         }
     }
 }
+
+@Composable
+fun MainScreen() {
+    val backStack = rememberNavBackStack(navConfig, DashboardArgs)
+    val platformInfo = rememberPlatformSpecificInfo()
+    val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        sceneStrategy = bottomSheetStrategy.then(SinglePaneSceneStrategy()),
+        entryProvider = { key ->
+            when (key) {
+                is DashboardArgs -> NavEntry(key) {
+                    DashboardScreen(
+                        initScriptId = null,
+                        onLaunchEditor = { script ->
+                            backStack.add(EditorArgs(scriptId = script.id.toString()))
+                        },
+                        onCreateScriptRequest = {
+                            backStack.add(ScriptCreatorArgs)
+                        },
+                        onLaunchSettingsPage = {
+                            if (backStack.none { it is SettingArgs }) {
+                                backStack.add(SettingArgs)
+                            }
+                        },
+                        onLaunchAudioIsolation = { path ->
+                            backStack.add(
+                                AudioIsolationPreviewArgs(audioUri = path.toNavRouteString()),
+                            )
+                        },
+                        onLaunchWhiteNoise = {
+                            backStack.add(WhiteNoiseConfigScreenArgs)
+                        },
+                    )
+                }
+
+                is EditorArgs -> NavEntry(key) {
+                    EditorScreen(
+                        args = key,
+                        onExportRequest = { voices, mode ->
+                            backStack.add(
+                                voices.associate { it.voiceId to it.name }.let {
+                                    ExportConfigSheetArgs(
+                                        voiceIds = it.keys.toList(),
+                                        voiceNames = it.values.toList(),
+                                        scriptId = key.scriptId,
+                                        exportMode = mode.name,
+                                    )
+                                },
+                            )
+                        },
+                        onPickVoice = {
+                            backStack.add(VoicePickerArgs(emptyList()))
+                        },
+                    )
+                }
+
+                is ExportArgs -> NavEntry(key) {
+                    ExportScreen(args = key, onExit = { isSuccess ->
+                        if (isSuccess) {
+                            backStack.removeAll { it !is DashboardArgs }
+                        } else {
+                            backStack.removeLastOrNull()
+                        }
+                    })
+                }
+
+                is ScriptCreatorArgs -> NavEntry(key) {
+                    ScriptCreatorScreen(onResult = {
+                        backStack.removeLastOrNull()
+                    })
+                }
+
+                is VoicePickerArgs -> NavEntry(key) {
+                    VoicePicker(selectedVoiceIds = key.selectedVoiceIds.toSet()) {
+                        backStack.removeLastOrNull()
+                    }
+                }
+
+                is SettingArgs -> NavEntry(key) {
+                    SettingScreen(
+                        versionName = platformInfo.versionName,
+                        versionCode = platformInfo.versionCode,
+                        folderPath = platformInfo.exportFolderPath,
+                        onLaunchVoiceScreen = {
+                            backStack.add(VoicePickerArgs(it.toList()))
+                        },
+                        onLaunchOpenSourceScreen = {
+                            backStack.add(OpenSourceArgs)
+                        },
+                        onOpenURL = { url ->
+                            platformInfo.onOpenURL(url)
+                        },
+                    )
+                }
+
+                is OpenSourceArgs -> NavEntry(key) {
+                    OpenSourceScreen(onOpenURL = { platformInfo.onOpenURL(it) })
+                }
+
+                is WhiteNoiseConfigScreenArgs -> NavEntry(key) {
+                    WhiteNoiseConfigScreen { prompt, config ->
+                        backStack.add(
+                            WhiteNoiseScreenArgs(
+                                prompt,
+                                config.duration?.inWholeMilliseconds,
+                                config.promptInfluence,
+                            ),
+                        )
+                    }
+                }
+
+                is WhiteNoiseScreenArgs -> NavEntry(key) {
+                    WhiteNoiseScreen(args = key) { isSuccess ->
+                        if (isSuccess) {
+                            backStack.removeAll { it !is DashboardArgs }
+                        } else {
+                            backStack.removeLastOrNull()
+                        }
+                    }
+                }
+
+                // Bottom sheet entries — marked with metadata
+                is AudioIsolationPreviewArgs -> NavEntry(key, metadata = bottomSheetMetadata()) {
+                    AudioIsolationPreviewScreen(args = key) {
+                        backStack.removeAll { it is AudioIsolationPreviewArgs }
+                        backStack.add(AudioIsolationArgs(key.audioUri))
+                    }
+                }
+
+                is ExportConfigSheetArgs -> NavEntry(key, metadata = bottomSheetMetadata()) {
+                    ExportConfigSheet(
+                        voiceIds = key.voiceIds,
+                        voiceNames = key.voiceNames,
+                        mode = ExportMode.fromName(key.exportMode) ?: ExportMode.Reading,
+                        onExport = { voiceId, fixedDurationEnabled, fixedSilence, silencePerChar, minDynamicDuration ->
+                            backStack.add(
+                                ExportArgs(
+                                    voiceId,
+                                    key.scriptId,
+                                    key.exportMode,
+                                    fixedDurationEnabled,
+                                    fixedSilence,
+                                    silencePerChar,
+                                    minDynamicDuration,
+                                ),
+                            )
+                        },
+                    )
+                }
+
+                is AudioIsolationArgs -> NavEntry(key) {
+                    AudioIsolationScreen(args = key) {
+                        backStack.removeLastOrNull()
+                    }
+                }
+
+                else -> error("Unknown route: $key")
+            }
+        },
+    )
 }
-
-expect fun NavGraphBuilder.addPlatformSpecificRoutes(navController: NavHostController)
-
-expect fun onLaunchAudioIsolation(navController: NavHostController, path: okio.Path)
-
-expect fun onLaunchOpenSource(navController: NavHostController)
-

@@ -58,6 +58,7 @@ import io.github.kkoshin.muse.platformbridge.NavigationBarContrastEnforcedOnAndr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.voices
@@ -68,7 +69,7 @@ import org.koin.compose.koinInject
 @Serializable
 class VoicePickerArgs(
     val selectedVoiceIds: List<String>,
-)
+) : Route
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

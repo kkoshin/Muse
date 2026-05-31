@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.feature.editor.ExportMode
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.BackHandler
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.seconds
@@ -34,7 +35,7 @@ class ExportArgs(
     val fixedSilenceSeconds: Float,
     val silencePerCharSeconds: Float,
     val minDynamicDurationSeconds: Float,
-)
+) : Route
 
 @Composable
 fun ExportScreen(

@@ -50,7 +50,6 @@ kotlin {
             }
             implementation(libs.sql.android)
             implementation(libs.bundles.media3)
-            implementation(libs.accompanist.navigation.material)
             implementation(libs.browser)
         }
         commonMain.dependencies {
@@ -70,7 +69,8 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.navigation.compose)
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.lifecycle)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.lifecycle.viewmodel)

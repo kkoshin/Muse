@@ -70,11 +70,12 @@ import museroot.muse.generated.resources.projects
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import io.github.kkoshin.muse.Route
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Serializable
-object DashboardArgs
+object DashboardArgs : Route
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable

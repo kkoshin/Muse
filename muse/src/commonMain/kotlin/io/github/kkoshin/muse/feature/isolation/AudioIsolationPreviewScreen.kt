@@ -48,10 +48,12 @@ import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
+import io.github.kkoshin.muse.Route
+
 @Serializable
 class AudioIsolationPreviewArgs(
     val audioUri: String,
-)
+) : Route
 
 @Composable
 fun AudioIsolationPreviewScreen(

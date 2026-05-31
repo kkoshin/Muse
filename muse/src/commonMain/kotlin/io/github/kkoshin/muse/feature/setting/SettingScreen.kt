@@ -37,6 +37,7 @@ import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
 import io.github.kkoshin.muse.platformbridge.Platform
 import kotlinx.coroutines.launch
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.ic_telegram_logo
@@ -46,7 +47,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Serializable
-object SettingArgs
+object SettingArgs : Route
 
 @Composable
 fun SettingScreen(

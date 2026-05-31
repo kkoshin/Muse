@@ -41,13 +41,14 @@ import io.github.kkoshin.muse.editor.ExportModeTabRow
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.LocalToaster
 import kotlinx.coroutines.launch
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 data class EditorArgs(
     val scriptId: String,
-)
+) : Route
 
 /**
  * 1. show processing progress

@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.feature.editor.formatDecimal
 import io.github.kkoshin.muse.platformbridge.AppBackButton
+import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.sound_effect
@@ -69,7 +70,7 @@ enum class ConfigView {
 }
 
 @Serializable
-object WhiteNoiseConfigScreenArgs
+object WhiteNoiseConfigScreenArgs : Route
 
 @Composable
 fun WhiteNoiseConfigScreen(
