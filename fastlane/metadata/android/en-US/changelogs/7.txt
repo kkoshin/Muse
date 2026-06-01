@@ -1,0 +1,3 @@
+- Fixed aboutlibraries crash on OpenSourceScreen.
+- Unified page transition animations to fade in/out.
+- Added API key configuration guide flow.

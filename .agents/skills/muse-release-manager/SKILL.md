@@ -43,18 +43,11 @@ Check if any `.sq` files in `muse/src/commonMain/sqldelight/` have changed. If s
 
 Use this workflow to ensure the project is stable before tagging.
 
-### 1. Automated Tests
-Run the test suite:
+### 1. Android Unit Tests
+Run the Android unit tests only:
 ```bash
-./gradlew test
+./gradlew :muse:testReleaseUnitTest
 ```
-
-### 2. iOS Framework Verification
-Ensure the KMP iOS framework builds:
-```bash
-./gradlew :muse:linkReleaseFrameworkIosArm64
-```
-*(Note: Check if `:muse` or `:composeApp` is the correct module for the iOS framework based on project evolution).*
 
 ## Workflow: Finalize & Publish
 

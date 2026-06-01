@@ -103,8 +103,8 @@ androidComponents {
         extension.defaultConfig.setUpStableVersion(
             major = 0, // breaking change
             minor = 2, // feature
-            patch = 0, // bugfix
-            code = 6,
+            patch = 1, // bugfix
+            code = 7,
         )
         extension.buildTypes.getByName("debug").apply {
             applicationIdSuffix = ".debug"
