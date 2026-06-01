@@ -16,9 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
+import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.BackHandler
 import kotlinx.serialization.Serializable
 import museroot.muse.generated.resources.Res
@@ -26,6 +31,7 @@ import museroot.muse.generated.resources.denoise_done
 import io.github.kkoshin.muse.Route
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
@@ -38,12 +44,25 @@ fun AudioIsolationScreen(
     modifier: Modifier = Modifier,
     args: AudioIsolationArgs,
     viewModel: AudioIsolationViewModel = koinViewModel(),
-    onExit: () -> Unit,
+    onDone: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToApiKeyHelp: () -> Unit,
 ) {
+    val accountManager = koinInject<AccountManager>()
+    val apiKeyConfigured by accountManager.apiKeyConfigured.collectAsState(false)
     val progress by viewModel.progress.collectAsState()
+    var showApiKeyDialog by remember { mutableStateOf(false) }
 
     BackHandler {
-        onExit()
+        onDone()
+    }
+
+    LaunchedEffect(apiKeyConfigured) {
+        if (apiKeyConfigured) {
+            viewModel.removeBackgroundNoise(args.audioUri.toPath())
+        } else {
+            showApiKeyDialog = true
+        }
     }
 
     Scaffold(
@@ -54,7 +73,7 @@ fun AudioIsolationScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = {
-                        onExit()
+                        onDone()
                     }) {
                         Icon(Icons.Filled.Close, contentDescription = null)
                     }
@@ -66,10 +85,6 @@ fun AudioIsolationScreen(
         },
         content = { contentPadding ->
             Box(Modifier.padding(contentPadding)) {
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.removeBackgroundNoise(args.audioUri.toPath())
-                }
-
                 AudioProcessingView(
                     modifier,
                     progress = progress,
@@ -78,4 +93,21 @@ fun AudioIsolationScreen(
             }
         },
     )
+
+    if (showApiKeyDialog) {
+        ApiKeyRequiredSheet(
+            onGoToSettings = {
+                showApiKeyDialog = false
+                onNavigateToSettings()
+            },
+            onWhatIsApiKey = {
+                showApiKeyDialog = false
+                onNavigateToApiKeyHelp()
+            },
+            onDismiss = {
+                showApiKeyDialog = false
+                onDone()
+            },
+        )
+    }
 }

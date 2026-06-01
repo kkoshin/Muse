@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,11 +52,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
 import io.github.kkoshin.muse.feature.editor.formatDecimal
+import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 import museroot.muse.generated.resources.Res
 import museroot.muse.generated.resources.sound_effect
 import museroot.muse.generated.resources.white_noise_start
@@ -75,8 +79,13 @@ object WhiteNoiseConfigScreenArgs : Route
 @Composable
 fun WhiteNoiseConfigScreen(
     modifier: Modifier = Modifier,
-    onGenerate: (prompt: String, config: SoundEffectConfig) -> Unit
+    onGenerate: (prompt: String, config: SoundEffectConfig) -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToApiKeyHelp: () -> Unit,
 ) {
+    val accountManager = koinInject<AccountManager>()
+    val apiKeyConfigured by accountManager.apiKeyConfigured.collectAsState(false)
+
     var prompt by remember {
         mutableStateOf("")
     }
@@ -88,6 +97,8 @@ fun WhiteNoiseConfigScreen(
     var configView by remember {
         mutableStateOf(ConfigView.None)
     }
+
+    var showApiKeyDialog by remember { mutableStateOf(false) }
 
     val clipboardManager = LocalClipboardManager.current
 
@@ -230,7 +241,11 @@ fun WhiteNoiseConfigScreen(
                             enabled = prompt.isNotBlank(),
                             shape = RoundedCornerShape(50),
                             onClick = {
-                                onGenerate(prompt, config)
+                                if (!apiKeyConfigured) {
+                                    showApiKeyDialog = true
+                                } else {
+                                    onGenerate(prompt, config)
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 disabledBackgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.12f)
@@ -249,6 +264,20 @@ fun WhiteNoiseConfigScreen(
             }
         }
     )
+
+    if (showApiKeyDialog) {
+        ApiKeyRequiredSheet(
+            onGoToSettings = {
+                showApiKeyDialog = false
+                onNavigateToSettings()
+            },
+            onWhatIsApiKey = {
+                showApiKeyDialog = false
+                onNavigateToApiKeyHelp()
+            },
+            onDismiss = { showApiKeyDialog = false },
+        )
+    }
 }
 
 private fun Duration?.format(): String {
