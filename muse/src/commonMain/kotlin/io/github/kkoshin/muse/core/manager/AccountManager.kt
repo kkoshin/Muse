@@ -18,6 +18,10 @@ class AccountManager(private val dataStore: DataStore<Preferences>) {
         preferences[key]
     }
 
+    val apiKeyConfigured: Flow<Boolean> = dataStore.data.map { preferences ->
+        !preferences[key].isNullOrEmpty()
+    }
+
     suspend fun setElevenLabsApiKey(apiKey: String) {
         check(apiKey.isNotBlank()) { "api key cannot be blank" }
         dataStore.edit { preferences ->

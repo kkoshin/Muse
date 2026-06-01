@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,13 +37,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.provider.Voice
 import io.github.kkoshin.muse.editor.ExportModeTabRow
+import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.LocalToaster
 import kotlinx.coroutines.launch
 import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
@@ -62,12 +66,18 @@ fun EditorScreen(
     viewModel: EditorViewModel = koinViewModel(),
     onExportRequest: (List<Voice>, ExportMode) -> Unit,
     onPickVoice: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToApiKeyHelp: () -> Unit,
 ) {
     val localToaster = LocalToaster.current
+    val accountManager = koinInject<AccountManager>()
+    val apiKeyConfigured by accountManager.apiKeyConfigured.collectAsState(false)
 
     var loadingVisible by remember {
         mutableStateOf(false)
     }
+
+    var showApiKeyDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
@@ -152,20 +162,24 @@ fun EditorScreen(
                     backgroundColor = MaterialTheme.colors.primary,
                     shape = RoundedCornerShape(16.dp),
                     onClick = {
-                        scope.launch {
-                            loadingVisible = true
-                            viewModel
-                                .fetchAvailableVoices()
-                                .onSuccess {
-                                    if (it.isEmpty()) {
-                                        onPickVoice()
-                                    } else {
-                                        onExportRequest(it, selectedMode)
+                        if (!apiKeyConfigured) {
+                            showApiKeyDialog = true
+                        } else {
+                            scope.launch {
+                                loadingVisible = true
+                                viewModel
+                                    .fetchAvailableVoices()
+                                    .onSuccess {
+                                        if (it.isEmpty()) {
+                                            onPickVoice()
+                                        } else {
+                                            onExportRequest(it, selectedMode)
+                                        }
+                                    }.onFailure { e ->
+                                        localToaster.show(e.message)
                                     }
-                                }.onFailure { e ->
-                                    localToaster.show(e.message)
-                                }
-                            loadingVisible = false
+                                loadingVisible = false
+                            }
                         }
                     },
                 ) {
@@ -181,4 +195,18 @@ fun EditorScreen(
             }
         },
     )
+
+    if (showApiKeyDialog) {
+        ApiKeyRequiredSheet(
+            onGoToSettings = {
+                showApiKeyDialog = false
+                onNavigateToSettings()
+            },
+            onWhatIsApiKey = {
+                showApiKeyDialog = false
+                onNavigateToApiKeyHelp()
+            },
+            onDismiss = { showApiKeyDialog = false },
+        )
+    }
 }

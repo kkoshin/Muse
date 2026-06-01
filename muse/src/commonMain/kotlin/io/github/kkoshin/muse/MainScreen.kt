@@ -36,6 +36,8 @@ import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreen
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseConfigScreenArgs
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreen
 import io.github.kkoshin.muse.feature.noise.WhiteNoiseScreenArgs
+import io.github.kkoshin.muse.feature.setting.ApiKeyHelpArgs
+import io.github.kkoshin.muse.feature.setting.ApiKeyHelpScreen
 import io.github.kkoshin.muse.feature.setting.OpenSourceArgs
 import io.github.kkoshin.muse.feature.setting.OpenSourceScreen
 import io.github.kkoshin.muse.feature.setting.SettingArgs
@@ -81,6 +83,7 @@ private val navConfig = SavedStateConfiguration {
             subclass(WhiteNoiseScreenArgs::class, WhiteNoiseScreenArgs.serializer())
             subclass(AudioIsolationPreviewArgs::class, AudioIsolationPreviewArgs.serializer())
             subclass(AudioIsolationArgs::class, AudioIsolationArgs.serializer())
+            subclass(ApiKeyHelpArgs::class, ApiKeyHelpArgs.serializer())
         }
     }
 }
@@ -111,7 +114,7 @@ fun MainScreen() {
                         },
                         onLaunchSettingsPage = {
                             if (backStack.none { it is SettingArgs }) {
-                                backStack.add(SettingArgs)
+                                backStack.add(SettingArgs())
                             }
                         },
                         onLaunchAudioIsolation = { path ->
@@ -143,6 +146,12 @@ fun MainScreen() {
                         onPickVoice = {
                             backStack.add(VoicePickerArgs(emptyList()))
                         },
+                        onNavigateToSettings = {
+                            backStack.add(SettingArgs(scrollToApiKey = true))
+                        },
+                        onNavigateToApiKeyHelp = {
+                            backStack.add(ApiKeyHelpArgs)
+                        },
                     )
                 }
 
@@ -170,6 +179,7 @@ fun MainScreen() {
 
                 is SettingArgs -> NavEntry(key) {
                     SettingScreen(
+                        args = key,
                         versionName = platformInfo.versionName,
                         versionCode = platformInfo.versionCode,
                         folderPath = platformInfo.exportFolderPath,
@@ -185,20 +195,37 @@ fun MainScreen() {
                     )
                 }
 
+                is ApiKeyHelpArgs -> NavEntry(key) {
+                    ApiKeyHelpScreen(
+                        onGoToSettings = {
+                            backStack.add(SettingArgs(scrollToApiKey = true))
+                        },
+                        onOpenURL = { platformInfo.onOpenURL(it) },
+                    )
+                }
+
                 is OpenSourceArgs -> NavEntry(key) {
                     OpenSourceScreen(onOpenURL = { platformInfo.onOpenURL(it) })
                 }
 
                 is WhiteNoiseConfigScreenArgs -> NavEntry(key) {
-                    WhiteNoiseConfigScreen { prompt, config ->
-                        backStack.add(
-                            WhiteNoiseScreenArgs(
-                                prompt,
-                                config.duration?.inWholeMilliseconds,
-                                config.promptInfluence,
-                            ),
-                        )
-                    }
+                    WhiteNoiseConfigScreen(
+                        onGenerate = { prompt, config ->
+                            backStack.add(
+                                WhiteNoiseScreenArgs(
+                                    prompt,
+                                    config.duration?.inWholeMilliseconds,
+                                    config.promptInfluence,
+                                ),
+                            )
+                        },
+                        onNavigateToSettings = {
+                            backStack.add(SettingArgs(scrollToApiKey = true))
+                        },
+                        onNavigateToApiKeyHelp = {
+                            backStack.add(ApiKeyHelpArgs)
+                        },
+                    )
                 }
 
                 is WhiteNoiseScreenArgs -> NavEntry(key) {
@@ -241,9 +268,16 @@ fun MainScreen() {
                 }
 
                 is AudioIsolationArgs -> NavEntry(key) {
-                    AudioIsolationScreen(args = key) {
-                        backStack.removeLastOrNull()
-                    }
+                    AudioIsolationScreen(
+                        args = key,
+                        onDone = { backStack.removeLastOrNull() },
+                        onNavigateToSettings = {
+                            backStack.add(SettingArgs(scrollToApiKey = true))
+                        },
+                        onNavigateToApiKeyHelp = {
+                            backStack.add(ApiKeyHelpArgs)
+                        },
+                    )
                 }
 
                 else -> error("Unknown route: $key")

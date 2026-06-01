@@ -1,11 +1,16 @@
 package io.github.kkoshin.muse.feature.setting
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -36,6 +41,7 @@ import io.github.kkoshin.muse.core.provider.CharacterQuota
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
 import io.github.kkoshin.muse.platformbridge.Platform
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import io.github.kkoshin.muse.Route
 import kotlinx.serialization.Serializable
@@ -47,10 +53,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Serializable
-object SettingArgs : Route
+data class SettingArgs(val scrollToApiKey: Boolean = false) : Route
 
 @Composable
 fun SettingScreen(
+    args: SettingArgs,
     versionName: String,
     versionCode: Int,
     folderPath: String,
@@ -61,6 +68,7 @@ fun SettingScreen(
     val speechProcessorManager = koinInject<SpeechProcessorManager>()
     val accountManager = koinInject<AccountManager>()
     val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
 
     var availableVoiceIds: Set<String>? by remember {
         mutableStateOf(null)
@@ -72,6 +80,16 @@ fun SettingScreen(
 
     val apiKeyValue: String? by accountManager.apiKey.collectAsState(null)
 
+    var highlightApiKey by remember { mutableStateOf(false) }
+    val highlightColor by animateColorAsState(
+        targetValue = if (highlightApiKey) {
+            MaterialTheme.colors.primary.copy(alpha = 0.1f)
+        } else {
+            Color.Transparent
+        },
+        animationSpec = tween(600),
+    )
+
     LaunchedEffect(apiKeyValue) {
         if (apiKeyValue.isNullOrEmpty()) return@LaunchedEffect
         accountManager.setElevenLabsApiKey(apiKeyValue!!)
@@ -79,6 +97,15 @@ fun SettingScreen(
         quota = speechProcessorManager.queryQuota().getOrNull()
         quota?.status?.let {
             accountManager.setSubscriptionStatus(it)
+        }
+    }
+
+    LaunchedEffect(args.scrollToApiKey) {
+        if (args.scrollToApiKey) {
+            listState.animateScrollToItem(0)
+            highlightApiKey = true
+            delay(1200)
+            highlightApiKey = false
         }
     }
 
@@ -99,6 +126,7 @@ fun SettingScreen(
         },
         content = { paddingValues ->
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -111,6 +139,7 @@ fun SettingScreen(
                 )
                 editTextPreference(
                     key = "api_key",
+                    modifier = Modifier.fillMaxWidth().background(highlightColor),
                     value = apiKeyValue ?: "",
                     onValueUpdate = { newValue ->
                         if (newValue.isNotEmpty()) {
@@ -139,7 +168,7 @@ fun SettingScreen(
                     inputLabel = "API Key",
                     widgetContainer = {
                         IconButton(onClick = {
-                            onOpenURL("https://elevenlabs.io/app/speech-synthesis/text-to-speech")
+                            onOpenURL("https://elevenlabs.io/app/developers/api-keys")
                         }) {
                             Icon(Icons.AutoMirrored.Filled.Launch, "launch")
                         }
