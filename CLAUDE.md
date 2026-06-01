@@ -84,14 +84,6 @@ swiftApp/     — iOS Xcode project (Swift, CocoaPods)
 
 Version is controlled in `composeApp/build.gradle.kts` (`setUpStableVersion`). The CocoaPods version in `muse/build.gradle.kts` must match. Changelogs go in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`. The CI workflow (`.github/workflows/package.yml`) builds and signs release APKs on tag push.
 
-## Project Docs
-
-The `conductor/` directory contains project management documentation:
-- `tech-stack.md` — full technology decisions and rationale
-- `workflow.md` — TDD workflow, commit conventions, quality gates
-- `product.md` — product vision, target users, key features
-- `code_styleguides/general.md` — Kotlin code style
-
 ## Universal Skills
 
 The `.agents/skills/` directory contains universal AI agent skills. Read the `SKILL.md` files for workflow instructions (e.g., release process). See `.agents/skills/_index.md` for available skills.
