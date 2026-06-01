@@ -91,3 +91,7 @@ The `conductor/` directory contains project management documentation:
 - `workflow.md` — TDD workflow, commit conventions, quality gates
 - `product.md` — product vision, target users, key features
 - `code_styleguides/general.md` — Kotlin code style
+
+## Universal Skills
+
+The `.agents/skills/` directory contains universal AI agent skills. Read the `SKILL.md` files for workflow instructions (e.g., release process). See `.agents/skills/_index.md` for available skills.
