@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.compose.material.icons.extended)
             implementation(libs.compose.resources)
             implementation(libs.kotlinx.json)
+            implementation(project(":designsystem"))
             implementation(project(":elevenlabs"))
             implementation(libs.bundles.about)
             implementation(libs.bytesize)
