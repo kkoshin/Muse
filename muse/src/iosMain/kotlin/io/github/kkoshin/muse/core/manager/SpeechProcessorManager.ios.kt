@@ -13,6 +13,7 @@ import io.github.kkoshin.muse.core.provider.SoundEffectProvider
 import io.github.kkoshin.muse.core.provider.SupportedAudioType
 import io.github.kkoshin.muse.core.provider.TTSProvider
 import io.github.kkoshin.muse.core.provider.Voice
+import io.github.kkoshin.muse.core.provider.VoiceProvider
 import io.github.kkoshin.muse.platformbridge.MediaStoreHelper
 import io.github.kkoshin.muse.platformbridge.logcat
 import io.github.kkoshin.muse.platformbridge.toNsUrl
@@ -36,7 +37,8 @@ actual class SpeechProcessorManager(
     private val soundEffectProvider: SoundEffectProvider,
     private val sttProvider: STTProvider,
     private val mediaStoreHelper: MediaStoreHelper,
-    private val voicePreference: DataStore<Preferences>
+    private val voicePreference: DataStore<Preferences>,
+    private val accountManager: AccountManager,
 ) : AudioIsolationProcessor {
     /**
      * 内存中缓存
@@ -56,13 +58,19 @@ actual class SpeechProcessorManager(
         }
     }
 
-    actual suspend fun queryAvailableVoiceIds(): Set<String>? {
-        return voicePreference.data.first()[availableVoiceIdsKey]
+    /** Picks the per-provider preference key so voice picks survive a provider toggle. */
+    private suspend fun currentVoiceKey() = when (accountManager.voiceProvider.first()) {
+        VoiceProvider.ELEVENLABS -> availableVoiceIdsKey
+        VoiceProvider.SIXTYDB -> availableSixtydbVoiceIdsKey
     }
 
+    actual suspend fun queryAvailableVoiceIds(): Set<String>? =
+        voicePreference.data.first()[currentVoiceKey()]
+
     actual suspend fun updateAvailableVoice(voiceIds: Set<String>) {
+        val key = currentVoiceKey()
         voicePreference.edit {
-            it[availableVoiceIdsKey] = voiceIds
+            it[key] = voiceIds
         }
     }
 

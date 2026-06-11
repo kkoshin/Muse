@@ -11,6 +11,8 @@ import io.github.kkoshin.muse.audio.AndroidAudioMetadataRetriever
 import io.github.kkoshin.muse.audio.AudioMetadataRetriever
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
+import io.github.kkoshin.muse.core.manager.ProcessorRouter
+import io.github.kkoshin.muse.core.manager.SixtyDbProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
 import io.github.kkoshin.muse.core.provider.STTProvider
@@ -74,16 +76,13 @@ internal val baseModule = module {
 
 val appModule = module {
     includes(baseModule)
-    single<TTSProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<AudioIsolationProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<SoundEffectProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<STTProvider> {
-        ElevenLabProcessor(get(), get())
-    }
+    // Provider implementations.
+    single { ElevenLabProcessor(get(), get()) }
+    single { SixtyDbProcessor(get(), get()) }
+    // Single router that delegates each interface based on AccountManager.voiceProvider.
+    single { ProcessorRouter(get(), get(), get()) }
+    single<TTSProvider> { get<ProcessorRouter>() }
+    single<AudioIsolationProvider> { get<ProcessorRouter>() }
+    single<SoundEffectProvider> { get<ProcessorRouter>() }
+    single<STTProvider> { get<ProcessorRouter>() }
 }

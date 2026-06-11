@@ -33,6 +33,7 @@ dependencyResolutionManagement {
 
 include(":muse")
 include(":elevenlabs")
+include(":sixtydb")
 include(":composeApp")
 include(":Playground")
 include(":fancy")
