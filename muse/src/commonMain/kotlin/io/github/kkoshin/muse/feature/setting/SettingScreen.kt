@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.CharacterQuota
+import io.github.kkoshin.muse.core.provider.VoiceProvider
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
 import io.github.kkoshin.muse.platformbridge.Platform
@@ -79,6 +80,8 @@ fun SettingScreen(
     }
 
     val apiKeyValue: String? by accountManager.apiKey.collectAsState(null)
+    val sixtydbApiKeyValue: String? by accountManager.sixtydbApiKey.collectAsState(null)
+    val voiceProvider: VoiceProvider by accountManager.voiceProvider.collectAsState(VoiceProvider.DEFAULT)
 
     var highlightApiKey by remember { mutableStateOf(false) }
     val highlightColor by animateColorAsState(
@@ -131,6 +134,42 @@ fun SettingScreen(
                     .fillMaxSize()
                     .padding(paddingValues),
             ) {
+                // Provider switch — controls which backend serves TTS/STT/voices.
+                preferenceCategory(
+                    key = "voice_provider",
+                    title = {
+                        Text("Voice provider", color = MaterialTheme.colors.primary)
+                    },
+                )
+                preference(
+                    key = "active_provider",
+                    icon = {
+                        Icon(Icons.Outlined.Audiotrack, "active provider")
+                    },
+                    title = {
+                        Text("Active provider")
+                    },
+                    summary = {
+                        SummaryText(
+                            when (voiceProvider) {
+                                VoiceProvider.ELEVENLABS -> "ElevenLabs"
+                                VoiceProvider.SIXTYDB -> "60db"
+                            },
+                        )
+                    },
+                    onClick = {
+                        scope.launch {
+                            accountManager.setVoiceProvider(
+                                if (voiceProvider == VoiceProvider.ELEVENLABS) {
+                                    VoiceProvider.SIXTYDB
+                                } else {
+                                    VoiceProvider.ELEVENLABS
+                                },
+                            )
+                        }
+                    },
+                )
+
                 preferenceCategory(
                     key = "elevenlabs",
                     title = {
@@ -235,6 +274,53 @@ fun SettingScreen(
                     Platform.Ios -> {}
                     Platform.Desktop -> {}
                 }
+
+                preferenceCategory(
+                    key = "sixtydb",
+                    title = {
+                        Text("60db", color = MaterialTheme.colors.primary)
+                    },
+                )
+                editTextPreference(
+                    key = "sixtydb_api_key",
+                    value = sixtydbApiKeyValue ?: "",
+                    onValueUpdate = { newValue ->
+                        if (newValue.isNotEmpty()) {
+                            scope.launch {
+                                accountManager.setSixtyDbApiKey(newValue)
+                            }
+                        }
+                    },
+                    title = { Text(text = "API key") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null,
+                        )
+                    },
+                    summary = {
+                        SummaryText(
+                            text = if (sixtydbApiKeyValue.isNullOrEmpty()) {
+                                "Not set"
+                            } else {
+                                sixtydbApiKeyValue!!.replaceRange(
+                                    0,
+                                    sixtydbApiKeyValue!!.length - 2,
+                                    "•".repeat(sixtydbApiKeyValue!!.length - 2),
+                                )
+                            },
+                        )
+                    },
+                    dialogTitle = "60db API Key",
+                    inputLabel = "API Key",
+                    widgetContainer = {
+                        IconButton(onClick = {
+                            onOpenURL("https://docs.60db.ai")
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.Launch, "launch")
+                        }
+                    },
+                )
 
                 preferenceCategory(
                     key = "about",

@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.compose.resources)
             implementation(libs.kotlinx.json)
             implementation(project(":elevenlabs"))
+            implementation(project(":sixtydb"))
             implementation(libs.bundles.about)
             implementation(libs.bytesize)
             implementation(libs.okio)

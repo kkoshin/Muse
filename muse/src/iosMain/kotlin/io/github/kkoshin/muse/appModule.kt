@@ -7,6 +7,8 @@ import io.github.kkoshin.muse.audio.AudioMetadataRetriever
 import io.github.kkoshin.muse.audio.IosAudioMetadataRetriever
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
+import io.github.kkoshin.muse.core.manager.ProcessorRouter
+import io.github.kkoshin.muse.core.manager.SixtyDbProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
 import io.github.kkoshin.muse.core.provider.STTProvider
@@ -39,18 +41,13 @@ import platform.Foundation.NSUserDomainMask
 
 val appModule = module {
     single<CoroutineScope> { MainScope() }
-    single<TTSProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<AudioIsolationProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<SoundEffectProvider> {
-        ElevenLabProcessor(get(), get())
-    }
-    single<STTProvider> {
-        ElevenLabProcessor(get(), get())
-    }
+    single { ElevenLabProcessor(get(), get()) }
+    single { SixtyDbProcessor(get(), get()) }
+    single { ProcessorRouter(get(), get(), get()) }
+    single<TTSProvider> { get<ProcessorRouter>() }
+    single<AudioIsolationProvider> { get<ProcessorRouter>() }
+    single<SoundEffectProvider> { get<ProcessorRouter>() }
+    single<STTProvider> { get<ProcessorRouter>() }
     single {
         SpeechProcessorManager(
             provider = get(),
@@ -58,7 +55,8 @@ val appModule = module {
             soundEffectProvider = get(),
             sttProvider = get(),
             mediaStoreHelper = get(),
-            voicePreference = preferencesDataStore("voices")
+            voicePreference = preferencesDataStore("voices"),
+            accountManager = get(),
         )
     }
     singleOf(::MediaStoreHelper)

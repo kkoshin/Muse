@@ -2,6 +2,9 @@ package io.github.kkoshin.muse
 
 import io.github.kkoshin.muse.audio.AudioMetadataRetriever
 import io.github.kkoshin.muse.core.manager.AccountManager
+import io.github.kkoshin.muse.core.manager.ElevenLabProcessor
+import io.github.kkoshin.muse.core.manager.ProcessorRouter
+import io.github.kkoshin.muse.core.manager.SixtyDbProcessor
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.AudioIsolationProvider
 import io.github.kkoshin.muse.core.provider.STTProvider
@@ -62,9 +65,12 @@ val appModule = module {
         }
     }
     
-    // Providers
-    single<TTSProvider> { get<SpeechProcessorManager>() as TTSProvider }
-    single<AudioIsolationProvider> { get<SpeechProcessorManager>() as AudioIsolationProvider }
-    single<SoundEffectProvider> { get<SpeechProcessorManager>() as SoundEffectProvider }
-    single<STTProvider> { get<SpeechProcessorManager>() as STTProvider }
+    // Providers — same Router pattern as android/ios.
+    single { ElevenLabProcessor(get(), get()) }
+    single { SixtyDbProcessor(get(), get()) }
+    single { ProcessorRouter(get(), get(), get()) }
+    single<TTSProvider> { get<ProcessorRouter>() }
+    single<AudioIsolationProvider> { get<ProcessorRouter>() }
+    single<SoundEffectProvider> { get<ProcessorRouter>() }
+    single<STTProvider> { get<ProcessorRouter>() }
 }

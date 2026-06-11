@@ -9,9 +9,13 @@ import kotlin.time.Clock
 import okio.Path
 
 /**
- * 存储当前可用的 voice
+ * Voice ids the user has selected for ElevenLabs (legacy key — name preserved
+ * for backwards compatibility with existing installs).
  */
 internal val availableVoiceIdsKey = stringSetPreferencesKey("available_voice_ids")
+
+/** Voice ids the user has selected for 60db. */
+internal val availableSixtydbVoiceIdsKey = stringSetPreferencesKey("available_voice_ids_sixtydb")
 
 expect class SpeechProcessorManager : AudioIsolationProcessor {
 

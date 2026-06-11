@@ -40,6 +40,7 @@ actual class SpeechProcessorManager(
     private val soundEffectProvider: SoundEffectProvider,
     private val sttProvider: STTProvider,
     private val mediaStoreHelper: MediaStoreHelper,
+    private val accountManager: AccountManager,
 ) : AudioIsolationProcessor {
     /**
      * 持久化 text:Uri
@@ -64,12 +65,19 @@ actual class SpeechProcessorManager(
         }
     }
 
+    /** Picks the per-provider preference key so voice picks survive a provider toggle. */
+    private suspend fun currentVoiceKey() = when (accountManager.voiceProvider.first()) {
+        io.github.kkoshin.muse.core.provider.VoiceProvider.ELEVENLABS -> availableVoiceIdsKey
+        io.github.kkoshin.muse.core.provider.VoiceProvider.SIXTYDB -> availableSixtydbVoiceIdsKey
+    }
+
     actual suspend fun queryAvailableVoiceIds(): Set<String>? =
-        appContext.dataStore.data.first()[availableVoiceIdsKey]
+        appContext.dataStore.data.first()[currentVoiceKey()]
 
     actual suspend fun updateAvailableVoice(voiceIds: Set<String>) {
+        val key = currentVoiceKey()
         appContext.dataStore.edit {
-            it[availableVoiceIdsKey] = voiceIds
+            it[key] = voiceIds
         }
     }
 
