@@ -1,11 +1,11 @@
 package io.github.kkoshin.muse.editor
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.github.kkoshin.muse.designsystem.component.MuseTab
+import io.github.kkoshin.muse.designsystem.component.MuseTabRow
 import io.github.kkoshin.muse.feature.editor.ExportMode
 
 @Composable
@@ -15,19 +15,16 @@ fun ExportModeTabRow(
     onTabChanged: (ExportMode) -> Unit
 ) {
     val modes = ExportMode.entries.toList()
-    TabRow(
+    MuseTabRow(
         modifier = modifier,
         selectedTabIndex = modes.indexOf(selectedMode),
-        backgroundColor = MaterialTheme.colors.surface
     ) {
         modes.forEach { mode ->
-            Tab(
+            MuseTab(
                 selected = selectedMode == mode,
                 onClick = { onTabChanged(mode) },
                 text = {
-                    Text(
-                        text = mode.name
-                    )
+                    Text(text = mode.name)
                 }
             )
         }
