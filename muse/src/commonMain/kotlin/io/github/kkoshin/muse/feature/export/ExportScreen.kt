@@ -1,14 +1,9 @@
 package io.github.kkoshin.muse.feature.export
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.ExperimentalMaterial3Api
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.feature.editor.ExportMode
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.BackHandler
@@ -37,6 +34,7 @@ class ExportArgs(
     val minDynamicDurationSeconds: Float,
 ) : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExportScreen(
     modifier: Modifier = Modifier,
@@ -68,11 +66,10 @@ fun ExportScreen(
         onExit(progress is ProgressStatus.Success)
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
+            MuseTopAppBar(
                 title = {},
                 navigationIcon = {
                     AppBackButton(
@@ -81,9 +78,6 @@ fun ExportScreen(
                         }
                     )
                 },
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp,
             )
         },
         content = { contentPadding ->
