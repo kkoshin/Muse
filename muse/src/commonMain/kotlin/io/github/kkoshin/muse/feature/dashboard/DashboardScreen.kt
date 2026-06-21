@@ -25,15 +25,14 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Delete
@@ -41,7 +40,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.MusicOff
-import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,6 +54,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.kkoshin.muse.designsystem.component.MuseIconButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.platformbridge.MimeType
 import io.github.kkoshin.muse.platformbridge.rememberDocumentPicker
 import io.github.kkoshin.muse.repo.model.Script
@@ -77,7 +78,7 @@ import kotlin.uuid.Uuid
 @Serializable
 object DashboardArgs : Route
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalUuidApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
@@ -101,21 +102,13 @@ fun DashboardScreen(
         viewModel.loadScripts()
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
+            MuseTopAppBar(
                 title = { Text(text = stringResource(Res.string.projects)) },
-                backgroundColor = MaterialTheme.colors.surface,
                 actions = {
-//                    IconButton(onClick = {
-//                        onLaunchHistory()
-//                    }) {
-//                        Icon(Icons.Default.History, "history")
-//                    }
-                    IconButton(onClick = { onLaunchSettingsPage() }) {
+                    MuseIconButton(onClick = { onLaunchSettingsPage() }) {
                         Icon(Icons.Default.Settings, "settings")
                     }
                 },
@@ -135,7 +128,7 @@ fun DashboardScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "No projects :(", style = MaterialTheme.typography.h5)
+                            Text(text = "No projects :(", style = MaterialTheme.typography.headlineSmall)
                             Text(
                                 text = text,
                                 inlineContent = mapOf(
@@ -184,7 +177,7 @@ fun DashboardScreen(
             ) {
                 FloatingActionButton(
                     modifier = Modifier.size(40.dp),
-                    backgroundColor = MaterialTheme.colors.background,
+                    containerColor = MaterialTheme.colorScheme.background,
                     onClick = {
                         onLaunchWhiteNoise()
                     },
@@ -194,7 +187,7 @@ fun DashboardScreen(
 
                 FloatingActionButton(
                     modifier = Modifier.size(40.dp),
-                    backgroundColor = MaterialTheme.colors.background,
+                    containerColor = MaterialTheme.colorScheme.background,
                     onClick = {
                         filePicker.launch()
                     },
@@ -202,7 +195,7 @@ fun DashboardScreen(
                     Icon(Icons.Outlined.MusicOff, contentDescription = null)
                 }
                 FloatingActionButton(
-                    backgroundColor = MaterialTheme.colors.primary,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
                         onCreateScriptRequest()
                     },
@@ -251,13 +244,13 @@ private fun ScriptItem(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.error.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
                     .padding(horizontal = 12.dp),
             ) {
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = null,
-                    tint = MaterialTheme.colors.onError,
+                    tint = MaterialTheme.colorScheme.onError,
                     modifier = Modifier
                         .scale(scale)
                         .align(alignment),
@@ -268,7 +261,7 @@ private fun ScriptItem(
         Row(
             modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -284,12 +277,12 @@ private fun ScriptItem(
                     script.summary,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = script.createAt.formatTimeDisplay(),
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
