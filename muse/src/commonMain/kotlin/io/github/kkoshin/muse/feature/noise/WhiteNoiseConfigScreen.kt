@@ -11,27 +11,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Slider
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
@@ -54,6 +45,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
+import io.github.kkoshin.muse.designsystem.component.MuseButton
+import io.github.kkoshin.muse.designsystem.component.MuseIconButton
+import io.github.kkoshin.muse.designsystem.component.MuseOutlinedButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseSlider
+import io.github.kkoshin.muse.designsystem.component.MuseSwitch
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.feature.editor.formatDecimal
 import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.AppBackButton
@@ -76,6 +74,7 @@ enum class ConfigView {
 @Serializable
 object WhiteNoiseConfigScreenArgs : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhiteNoiseConfigScreen(
     modifier: Modifier = Modifier,
@@ -102,29 +101,26 @@ fun WhiteNoiseConfigScreen(
 
     val clipboardManager = LocalClipboardManager.current
 
-    Scaffold(
+    MuseScaffold(
         topBar = {
-            TopAppBar(
+            MuseTopAppBar(
                 title = {
                     Text(
                         stringResource(Res.string.sound_effect),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 },
                 navigationIcon = {
                     AppBackButton()
                 },
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp,
             )
         },
         content = { paddingValues ->
             Column(
                 modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                     .padding(paddingValues),
             ) {
                 BasicTextField(
@@ -132,15 +128,15 @@ fun WhiteNoiseConfigScreen(
                         .fillMaxWidth()
                         .weight(1f)
                         .background(
-                            MaterialTheme.colors.surface,
+                            MaterialTheme.colorScheme.surface,
                             RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                         ),
                     value = prompt,
-                    textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
+                    textStyle = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                     onValueChange = {
                         prompt = it
                     },
-                    cursorBrush = SolidColor(MaterialTheme.colors.onBackground),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
                     decorationBox = { field ->
                         Box(Modifier.padding(16.dp)) {
                             field()
@@ -148,14 +144,14 @@ fun WhiteNoiseConfigScreen(
                                 Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                                     Text(
                                         "Enter prompt",
-                                        style = MaterialTheme.typography.subtitle1,
-                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                     )
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
-                                        OutlinedButton(
+                                        MuseOutlinedButton(
                                             shape = RoundedCornerShape(50),
                                             onClick = {
                                                 clipboardManager.getText()?.toString()
@@ -237,7 +233,7 @@ fun WhiteNoiseConfigScreen(
                             }
                         )
                         Spacer(Modifier.weight(1f))
-                        Button(
+                        MuseButton(
                             enabled = prompt.isNotBlank(),
                             shape = RoundedCornerShape(50),
                             onClick = {
@@ -248,7 +244,7 @@ fun WhiteNoiseConfigScreen(
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
-                                disabledBackgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.12f)
+                                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                             ),
                         ) {
                             Icon(
@@ -292,10 +288,10 @@ private fun ConfigMenuButton(
     label: String,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = {
+    MuseIconButton(onClick = {
         onClick()
     }) {
-        val color = if (selected) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface
+        val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 icon,
@@ -304,7 +300,7 @@ private fun ConfigMenuButton(
             )
             Text(
                 text = label,
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.bodySmall,
                 color = color.copy(alpha = 0.7f)
             )
         }
@@ -328,29 +324,26 @@ private fun DurationConfig(
         Text(
             "Duration",
             Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.titleMedium
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Switch(
+            MuseSwitch(
                 checked = duration == null,
                 onCheckedChange = { checked ->
                     onDurationChange(if (checked) null else number.seconds)
                 },
-                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary),
             )
-            Text("Automatically pick the best duration", style = MaterialTheme.typography.body2)
+            Text("Automatically pick the best duration", style = MaterialTheme.typography.bodyMedium)
         }
         Box {
             Row(Modifier.padding(horizontal = 8.dp)) {
-                Text("0.5s", style = MaterialTheme.typography.overline)
+                Text("0.5s", style = MaterialTheme.typography.labelSmall)
                 Spacer(Modifier.weight(1f))
-                Text("22s", style = MaterialTheme.typography.overline)
+                Text("22s", style = MaterialTheme.typography.labelSmall)
             }
-            Slider(
+            MuseSlider(
                 enabled = duration != null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
+                modifier = Modifier.fillMaxWidth(),
                 value = number.toFloat(),
                 onValueChange = {
                     number = it.toDouble()
@@ -372,24 +365,22 @@ private fun PromptInfluenceConfig(
         Text(
             "Prompt Influence",
             Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.titleMedium
         )
         Text(
             modifier = Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             text = "Slide the scale to make your generation perfectly adhere to your prompt or allow for a little creativity.",
         )
         Box {
             Row(Modifier.padding(horizontal = 8.dp)) {
-                Text("More creative", style = MaterialTheme.typography.overline)
+                Text("More creative", style = MaterialTheme.typography.labelSmall)
                 Spacer(Modifier.weight(1f))
-                Text("Follow Prompt", style = MaterialTheme.typography.overline)
+                Text("Follow Prompt", style = MaterialTheme.typography.labelSmall)
             }
-            Slider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
+            MuseSlider(
+                modifier = Modifier.fillMaxWidth(),
                 value = influence,
                 onValueChange = onInfluenceChange,
                 valueRange = 0.0f..1.0f,
