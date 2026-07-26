@@ -1,16 +1,10 @@
 package io.github.kkoshin.muse.feature.noise
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -18,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.provider.SoundEffectConfig
+import io.github.kkoshin.muse.designsystem.component.MuseIconButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.feature.export.ProgressStatus
 import io.github.kkoshin.muse.platformbridge.BackHandler
@@ -40,6 +36,7 @@ class WhiteNoiseScreenArgs(
     val promptInfluence: Float = 0.3f,
 ) : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WhiteNoiseScreen(
     modifier: Modifier = Modifier,
@@ -53,15 +50,12 @@ fun WhiteNoiseScreen(
         onExit(progress is ProgressStatus.Success)
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
+            MuseTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = {
+                    MuseIconButton(onClick = {
                         onExit(progress is ProgressStatus.Success)
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
@@ -70,7 +64,6 @@ fun WhiteNoiseScreen(
                 title = {
                     Text(text = stringResource(Res.string.sound_effect))
                 },
-                elevation = 0.dp,
             )
         },
         content = { paddingValues ->

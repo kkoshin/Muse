@@ -5,28 +5,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Lock
@@ -44,6 +38,10 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.Route
+import io.github.kkoshin.muse.designsystem.component.MuseButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTextButton
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import kotlinx.serialization.Serializable
 
@@ -52,17 +50,15 @@ private val cardShape = RoundedCornerShape(12.dp)
 @Serializable
 object ApiKeyHelpArgs : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApiKeyHelpScreen(
     onGoToSettings: () -> Unit,
     onOpenURL: (String) -> Unit,
 ) {
-    Scaffold(
-        contentWindowInsets = WindowInsets.systemBars,
+    MuseScaffold(
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
+            MuseTopAppBar(
                 navigationIcon = { AppBackButton() },
                 title = { Text("About API Key") },
             )
@@ -88,20 +84,20 @@ fun ApiKeyHelpScreen(
                     ) {
                         Surface(
                             shape = CircleShape,
-                            color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                             modifier = Modifier.size(56.dp),
                         ) {
                             Icon(
                                 Icons.Filled.Lock,
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.primary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(14.dp),
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = "What is an API Key?",
-                            style = MaterialTheme.typography.h6,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -109,8 +105,8 @@ fun ApiKeyHelpScreen(
                             text = "An API Key is like your personal pass to use 11labs services. " +
                                 "Think of it as an account credential that lets this app make " +
                                 "text-to-speech requests on your behalf.",
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.65f),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f),
                         )
                     }
                 }
@@ -128,13 +124,13 @@ fun ApiKeyHelpScreen(
                     ) {
                         Surface(
                             shape = CircleShape,
-                            color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                             modifier = Modifier.size(36.dp),
                         ) {
                             Icon(
                                 Icons.Outlined.HelpOutline,
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.primary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(8.dp),
                             )
                         }
@@ -142,7 +138,7 @@ fun ApiKeyHelpScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "Why does this app need one?",
-                                style = MaterialTheme.typography.subtitle1,
+                                style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                             )
                             Spacer(modifier = Modifier.height(4.dp))
@@ -150,8 +146,8 @@ fun ApiKeyHelpScreen(
                                 text = "This app does not include a built-in or shared API key. " +
                                     "Each user needs their own key from 11labs to keep usage " +
                                     "tied to your own account and quota.",
-                                style = MaterialTheme.typography.body2,
-                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.65f),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f),
                             )
                         }
                     }
@@ -167,14 +163,14 @@ fun ApiKeyHelpScreen(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "What you need to do",
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "It only takes a minute, and you only need to do it once.",
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.55f),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         StepItem(
@@ -225,17 +221,16 @@ fun ApiKeyHelpScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // ── CTA ──
-                Button(
+                MuseButton(
                     onClick = onGoToSettings,
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary,
+                        containerColor = MaterialTheme.colorScheme.primary,
                     ),
                 ) {
                     Text(
                         text = "Go to Settings",
-                        style = MaterialTheme.typography.button,
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
 
@@ -255,15 +250,15 @@ private fun StepItem(number: String, title: String, description: String) {
     ) {
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
             modifier = Modifier.size(28.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = number,
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -271,12 +266,12 @@ private fun StepItem(number: String, title: String, description: String) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
             )
             Text(
                 text = description,
-                style = MaterialTheme.typography.body2,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.55f),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
             )
         }
     }
@@ -333,9 +328,9 @@ private fun LinkRow(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    tint: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.55f),
+    tint: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
 ) {
-    TextButton(
+    MuseTextButton(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -352,15 +347,15 @@ private fun LinkRow(
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 label,
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
             )
             Icon(
                 Icons.Filled.OpenInNew,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colors.onSurface.copy(alpha = 0.35f),
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
             )
         }
     }

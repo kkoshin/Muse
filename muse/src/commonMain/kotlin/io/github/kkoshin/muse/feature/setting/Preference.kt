@@ -11,12 +11,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +27,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import io.github.kkoshin.muse.designsystem.component.MuseAlertDialog
+import io.github.kkoshin.muse.designsystem.component.MuseOutlinedTextField
+import io.github.kkoshin.muse.designsystem.component.MuseTextButton
 
 fun LazyListScope.preference(
     key: String,
@@ -114,26 +113,27 @@ fun EditTextPreferenceDialog(
     var input by remember { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
     val focusRequester = remember { FocusRequester() }
 
-    AlertDialog(
+    MuseAlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
             Text(title, modifier = Modifier.padding(bottom = 8.dp))
         },
         text = {
-            OutlinedTextField(
+            MuseOutlinedTextField(
                 label = { Text(label) },
                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-                value = input,
+                value = input.text,
                 onValueChange = {
-                    input = it
+                    input = TextFieldValue(it, TextRange(it.length))
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = keyboardType,
-                )
+                ),
+                singleLine = true,
             )
         },
         confirmButton = {
-            TextButton(onClick = {
+            MuseTextButton(onClick = {
                 onDismissRequest()
                 onConfirm(input.text)
             }) {
@@ -141,10 +141,7 @@ fun EditTextPreferenceDialog(
             }
         },
         dismissButton = {
-            TextButton(
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.38f),
-                ),
+            MuseTextButton(
                 onClick = {
                     onDismissRequest()
                 }) {

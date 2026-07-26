@@ -11,17 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
@@ -35,6 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.Route
+import io.github.kkoshin.muse.designsystem.component.MuseButton
+import io.github.kkoshin.muse.designsystem.component.MuseFilterChip
+import io.github.kkoshin.muse.designsystem.component.MuseSlider
+import io.github.kkoshin.muse.designsystem.component.MuseSwitch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -49,7 +46,6 @@ class ExportConfigSheetArgs(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExportConfigSheet(
     modifier: Modifier = Modifier,
@@ -95,42 +91,41 @@ fun ExportConfigSheet(
         }
         item {
             Column {
-                Text("Voice", style = MaterialTheme.typography.button)
+                Text("Voice", style = MaterialTheme.typography.labelLarge)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(vertical = 8.dp),
                 ) {
-                    items(voiceIds.size) {
-                        val selected = selectedVoiceId == voiceIds[it]
-                        Chip(
+                    items(voiceIds.size) { index ->
+                        val selected = selectedVoiceId == voiceIds[index]
+                        val chipColors = if (selected) {
+                            androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                            )
+                        } else {
+                            androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                                containerColor = Color.Transparent,
+                            )
+                        }
+                        val chipBorder = if (!selected) {
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                        } else {
+                            null
+                        }
+                        MuseFilterChip(
+                            selected = selected,
                             onClick = {
-                                selectedVoiceId = voiceIds[it]
+                                selectedVoiceId = voiceIds[index]
                             },
-                            border = if (!selected) {
-                                BorderStroke(
-                                    1.dp,
-                                    MaterialTheme.colors.onSurface.copy(0.12f),
-                                )
-                            } else {
-                                null
-                            },
-                            colors = ChipDefaults.chipColors(
-                                backgroundColor = if (!selected) {
-                                    Color.Transparent
-                                } else {
-                                    MaterialTheme.colors.primary.copy(
-                                        0.12f,
-                                    )
-                                },
-                            ),
+                            colors = chipColors,
+                            border = chipBorder,
                             leadingIcon = {
                                 if (selected) {
                                     Icon(Icons.Default.Check, null, modifier = Modifier.size(20.dp))
                                 }
                             },
-                        ) {
-                            Text(voiceNames[it])
-                        }
+                            label = { Text(voiceNames[index]) },
+                        )
                     }
                 }
             }
@@ -141,15 +136,12 @@ fun ExportConfigSheet(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             "Fixed silence duration",
-                            style = MaterialTheme.typography.subtitle1,
+                            style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.weight(1f),
                         )
 
-                        Switch(
+                        MuseSwitch(
                             checked = fixedDurationEnabled,
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colors.primary,
-                            ),
                             onCheckedChange = {
                                 fixedDurationEnabled = it
                             },
@@ -162,11 +154,11 @@ fun ExportConfigSheet(
                             it.toInt().toString()
                         })
                     } else {
-                        Text("Duration per character:", style = MaterialTheme.typography.button)
+                        Text("Duration per character:", style = MaterialTheme.typography.labelLarge)
                         SliderBar(value = silencePerChar, valueRange = 0.1f..1f, onValueChange = {
                             silencePerChar = it
                         })
-                        Text("Min duration:", style = MaterialTheme.typography.button)
+                        Text("Min duration:", style = MaterialTheme.typography.labelLarge)
                         SliderBar(value = minDynamicDuration, valueRange = 0f..5f, onValueChange = {
                             minDynamicDuration = it
                         }, format = {
@@ -177,9 +169,8 @@ fun ExportConfigSheet(
             }
         }
         item {
-            Button(
+            MuseButton(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
                 enabled = selectedVoiceId != null,
                 onClick = {
                     onExport(
@@ -210,7 +201,7 @@ fun SliderBar(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Slider(
+        MuseSlider(
             value = value,
             valueRange = valueRange,
             onValueChange = onValueChange,

@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,6 +28,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import io.github.kkoshin.muse.designsystem.component.MuseButton
+import io.github.kkoshin.muse.designsystem.component.MuseTextButton
 import kotlin.math.roundToInt
 
 @Composable
@@ -65,7 +65,7 @@ fun ApiKeyRequiredSheet(
                     .offset { IntOffset(0, (offsetY.value * 1000).roundToInt()) }
                     .navigationBarsPadding(),
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                elevation = 8.dp,
+                tonalElevation = 8.dp,
             ) {
                 Column(
                     modifier = Modifier
@@ -74,25 +74,24 @@ fun ApiKeyRequiredSheet(
                 ) {
                     Text(
                         text = "Setup needed to continue",
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.titleMedium,
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = "This feature uses 11labs. You'll need to add your own API key in Settings before you can use it.",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Button(
+                    MuseButton(
                         onClick = onGoToSettings,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.primary,
+                            containerColor = MaterialTheme.colorScheme.primary,
                         ),
                     ) {
                         Text("Go to Settings")
@@ -100,13 +99,13 @@ fun ApiKeyRequiredSheet(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    TextButton(
+                    MuseTextButton(
                         onClick = onWhatIsApiKey,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             "What is API Key?",
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         )
                     }
                 }

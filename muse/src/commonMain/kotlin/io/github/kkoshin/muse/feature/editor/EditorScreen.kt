@@ -4,24 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.runtime.Composable
@@ -39,6 +31,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.provider.Voice
+import io.github.kkoshin.muse.designsystem.component.MuseCircularProgressIndicator
+import io.github.kkoshin.muse.designsystem.component.MuseOutlinedButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.editor.ExportModeTabRow
 import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.AppBackButton
@@ -60,6 +56,7 @@ data class EditorArgs(
  * 3. request to export as mp3
  */
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun EditorScreen(
     args: EditorArgs,
     modifier: Modifier = Modifier,
@@ -98,30 +95,25 @@ fun EditorScreen(
             onDismissRequest = {},
             DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
         ) {
-            CircularProgressIndicator()
+            MuseCircularProgressIndicator()
         }
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            Surface(elevation = AppBarDefaults.TopAppBarElevation) {
-                Column {
-                    TopAppBar(
-                        windowInsets = WindowInsets.statusBars,
-                        navigationIcon = {
-                            AppBackButton()
-                        },
-                        backgroundColor = MaterialTheme.colors.surface,
-                        title = { Text(text = "Editor") },
-                    )
-                    ExportModeTabRow(
-                        modifier = Modifier,
-                        selectedMode = selectedMode
-                    ) {
-                        selectedMode = it
-                    }
+            Column {
+                MuseTopAppBar(
+                    navigationIcon = {
+                        AppBackButton()
+                    },
+                    title = { Text(text = "Editor") },
+                )
+                ExportModeTabRow(
+                    modifier = Modifier,
+                    selectedMode = selectedMode
+                ) {
+                    selectedMode = it
                 }
             }
         },
@@ -148,7 +140,7 @@ fun EditorScreen(
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         phrases.forEach {
-                            OutlinedButton(onClick = { /*TODO*/ }) {
+                            MuseOutlinedButton(onClick = { /*TODO*/ }) {
                                 Text(text = it)
                             }
                         }
@@ -159,7 +151,7 @@ fun EditorScreen(
         floatingActionButton = {
             if (phrases.isNotEmpty()) {
                 FloatingActionButton(
-                    backgroundColor = MaterialTheme.colors.primary,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp),
                     onClick = {
                         if (!apiKeyConfigured) {

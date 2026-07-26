@@ -1,15 +1,9 @@
 package io.github.kkoshin.muse.feature.isolation
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -20,8 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import io.github.kkoshin.muse.core.manager.AccountManager
+import io.github.kkoshin.muse.designsystem.component.MuseIconButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.feature.export.AudioProcessingView
 import io.github.kkoshin.muse.feature.setting.ApiKeyRequiredSheet
 import io.github.kkoshin.muse.platformbridge.BackHandler
@@ -39,6 +35,7 @@ class AudioIsolationArgs(
     val audioUri: String,
 ) : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioIsolationScreen(
     modifier: Modifier = Modifier,
@@ -65,22 +62,18 @@ fun AudioIsolationScreen(
         }
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
+            MuseTopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = {
+                    MuseIconButton(onClick = {
                         onDone()
                     }) {
                         Icon(Icons.Filled.Close, contentDescription = null)
                     }
                 },
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp,
             )
         },
         content = { contentPadding ->

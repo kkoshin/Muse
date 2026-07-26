@@ -36,5 +36,6 @@ include(":elevenlabs")
 include(":composeApp")
 include(":Playground")
 include(":fancy")
+include(":designsystem")
 
 rootProject.name = "MuseRoot"

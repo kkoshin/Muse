@@ -3,20 +3,16 @@ package io.github.kkoshin.muse.feature.setting
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.MailOutline
@@ -38,6 +34,9 @@ import androidx.compose.ui.graphics.Color
 import io.github.kkoshin.muse.core.manager.AccountManager
 import io.github.kkoshin.muse.core.manager.SpeechProcessorManager
 import io.github.kkoshin.muse.core.provider.CharacterQuota
+import io.github.kkoshin.muse.designsystem.component.MuseIconButton
+import io.github.kkoshin.muse.designsystem.component.MuseScaffold
+import io.github.kkoshin.muse.designsystem.component.MuseTopAppBar
 import io.github.kkoshin.muse.platformbridge.AppBackButton
 import io.github.kkoshin.muse.platformbridge.CURRENT_PLATFORM
 import io.github.kkoshin.muse.platformbridge.Platform
@@ -55,6 +54,7 @@ import org.koin.compose.koinInject
 @Serializable
 data class SettingArgs(val scrollToApiKey: Boolean = false) : Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
     args: SettingArgs,
@@ -83,7 +83,7 @@ fun SettingScreen(
     var highlightApiKey by remember { mutableStateOf(false) }
     val highlightColor by animateColorAsState(
         targetValue = if (highlightApiKey) {
-            MaterialTheme.colors.primary.copy(alpha = 0.1f)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
         } else {
             Color.Transparent
         },
@@ -109,13 +109,10 @@ fun SettingScreen(
         }
     }
 
-    Scaffold(
+    MuseScaffold(
         modifier = Modifier,
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.statusBars,
-                backgroundColor = MaterialTheme.colors.surface,
+            MuseTopAppBar(
                 navigationIcon = {
                     AppBackButton()
                 },
@@ -134,7 +131,7 @@ fun SettingScreen(
                 preferenceCategory(
                     key = "elevenlabs",
                     title = {
-                        Text("ElevenLabs", color = MaterialTheme.colors.primary)
+                        Text("ElevenLabs", color = MaterialTheme.colorScheme.primary)
                     },
                 )
                 editTextPreference(
@@ -167,7 +164,7 @@ fun SettingScreen(
                     dialogTitle = "ElevenLabs API Key",
                     inputLabel = "API Key",
                     widgetContainer = {
-                        IconButton(onClick = {
+                        MuseIconButton(onClick = {
                             onOpenURL("https://elevenlabs.io/app/developers/api-keys")
                         }) {
                             Icon(Icons.AutoMirrored.Filled.Launch, "launch")
@@ -239,7 +236,7 @@ fun SettingScreen(
                 preferenceCategory(
                     key = "about",
                     title = {
-                        Text("About", color = MaterialTheme.colors.primary)
+                        Text("About", color = MaterialTheme.colorScheme.primary)
                     },
                 )
                 preference(
@@ -311,9 +308,9 @@ fun SettingScreen(
 private fun SummaryText(text: String) {
     Text(
         text,
-        color = if (MaterialTheme.colors.isLight) Color.DarkGray.copy(0.7f) else Color.LightGray.copy(
+        color = if (!isSystemInDarkTheme()) Color.DarkGray.copy(alpha = 0.7f) else Color.LightGray.copy(
             alpha = 0.7f
         ),
-        style = MaterialTheme.typography.body2,
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
