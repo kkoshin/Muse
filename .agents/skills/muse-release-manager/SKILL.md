@@ -64,5 +64,18 @@ After pushing to main:
 2. Push Tag: `git push origin v<versionName>`
 3. Draft GitHub Release on the repository page.
 
+## Workflow: Publish to Google Play
+
+Google Play uses the signed **AAB** produced by the `package.yml` workflow (manual upload to Play Console; no Play API integration).
+
+1. Download the `play-aab` artifact from the release workflow run (`Muse-<version>.aab` + `mapping.txt`).
+2. Play Console → Testing → Internal testing (first) or Production → create a new release → upload the AAB.
+3. Upload `mapping.txt` as the deobfuscation file.
+4. Paste release notes from `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
+5. Review and roll out.
+
+One-time Play Console setup, required GitHub secrets (`PLAY_KEYSTORE_*`), and review tips: see [references/play-store-guide.md](references/play-store-guide.md).
+
 ## Reference Material
-For the full manual checklist, see [references/release-guide.md](references/release-guide.md).
+- Full manual checklist: [references/release-guide.md](references/release-guide.md).
+- Google Play one-time setup & publish flow: [references/play-store-guide.md](references/play-store-guide.md).
