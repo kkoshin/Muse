@@ -1,4 +1,4 @@
-name: Build Release APK
+name: Build Release Artifacts
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - name: package
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease bundleRelease
 
       - uses: ilharp/sign-android-release@v1 # Or use @nightly
         name: Sign app APK
@@ -47,7 +47,7 @@ jobs:
           echo "filePath=$dir/signed/$newFileName" >> $GITHUB_OUTPUT
 
       - name: List release files
-        run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed)
+        run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed && ls -la composeApp/build/outputs/bundle/release)
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -55,6 +55,54 @@ jobs:
           name: release-artifacts
           path: |
             ${{steps.rename_signed_file.outputs.filePath}}
+            composeApp/build/outputs/mapping/release/mapping.txt
+          if-no-files-found: error
+          retention-days: 20
+
+      # Google Play upload bundle: signed with the Play upload key (PLAY_KEYSTORE_*),
+      # which is intentionally separate from the GitHub Release key (KEY_STORE_*).
+      - name: Sign app AAB for Google Play
+        id: sign_aab
+        env:
+          PLAY_KEYSTORE_BASE64: ${{ secrets.PLAY_KEYSTORE_BASE64 }}
+          PLAY_KEYSTORE_PASSWORD: ${{ secrets.PLAY_KEYSTORE_PASSWORD }}
+          PLAY_KEY_ALIAS: ${{ secrets.PLAY_KEY_ALIAS }}
+          PLAY_KEY_PASSWORD: ${{ secrets.PLAY_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PLAY_KEYSTORE_BASE64:-}" ] || [ -z "${PLAY_KEY_ALIAS:-}" ]; then
+            echo "::error::Play upload keystore secrets are missing. Add PLAY_KEYSTORE_BASE64 / PLAY_KEYSTORE_PASSWORD / PLAY_KEY_ALIAS / PLAY_KEY_PASSWORD (see .agents/skills/muse-release-manager/references/play-store-guide.md)"
+            exit 1
+          fi
+          keystore="$RUNNER_TEMP/play-upload-keystore.jks"
+          echo "$PLAY_KEYSTORE_BASE64" | base64 -d > "$keystore"
+          # PKCS12 keystores only support a single password (keytool enforces it)
+          PLAY_KEY_PASSWORD="${PLAY_KEY_PASSWORD:-$PLAY_KEYSTORE_PASSWORD}"
+          export PLAY_KEY_PASSWORD
+          # keep the output name aligned with the versioned APK name from composeApp/build.gradle.kts
+          unsigned_apk=$(find composeApp/build/outputs/apk/release -maxdepth 1 -name 'Muse-*.apk' ! -name '*-signed*' | head -n 1)
+          version=$(basename "$unsigned_apk" .apk)
+          version=${version#Muse-}
+          if [ -z "$version" ]; then
+            echo "::error::could not derive version from the release APK name"
+            exit 1
+          fi
+          aab="composeApp/build/outputs/bundle/release/Muse-${version}.aab"
+          mv composeApp/build/outputs/bundle/release/*.aab "$aab"
+          jarsigner -keystore "$keystore" \
+            -storepass:env PLAY_KEYSTORE_PASSWORD \
+            -keypass:env PLAY_KEY_PASSWORD \
+            "$aab" "$PLAY_KEY_ALIAS"
+          jarsigner -verify "$aab"
+          shred -u "$keystore" 2>/dev/null || rm -f "$keystore"
+          echo "aabPath=$aab" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Play AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-aab
+          path: |
+            ${{ steps.sign_aab.outputs.aabPath }}
             composeApp/build/outputs/mapping/release/mapping.txt
           if-no-files-found: error
           retention-days: 20

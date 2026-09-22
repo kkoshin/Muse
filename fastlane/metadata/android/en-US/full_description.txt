@@ -5,3 +5,5 @@ Transform your written words into professional-quality speech with our intuitive
 • Smart pause control between words for improved clarity and rhythm
 • Easy MP3 file generation for convenient sharing and storage
 • Simple and user-friendly interface for quick conversions
+
+Note: You need your own ElevenLabs API key to use this app.
