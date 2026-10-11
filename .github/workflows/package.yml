@@ -22,7 +22,17 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - name: package
-        run: ./gradlew assembleRelease bundleRelease
+        run: ./gradlew assembleRelease bundlePlay
+
+      # The Play AAB must stay free of xcrash: its prebuilt .so files are not
+      # 16 KB page aligned and Google Play rejects such bundles.
+      - name: Assert Play AAB is free of xcrash
+        run: |
+          set -euo pipefail
+          aab=$(ls composeApp/build/outputs/bundle/play/*.aab)
+          unzip -l "$aab" | grep -qi xcrash && { echo "::error::xcrash native lib in $aab"; exit 1; }
+          unzip -p "$aab" base/dex/classes.dex | grep -aq 'xcrash' && { echo "::error::xcrash classes in $aab"; exit 1; }
+          echo "OK: no xcrash in $aab"
 
       - uses: ilharp/sign-android-release@v1 # Or use @nightly
         name: Sign app APK
@@ -47,7 +57,7 @@ jobs:
           echo "filePath=$dir/signed/$newFileName" >> $GITHUB_OUTPUT
 
       - name: List release files
-        run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed && ls -la composeApp/build/outputs/bundle/release)
+        run: (ls -la composeApp/build/outputs/apk/release && ls -la composeApp/build/outputs/apk/release/signed && ls -la composeApp/build/outputs/bundle/play)
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -93,8 +103,8 @@ jobs:
             echo "::error::could not derive version from the release APK name"
             exit 1
           fi
-          aab="composeApp/build/outputs/bundle/release/Muse-${version}.aab"
-          mv composeApp/build/outputs/bundle/release/*.aab "$aab"
+          aab="composeApp/build/outputs/bundle/play/Muse-${version}.aab"
+          mv composeApp/build/outputs/bundle/play/*.aab "$aab"
           jarsigner -keystore "$keystore" \
             -storepass:env PLAY_KEYSTORE_PASSWORD \
             -keypass:env PLAY_KEY_PASSWORD \
@@ -109,6 +119,6 @@ jobs:
           name: play-aab
           path: |
             ${{ steps.sign_aab.outputs.aabPath }}
-            composeApp/build/outputs/mapping/release/mapping.txt
+            composeApp/build/outputs/mapping/play/mapping.txt
           if-no-files-found: error
           retention-days: 20

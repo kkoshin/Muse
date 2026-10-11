@@ -68,6 +68,8 @@ After pushing to main:
 
 Google Play uses the signed **AAB** produced by the `package.yml` workflow (manual upload to Play Console; no Play API integration).
 
+The AAB comes from the **`play` build type** (`./gradlew :composeApp:bundlePlay`), not `release`: the `release` variant keeps xcrash for GitHub Releases / F-Droid, while xcrash's prebuilt `.so` files are not 16 KB page aligned and Google Play rejects such bundles. Crash reporting for the Play build therefore comes from Google Play's **Android vitals** instead of the in-app crash log. The workflow asserts the Play AAB contains no xcrash and fails the build if it reappears.
+
 1. Download the `play-aab` artifact from the release workflow run (`Muse-<version>.aab` + `mapping.txt`).
 2. Play Console → Testing → Internal testing (first) or Production → create a new release → upload the AAB.
 3. Upload `mapping.txt` as the deobfuscation file.
