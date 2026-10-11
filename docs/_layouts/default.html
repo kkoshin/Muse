@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title | escape }} | {{ site.title | escape }}</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem;
+        font: 1rem/1.7 system-ui, sans-serif;
+        overflow-wrap: anywhere;
+      }
+      h1, h2 { line-height: 1.3; }
+      h2 { margin-top: 2rem; }
+      li { margin-bottom: 0.75rem; }
+      a { color: #1761b0; }
+      @media (prefers-color-scheme: dark) {
+        a { color: #8fc5ff; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>{{ content }}</main>
+  </body>
+</html>

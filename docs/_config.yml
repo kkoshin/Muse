@@ -1,0 +1,6 @@
+title: Muse
+url: https://kkoshin.github.io
+baseurl: /Muse
+markdown: kramdown
+kramdown:
+  input: GFM
