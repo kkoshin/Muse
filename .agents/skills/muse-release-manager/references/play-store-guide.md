@@ -56,8 +56,10 @@ base64 -w0 play-upload.jks
 
 1. 按 [SKILL.md](../SKILL.md) 完成版本号、changelog、测试。
 2. 推 tag / 创建 GitHub Release → `package.yml` 产出两个 artifact：
-   - `release-artifacts`：GitHub Release / F-Droid 用 APK + mapping.txt（**原流程不变**）
-   - `play-aab`：`Muse-<version>.aab` + `mapping.txt`（已用 Play 上传密钥签名）
+   - `release-artifacts`：GitHub Release / F-Droid 用 APK（`assembleRelease`，含 xcrash）+ `mapping/release/mapping.txt`（**原流程不变**）
+   - `play-aab`：`Muse-<version>.aab`（`bundlePlay`，**不含 xcrash**）+ `mapping/play/mapping.txt`（已用 Play 上传密钥签名）
+
+   Play 包走独立的 `play` build type：xcrash 的预编译 `.so` 非 16 KB 对齐、会被 Play 拒收，故不打包（`releaseImplementation`/`debugImplementation` 限定依赖）。因此 Play 版的崩溃报告不在应用内，改由 Play Console 的 **Android vitals** 提供。流水线里有断言步骤把关，xcrash 若溜回去会直接 fail。
 3. 下载 `play-aab`，在 Play Console → 测试 → 内部测试（先）或正式版 → 创建新版本 → 上传 AAB。
 4. 同页上传 `mapping.txt` 作为混淆映射文件（Deobfuscation file）。
 5. 版本说明粘贴 `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`。
@@ -72,4 +74,4 @@ versionCode 必须单调递增（`setUpStableVersion` 已管理）；Play 不接
 - **Play App Signing 不可逆**：注册后应用签名密钥由 Google 托管，上传密钥可重置；首次上传 AAB 即绑定。
 - AAB 由 `jarsigner` 以 JAR 签名方式签名（Play 官方支持的手动签名方式）；PKCS12/JKS、RSA/EC 密钥均可，JDK 17 自动识别。
 - **PKCS12 口令坑**：`keytool -genpair` 生成 PKCS12 时会忽略 `-keypass`，key 口令恒等于 store 口令。若两者填得不一致，`jarsigner` 会报"密钥不是私有密钥"。新 keystore 建议直接两处填同一个口令。
-- 本地想预演签名流程：`./gradlew :composeApp:bundleRelease` 后用自签 keystore 跑一遍 `jarsigner -keystore ... composeApp/build/outputs/bundle/release/*.aab <alias>` 并 `jarsigner -verify`。
+- 本地想预演签名流程：`./gradlew :composeApp:bundlePlay` 后用自签 keystore 跑一遍 `jarsigner -keystore ... composeApp/build/outputs/bundle/play/*.aab <alias>` 并 `jarsigner -verify`。

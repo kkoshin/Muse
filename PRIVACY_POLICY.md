@@ -12,7 +12,7 @@ The app's developer does **not** collect, store, or share any personal data. All
 
 - **ElevenLabs API key** — saved in the app's local preferences so you stay signed in to the API. It is never sent anywhere except as an authentication header to `api.elevenlabs.io`.
 - **Your texts and generated audio files** — projects and exported MP3/WAV files are stored on your device (app storage or the location you export to).
-- **Crash logs** — if the app crashes, diagnostic logs are written locally and can be viewed in the app's crash-log screen. They are not uploaded to the developer or any third party.
+- **Crash logs** — in builds distributed outside Google Play (GitHub Releases, F-Droid), if the app crashes, diagnostic logs are written locally and can be viewed in the app's crash-log screen. They are not uploaded to the developer or any third party. The Google Play build does not write crash logs at all; crash diagnostics there come from Google Play's Android vitals, under Google's own terms.
 
 ## Data sent to third-party services
 
