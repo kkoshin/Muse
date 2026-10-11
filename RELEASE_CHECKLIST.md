@@ -20,8 +20,8 @@ Run these checks on the release candidate before submission. Record the device o
 ## Verification record
 
 - Automated checks on 2026-10-11: `:muse:testReleaseUnitTest` passed (2 tests, 0 failures); `:composeApp:bundleRelease` passed, including release shrinking and vital lint.
-- Merged release manifest: target SDK 36, minimum SDK 29, version name 0.2.2, version code 8.
-- `bundletool` 1.18.1 validated the final AAB; its manifest reports target SDK 36, version name 0.2.2, and version code 8. This local bundle still requires signing with the Play upload key through the release workflow.
+- Merged release manifest: target SDK 36, minimum SDK 29, version name 0.2.1, version code 8. The user-visible version name is retained for this submission fix; the internal version code increases for the new bundle.
+- `bundletool` 1.18.1 validated the final AAB; its manifest reports target SDK 36, version name 0.2.1, and version code 8. This local bundle still requires signing with the Play upload key through the release workflow.
 - Device or emulator and Android API: ____________________
 - Date and tester: ____________________
 - Results or issues: ____________________
