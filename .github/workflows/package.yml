@@ -30,8 +30,20 @@ jobs:
         run: |
           set -euo pipefail
           aab=$(ls composeApp/build/outputs/bundle/play/*.aab)
-          unzip -l "$aab" | grep -qi xcrash && { echo "::error::xcrash native lib in $aab"; exit 1; }
-          unzip -p "$aab" base/dex/classes.dex | grep -aq 'xcrash' && { echo "::error::xcrash classes in $aab"; exit 1; }
+          check_dir=$(mktemp -d)
+          trap 'rm -rf "$check_dir"' EXIT
+          # Read archive contents completely before searching: grep -q on a
+          # pipe can cause unzip to exit with SIGPIPE and hide a match.
+          unzip -Z1 "$aab" > "$check_dir/entries.txt"
+          if grep -qi xcrash "$check_dir/entries.txt"; then
+            echo "::error::xcrash native lib in $aab"
+            exit 1
+          fi
+          unzip -p "$aab" 'base/dex/classes*.dex' > "$check_dir/classes.dex"
+          if grep -aqi xcrash "$check_dir/classes.dex"; then
+            echo "::error::xcrash classes in $aab"
+            exit 1
+          fi
           echo "OK: no xcrash in $aab"
 
       - uses: ilharp/sign-android-release@v1 # Or use @nightly
