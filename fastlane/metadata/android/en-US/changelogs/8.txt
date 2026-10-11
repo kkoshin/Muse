@@ -1,0 +1,1 @@
+- Updated Android target API to 36.

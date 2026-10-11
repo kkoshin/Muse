@@ -20,7 +20,7 @@ kotlin {
 
     cocoapods {
         name = "muse"
-        version = "0.2.1"
+        version = "0.2.2"
         summary = "muse feature"
         homepage = "https://github.com/kkoshin"
         ios.deploymentTarget = "16.0"
