@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Play 变体不带 xcrash，崩溃日志界面永远不会产生内容，直接从合并结果中移除 -->
+    <application>
+        <activity
+            android:name=".diagnosis.CrashLogActivity"
+            tools:node="remove" />
+    </application>
+
+</manifest>

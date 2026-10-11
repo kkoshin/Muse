@@ -84,6 +84,8 @@ swiftApp/     — iOS Xcode project (Swift, CocoaPods)
 
 Version is controlled in `composeApp/build.gradle.kts` (`setUpStableVersion`). The CocoaPods version in `muse/build.gradle.kts` must match. Changelogs go in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`. The CI workflow (`.github/workflows/package.yml`) builds and signs release APKs on tag push.
 
+Two Android artifacts with different build types: `assembleRelease` produces the APK for GitHub Releases / F-Droid (keeps xcrash crash logging), while `bundlePlay` produces the Google Play AAB (`play` build type, **no xcrash** — its prebuilt `.so` files are not 16 KB page aligned and Play rejects them; crashes are covered by Android vitals). The variant seam lives in `composeApp/src/android<BuildType>/kotlin/.../crash/CrashReporter.kt`.
+
 ## Universal Skills
 
 The `.agents/skills/` directory contains universal AI agent skills. Read the `SKILL.md` files for workflow instructions (e.g., release process). See `.agents/skills/_index.md` for available skills.

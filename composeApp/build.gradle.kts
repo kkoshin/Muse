@@ -56,7 +56,21 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("play") {
+            // Google Play 渠道：不打包 xcrash（其预编译 .so 非 16 KB 对齐，会被 Play 拒收）。
+            // matchingFallbacks 让 :muse 等依赖回退到各自的 release 变体。
+            matchingFallbacks += "release"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
+    // play 变体的 manifest 覆盖：移除只服务于 xcrash 的 CrashLogActivity。
+    // 显式指定路径，避免依赖 KMP v2 布局的默认值。
+    sourceSets["play"].manifest.srcFile("src/androidPlay/AndroidManifest.xml")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -75,7 +89,9 @@ dependencies {
     implementation(libs.compose.ui)
 
     implementation(libs.navigation3.ui)
-    implementation(libs.xcrash)
+    // xcrash 只进 F-Droid / GitHub Release（release）与 debug 变体；play 变体不带
+    releaseImplementation(libs.xcrash)
+    debugImplementation(libs.xcrash)
     implementation(libs.logcat)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
