@@ -60,7 +60,7 @@ swiftApp/     — iOS Xcode project (Swift, CocoaPods)
 
 - Kotlin 2.3.10, Compose Multiplatform 1.10.3, AGP 8.12.0
 - Koin 4.1 (DI), Ktor 3.4 (networking), SQLDelight 2.3 (database)
-- Compile SDK 36, Min SDK 29, Target SDK 35
+- Compile SDK 36, Min SDK 29, Target SDK 36
 - iOS deployment target 16.0
 - JDK 17 required
 

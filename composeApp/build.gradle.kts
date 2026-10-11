@@ -120,7 +120,7 @@ androidComponents {
             major = 0, // breaking change
             minor = 2, // feature
             patch = 1, // bugfix
-            code = 7,
+            code = 8,
         )
         extension.buildTypes.getByName("debug").apply {
             applicationIdSuffix = ".debug"
