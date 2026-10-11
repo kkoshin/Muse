@@ -54,8 +54,8 @@ base64 -w0 play-upload.jks
 
 ## 三、每次发版流程（Play 渠道）
 
-1. 按 [SKILL.md](../SKILL.md) 完成版本号、changelog、测试。
-2. 推 tag / 创建 GitHub Release → `package.yml` 产出两个 artifact：
+1. 按 [SKILL.md](../SKILL.md) 准备发布，并完成 [发布验证清单](release-guide.md) 中的版本配置、changelog、构建及手动回归。
+2. 手动运行 `package.yml`，或创建 GitHub Release 触发构建（单独推 tag 不会触发），产出两个 artifact：
    - `release-artifacts`：GitHub Release / F-Droid 用 APK（`assembleRelease`，含 xcrash）+ `mapping/release/mapping.txt`（**原流程不变**）
    - `play-aab`：`Muse-<version>.aab`（`bundlePlay`，**不含 xcrash**）+ `mapping/play/mapping.txt`（已用 Play 上传密钥签名）
 
@@ -69,7 +69,7 @@ versionCode 必须单调递增（`setUpStableVersion` 已管理）；Play 不接
 
 ## 四、注意点
 
-- **targetSdk 当前为 35**：若 Play 以 target API 过低拒收（2026-08-31 起新提交大概率要求 36），届时把 `gradle/libs.versions.toml` 的 `android-targetSdk` 升到 `36` 并跑测试（`compileSdk` 已是 36，改动很小），单独开 PR 处理。
+- **target API 要求**：提交前核对 Play Console 当前要求与 `gradle/libs.versions.toml` 中的 `android-targetSdk`；升级后按 [发布验证清单](release-guide.md) 完成构建及目标系统上的回归。
 - **两套密钥**：`KEY_STORE_*` = GitHub Release APK（F-Droid 用）；`PLAY_KEYSTORE_*` = Play 上传密钥。
 - **Play App Signing 不可逆**：注册后应用签名密钥由 Google 托管，上传密钥可重置；首次上传 AAB 即绑定。
 - AAB 由 `jarsigner` 以 JAR 签名方式签名（Play 官方支持的手动签名方式）；PKCS12/JKS、RSA/EC 密钥均可，JDK 17 自动识别。
