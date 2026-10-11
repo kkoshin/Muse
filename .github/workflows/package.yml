@@ -79,9 +79,15 @@ jobs:
           # PKCS12 keystores only support a single password (keytool enforces it)
           PLAY_KEY_PASSWORD="${PLAY_KEY_PASSWORD:-$PLAY_KEYSTORE_PASSWORD}"
           export PLAY_KEY_PASSWORD
-          # keep the output name aligned with the versioned APK name from composeApp/build.gradle.kts
-          unsigned_apk=$(find composeApp/build/outputs/apk/release -maxdepth 1 -name 'Muse-*.apk' ! -name '*-signed*' | head -n 1)
-          version=$(basename "$unsigned_apk" .apk)
+          # Derive the version from the signed APK path. The APK signing action
+          # leaves a *-temp.apk intermediate file in the release directory.
+          signed_apk="${{ steps.sign_app.outputs.signedFile }}"
+          if [ -z "$signed_apk" ]; then
+            echo "::error::could not determine the signed release APK path"
+            exit 1
+          fi
+          version=$(basename "$signed_apk" .apk)
+          version=${version%-signed}
           version=${version#Muse-}
           if [ -z "$version" ]; then
             echo "::error::could not derive version from the release APK name"
