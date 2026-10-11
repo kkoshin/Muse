@@ -252,6 +252,15 @@ fun SettingScreen(
                     },
                 )
                 preference(
+                    key = "privacy_policy",
+                    title = {
+                        Text("Privacy Policy")
+                    },
+                    onClick = {
+                        onOpenURL("https://kkoshin.github.io/Muse/privacy-policy.html")
+                    },
+                )
+                preference(
                     key = "feedback",
                     title = {
                         Text("Send feedback")
