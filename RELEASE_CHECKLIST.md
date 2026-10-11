@@ -2,6 +2,12 @@
 
 Run these checks on the release candidate before submission. Record the device or emulator model, Android version, and result for each section. A successful build alone does not confirm Google Play submission eligibility or runtime compatibility. Confirm the current requirements and this app's eligibility in Play Console before submitting.
 
+## Google Play artifact
+
+- Build the Google Play bundle with `./gradlew :composeApp:bundlePlay`. The local output is `composeApp/build/outputs/bundle/play/composeApp-play.aab`; the release workflow signs and renames it to `Muse-<version>.aab` in the `play-aab` artifact.
+- Use `composeApp/build/outputs/mapping/play/mapping.txt` with the Play bundle.
+- The `release` build retains xCrash for GitHub Releases / F-Droid. Use the `play` build for Play Console submission and the device checks below.
+
 ## Android 16 / API 36
 
 - [ ] Verify predictive back from the main screen and nested screens, including canceling and completing the gesture.
@@ -19,16 +25,17 @@ Run these checks on the release candidate before submission. Record the device o
 
 ## Verification record
 
-- Automated checks on 2026-10-11: `:muse:testReleaseUnitTest` passed (2 tests, 0 failures); `:composeApp:bundleRelease` passed, including release shrinking and vital lint.
-- Merged release manifest: target SDK 36, minimum SDK 29, version name 0.2.1, version code 8. The user-visible version name is retained for this submission fix; the internal version code increases for the new bundle.
+- Automated checks on 2026-10-11 after incorporating PR #87: `:muse:testReleaseUnitTest` is up-to-date with valid results (2 tests, 0 failures); `:composeApp:bundlePlay` passed, including Play R8 shrinking and vital lint.
+- Play and release merged manifests: target SDK 36, minimum SDK 29, version name 0.2.1, version code 8. The user-visible version name is retained for this submission fix; the internal version code increases for the new bundle.
 - `bundletool` 1.18.1 validated the final AAB; its manifest reports target SDK 36, version name 0.2.1, and version code 8. This local bundle still requires signing with the Play upload key through the release workflow.
+- The Play AAB contains no xCrash archive entries or dex references and no `CrashLogActivity`; the remaining arm64 native libraries have ELF `PT_LOAD` alignments of at least `0x4000`. The Play mapping file exists. These static checks do not replace device testing.
 - Device or emulator and Android API: ____________________
 - Date and tester: ____________________
 - Results or issues: ____________________
 
 ## Known release risks
 
-- The existing `arm64-v8a` `libxcrash.so` and `libxcrash_dumper.so` have ELF `PT_LOAD` alignment of `0x1000`, which does not satisfy 16 KB page-size requirements. This target SDK change does not resolve that issue; confirm Play Console acceptance and address the libraries before claiming 16 KB compatibility.
+- PR #87 removes xCrash from the `play` build, addressing the previously identified xCrash 16 KB ELF alignment issue for that channel. The `release` build still retains those libraries; its bundle should not be submitted to Play Console.
 - `TAndroidLame` has ELF `PT_LOAD` alignment of `0x10000`, but its runtime behavior has not been verified on a 16 KB page-size device; this is not confirmation of full 16 KB compatibility.
 - The R8 Kotlin metadata warning remains unresolved.
 - No connected devices were available, so none of the manual regression checks above have been run for this release candidate.
