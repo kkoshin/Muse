@@ -97,7 +97,7 @@ fun MainScreen() {
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
-        sceneStrategy = bottomSheetStrategy.then(SinglePaneSceneStrategy()),
+        sceneStrategies = listOf(bottomSheetStrategy, SinglePaneSceneStrategy()),
         transitionSpec = fadeTransition,
         popTransitionSpec = fadeTransition,
         predictivePopTransitionSpec = fadePopTransition,

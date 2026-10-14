@@ -13,8 +13,8 @@ kotlin {
     androidTarget()
     jvm()
 
+    // iosX64 已移除：Compose Multiplatform 1.11 起不再发布 ios_x64 变体
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
