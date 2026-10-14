@@ -17,8 +17,8 @@ kotlin {
         }
     }
 
+    // iosX64 已移除：与 :muse / :fancy 保持一致，Compose 栈不再发布 ios_x64 变体
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->

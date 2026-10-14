@@ -28,8 +28,9 @@ kotlin {
         pod("lame")
     }
 
+    // iosX64 已移除：Compose Multiplatform 1.11 起，CMP / navigation3 / lifecycle
+    // 都不再发布 ios_x64 变体，Intel 模拟器目标无法解析依赖。
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
