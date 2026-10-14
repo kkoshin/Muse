@@ -58,11 +58,31 @@ swiftApp/     — iOS Xcode project (Swift, CocoaPods)
 
 ## Key Technology Versions
 
-- Kotlin 2.3.10, Compose Multiplatform 1.10.3, AGP 8.12.0
-- Koin 4.1 (DI), Ktor 3.4 (networking), SQLDelight 2.3 (database)
+- Kotlin 2.4.21, Compose Multiplatform 1.11.1, AGP 8.13.2, Gradle 9.2.1
+- Koin 4.2 (DI), Ktor 3.5 (networking), SQLDelight 2.4 (database)
 - Compile SDK 36, Min SDK 29, Target SDK 36
 - iOS deployment target 16.0
 - JDK 17 required
+
+### Why some of these are held back
+
+Several versions look stale but are pinned by AndroidX/Gradle metadata, not by choice.
+Before bumping any of them, check the `aar-metadata.properties` inside the artifact —
+the `minAndroidGradlePluginVersion` and `minCompileSdk` fields are hard gates:
+
+- **Compose Multiplatform 1.11.1 / compileSdk 36 / AGP 8.x.** CMP 1.12 resolves to
+  Jetpack Compose 1.12.x, which declares `minAgpVersion 9.1.0` and `minCompileSdk 37`.
+  AGP 9 also drops KMP compatibility with `com.android.application`/`com.android.library`,
+  which would force splitting `:composeApp` and break the F-Droid recipe.
+- **Ktor 3.5.2.** 3.6.0 pulls okhttp 5.5.0, whose `okhttp-android` needs `minCompileSdk 37`.
+- **androidx.lifecycle / lifecycleViewmodel 2.10.0.** The whole 2.11.0 line declares
+  `minAgpVersion 9.1.0` and `minCompileSdk 37`.
+- **AboutLibraries 14.2.1.** 15.x needs `minCompileSdk 37`.
+- **Gradle wrapper 9.2.1.** fdroidserver's `gradlew.py` lags on distribution hashes.
+
+`iosX64` is gone: CMP 1.11, navigation3 1.1.2 and the JetBrains lifecycle line stopped
+publishing `ios_x64` variants, so only `iosArm64` and `iosSimulatorArm64` remain. On an
+Intel host that means the iOS simulator can no longer be built locally.
 
 ## Design Patterns
 
