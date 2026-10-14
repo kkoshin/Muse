@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.sugar)
             implementation(libs.bundles.jetpack)
             implementation(libs.documentfile)
+            // 之前靠 aboutlibraries 传递进来，显式声明避免上游改动后断链
+            implementation(libs.kotlinx.collections.immutable)
             implementation(libs.koin.android)
             implementation(dependencies.create(libs.lame.get()).toString()) {
                 exclude(group = "com.android.support")
