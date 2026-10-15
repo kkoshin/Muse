@@ -76,8 +76,8 @@ The AAB comes from the **`play` build type** (`./gradlew :composeApp:bundlePlay`
 4. Paste release notes from `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
 5. Review and roll out.
 
-One-time Play Console setup, required GitHub secrets (`PLAY_KEYSTORE_*`), and review tips: see [references/play-store-guide.md](references/play-store-guide.md).
+One-time Play Console setup, required GitHub secrets (`PLAY_KEYSTORE_*`), review tips, and Android developer verification (package-name + signing-key registration — submission is blocked until every signing key of the package name is registered): see [references/play-store-guide.md](references/play-store-guide.md).
 
 ## Reference Material
 - Full manual checklist: [references/release-guide.md](references/release-guide.md).
-- Google Play one-time setup & publish flow: [references/play-store-guide.md](references/play-store-guide.md).
+- Google Play one-time setup, publish flow & Android developer verification: [references/play-store-guide.md](references/play-store-guide.md).
