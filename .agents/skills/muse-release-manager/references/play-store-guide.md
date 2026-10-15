@@ -71,7 +71,75 @@ versionCode 必须单调递增（`setUpStableVersion` 已管理）；Play 不接
 
 - **target API 要求**：提交前核对 Play Console 当前要求与 `gradle/libs.versions.toml` 中的 `android-targetSdk`；升级后按 [发布验证清单](release-guide.md) 完成构建及目标系统上的回归。
 - **两套密钥**：`KEY_STORE_*` = GitHub Release APK（F-Droid 用）；`PLAY_KEYSTORE_*` = Play 上传密钥。
+- **Android 开发者验证**：包名和**所有**签名密钥都要登记，只注册包名不足以解除送审拦截，处理顺序见第五节。
 - **Play App Signing 不可逆**：注册后应用签名密钥由 Google 托管，上传密钥可重置；首次上传 AAB 即绑定。
 - AAB 由 `jarsigner` 以 JAR 签名方式签名（Play 官方支持的手动签名方式）；PKCS12/JKS、RSA/EC 密钥均可，JDK 17 自动识别。
 - **PKCS12 口令坑**：`keytool -genpair` 生成 PKCS12 时会忽略 `-keypass`，key 口令恒等于 store 口令。若两者填得不一致，`jarsigner` 会报"密钥不是私有密钥"。新 keystore 建议直接两处填同一个口令。
 - 本地想预演签名流程：`./gradlew :composeApp:bundlePlay` 后用自签 keystore 跑一遍 `jarsigner -keystore ... composeApp/build/outputs/bundle/play/*.aab <alias>` 并 `jarsigner -verify`。
+
+## 五、Android 开发者验证（ADV）
+
+> 每个软件包名称及其**所有签名密钥**都必须注册到已验证的开发者身份下（2026-09-30 起分批强制，2027 年起全球推行，含 Play 之外的渠道）。没登记时 Play 送审会被拦：**"未注册的软件包名称……我们检测到以下密钥目前尚未注册"**。
+
+### 5.1 一个包名为什么会有多把密钥
+
+Muse 同时走"自签名分发（GitHub Release / F-Droid）+ Play 托管签名"，同一个 `io.github.kkoshin.muse` 下天然存在多把证书，**不是被谁冒用**（Android 的签名校验也保证现有用户不会被别的密钥的包覆盖升级）：
+
+| 指纹（2026-10 首次登记时的实际值） | 归属 | 签的是什么 |
+|---|---|---|
+| `B7:80:E7:1C:0D:06:F9:AC:15:6E:D2:00:B1:32:48:C1:CE:39:C3:CB:5D:49:7A:53:FD:F0:41:C2:50:25:76:D9` | 本项目（CI `KEY_STORE_*`） | GitHub Release APK。F-Droid 官仓也直接分发这份**自签名** APK（fdroiddata 配方用 `Binaries:` + `AllowedAPKSigningKeys`），所以不存在第二把 F-Droid 密钥 |
+| `53:3D:B3:7E:ED:D7:69:5E:49:C5:6F:84:DB:48:BA:A4:73:72:05:F3:3A:0A:65:E9:36:F0:CA:D9:D5:FA:1C:44` | 本项目（CI `PLAY_KEYSTORE_*`） | 上传到 Play 的 AAB。**不会出现在检测清单里**——它从不签出被安装的 APK |
+| `7C:01:A8:60:E8:10:5C:79:2D:1A:23:DC:E2:E0:52:9D:17:FC:DE:A1:73:E5:49:73:AC:36:6B:B5:E2:98:05:A0` | Google | Play 应用签名密钥，即用户从 Play 下载到的 APK 的签名 |
+| `A9:EC:89:7F:23:50:6E:47:7E:7D:AC:5F:1B:EB:A8:43:B8:14:D0:49:F6:8A:C1:4C:6F:5B:E5:0A:89:79:27:7B` | Google | 内部应用分享的"内部测试证书"——internal app sharing 会用 Google 为该应用自动生成的密钥重签上传的一切工件 |
+
+> 更换签名密钥后请同步更新上表：密钥一变，Play 的检查会重新拦下来。
+
+### 5.2 被拦时的处理顺序
+
+关键教训：**光把包名注册下来不够**。Play 那条提示是**按密钥逐把列**的，包名注册完成后提示通常仍在，必须把清单里的密钥逐个补登记，三把都"已验证"后拦截才消失。
+
+1. Play 管理中心 → **Android 开发者验证** → 注册软件包名称 → 在"符合条件的公钥"里选中自己那把（筛选规则按已知安装量，占比过半的密钥优先；本项目是 GitHub/F-Droid 那把）→ 走完"**签名并上传 APK**"，包名状态变"已注册"、该指纹"已验证"。
+2. 回 Play 刷新，提示多半还在，只是少了刚注册的那把。回到验证页面点"**添加密钥**"，把剩下的逐个加进去。
+3. 对自己不持有私钥的密钥（Google 的应用签名密钥、内部应用分享证书）**同样用"添加密钥"直接登记即可**：2026-10 实测手动添加后即时通过，无需上传平台重签的 APK。官方文档里"委托签名"那条路（把带代码段的版本发到平台 → 下载平台重签的 APK → 上传）是备选方案。
+4. 清单清空后再送审。
+
+### 5.3 生成"签名并上传 APK"用的证明包
+
+三条要求：包名与注册的一致；`assets/adi-registration.properties`（**文件名一字不差**）内容为控制台给出的代码段（就是一串代码本身，无键名无注释）；用与所选指纹对应的私钥签名。**不需要是真实应用**——官方原文"您无需上传实际的 APK"，因此用 aapt2 直接搓个空壳包即可，不必跑 Gradle：
+
+```bash
+# 依赖：Android SDK build-tools（aapt2/apksigner/zipalign/d8）+ JDK 17
+BT="$HOME/Library/Android/sdk/build-tools/36.1.0"
+PLATFORM="$HOME/Library/Android/sdk/platforms/android-36/android.jar"
+KEYSTORE=/path/to/release-keystore        # 与待验证指纹对应的私钥
+ALIAS=default
+SRC=$(mktemp -d); mkdir -p "$SRC/assets" "$SRC/java/io/github/kkoshin/muse" "$SRC/dex"
+
+cat > "$SRC/AndroidManifest.xml" <<'XML'
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.kkoshin.muse" android:versionCode="1" android:versionName="1.0">
+    <application android:label="Muse (verification)" android:hasCode="true"/>
+</manifest>
+XML
+cp adi-registration.properties "$SRC/assets/"   # 控制台给的代码段，逐字粘贴
+
+cat > "$SRC/java/io/github/kkoshin/muse/VerificationStub.java" <<'JAVA'
+package io.github.kkoshin.muse;
+public final class VerificationStub { private VerificationStub() {} }
+JAVA
+javac --release 8 -nowarn -d "$SRC/classes" "$SRC/java/io/github/kkoshin/muse/VerificationStub.java"
+"$BT/d8" --release --min-api 29 --lib "$PLATFORM" --output "$SRC/dex" \
+    "$SRC/classes/io/github/kkoshin/muse/VerificationStub.class"
+
+"$BT/aapt2" link -o "$SRC/unsigned.apk" -I "$PLATFORM" --manifest "$SRC/AndroidManifest.xml" \
+    -A "$SRC/assets" --min-sdk-version 29 --target-sdk-version 36 --version-code 1 --version-name 1.0
+(cd "$SRC/dex" && zip -q "$SRC/unsigned.apk" classes.dex)
+"$BT/zipalign" -f -p 4 "$SRC/unsigned.apk" "$SRC/aligned.apk"
+"$BT/apksigner" sign --ks "$KEYSTORE" --ks-key-alias "$ALIAS" \
+    --out muse-adv-verification.apk "$SRC/aligned.apk"
+
+# 核对：SHA-256 应与待注册的指纹逐位一致
+"$BT/apksigner" verify --print-certs muse-adv-verification.apk
+```
+
+> 该 APK 只用于所有权证明，**不要分发**，验证通过后删掉即可。另外 `apksigner 0.9`（build-tools 36）的 `verify` 只把最高的签名方案报成 `true`，看到 "v1/v2: false, v3: true" 属正常——文件里 v1/v2/v3 都在，与线上 APK 的签名剖面一致。
